@@ -4,14 +4,19 @@ namespace Rareloop\Lumberjack;
 
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
+use Rareloop\Lumberjack\ServiceProvider;
 
 class Application implements ContainerInterface
 {
     private $container;
+    private $loadedProviders = [];
+    private $booted = false;
 
     public function __construct()
     {
         $this->container = ContainerBuilder::buildDevContainer();
+
+        $this->bind(Application::class, $this);
     }
 
     public function bind($key, $value)
@@ -57,5 +62,46 @@ class Application implements ContainerInterface
     public function has($id)
     {
         return $this->container->has($id);
+    }
+
+    public function register(ServiceProvider $provider)
+    {
+        $provider->register($this);
+
+        $this->loadedProviders[] = $provider;
+
+        if ($this->booted) {
+            $this->bootProvider($provider);
+        }
+    }
+
+    public function getLoadedProviders()
+    {
+        return $this->loadedProviders;
+    }
+
+    public function boot()
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        foreach ($this->loadedProviders as $provider) {
+            $this->bootProvider($provider);
+        }
+
+        $this->booted = true;
+    }
+
+    private function bootProvider(ServiceProvider $provider)
+    {
+        if (method_exists($provider, 'boot')) {
+            $this->container->call([$provider, 'boot']);
+        }
+    }
+
+    public function isBooted()
+    {
+        return $this->booted;
     }
 }

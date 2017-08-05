@@ -3,46 +3,29 @@
 namespace Rareloop\Lumberjack\Http;
 
 use DI\ContainerBuilder;
+use Rareloop\Lumberjack\Application;
 
 abstract class Kernal
 {
-    private $basePath;
-    protected $container;
-    private $config;
-    private $router;
+    private $app;
 
-    public function __construct(string $basePath)
+    private $bootstrappers = [
+        // LoadConfig
+        // RegisterServiceProviders
+        // BootProviders
+    ];
+
+    public function __construct(Application $app)
     {
-        $this->basePath = $basePath;
+        $this->app = $app;
 
-        // Setup DI Container
-        $this->container = ContainerBuilder::buildDevContainer();
+        add_action('after_theme_setup', [$this, 'bootstrap']);
 
-        // Load Config
-        $this->config = new Config($this->getConfigPath());
-        $this->container->set('config', $this->config);
-
-        // Load Router
-        $this->createRouter();
-
-        // Register Service Providers
-        $this->registerServiceProviders();
-
-        // Boot Service Providers
+        // $this->addBootstrappersToContainer()
     }
 
-    private function createRouter()
+    public function bootstrap()
     {
-        $this->router = new Router($this->container);
-    }
-
-    private function registerServiceProviders()
-    {
-
-    }
-
-    public function getConfigPath() : string
-    {
-        return $this->basePath . '/config';
+        // $this->app->bootstrapWith($this->bootstrappers);
     }
 }
