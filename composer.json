@@ -1,0 +1,24 @@
+{
+    "name": "rareloop/lumberjack",
+    "require": {
+        "php-di/php-di": "^5.4.1",
+        "rareloop/router": "dev-di",
+        "tightenco/collect": "^5.4",
+        "symfony/finder": "^3.3",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rareloop\\Lumberjack\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rareloop\\Lumberjack\\Test\\": "tests"
+        }
+    }
+}
