@@ -4,15 +4,18 @@ namespace Rareloop\Lumberjack\Http;
 
 use DI\ContainerBuilder;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Bootstrappers\BootProviders;
+use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
+use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 
 abstract class Kernal
 {
     private $app;
 
-    private $bootstrappers = [
-        // LoadConfig
-        // RegisterServiceProviders
-        // BootProviders
+    protected $bootstrappers = [
+        LoadConfiguration::class,
+        RegisterProviders::class,
+        BootProviders::class,
     ];
 
     public function __construct(Application $app)
@@ -20,12 +23,15 @@ abstract class Kernal
         $this->app = $app;
 
         add_action('after_theme_setup', [$this, 'bootstrap']);
-
-        // $this->addBootstrappersToContainer()
     }
 
     public function bootstrap()
     {
-        // $this->app->bootstrapWith($this->bootstrappers);
+        $this->app->bootstrapWith($this->bootstrappers());
+    }
+
+    protected function bootstrappers()
+    {
+        return $this->bootstrappers;
     }
 }

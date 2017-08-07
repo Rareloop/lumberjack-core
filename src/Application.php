@@ -3,20 +3,50 @@
 namespace Rareloop\Lumberjack;
 
 use DI\ContainerBuilder;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Rareloop\Lumberjack\ServiceProvider;
 
-class Application implements ContainerInterface
+class Application implements ContainerInterface, InteropContainerInterface
 {
     private $container;
     private $loadedProviders = [];
     private $booted = false;
+    private $basePath;
 
-    public function __construct()
+    public function __construct($basePath = false)
     {
         $this->container = ContainerBuilder::buildDevContainer();
 
         $this->bind(Application::class, $this);
+
+        if ($basePath) {
+            $this->setBasePath($basePath);
+        }
+    }
+
+    public function setBasePath(string $basePath)
+    {
+        $this->basePath = $basePath;
+
+        $this->bindPathsInContainer();
+    }
+
+    protected function bindPathsInContainer()
+    {
+        $this->bind('path.base', $this->basePath());
+        $this->bind('path.config', $this->configPath());
+    }
+
+    public function basePath()
+    {
+        return $this->basePath;
+    }
+
+    public function configPath()
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'config';
     }
 
     public function bind($key, $value)
@@ -66,6 +96,14 @@ class Application implements ContainerInterface
 
     public function register($provider)
     {
+        if ($foundProvider = $this->getProvider($provider)) {
+            return $foundProvider;
+        }
+
+        if (is_string($provider)) {
+            $provider = new $provider;
+        }
+
         if (method_exists($provider, 'register')) {
             $provider->register($this);
         }
@@ -75,6 +113,17 @@ class Application implements ContainerInterface
         if ($this->booted) {
             $this->bootProvider($provider);
         }
+
+        return $provider;
+    }
+
+    public function getProvider($provider)
+    {
+        $providerClass = is_string($provider) ? $provider : get_class($provider);
+
+        return (new Collection($this->loadedProviders))->first(function ($provider) use ($providerClass) {
+            return get_class($provider) === $providerClass;
+        });
     }
 
     public function getLoadedProviders()
@@ -105,5 +154,12 @@ class Application implements ContainerInterface
     public function isBooted()
     {
         return $this->booted;
+    }
+
+    public function bootstrapWith(array $bootstrappers)
+    {
+        foreach ($bootstrappers as $bootstrapper) {
+            $this->make($bootstrapper)->bootstrap($this);
+        }
     }
 }

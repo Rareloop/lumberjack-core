@@ -2,13 +2,32 @@
 
 namespace Rareloop\Lumberjack\Test;
 
+use Mockery;
+use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Mockery;
 
 class ApplicationTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+    /** @test */
+    public function base_path_is_set_in_container_when_basepath_passed_to_constructor()
+    {
+        $app = new Application('/base/path');
+
+        $this->assertSame('/base/path', $app->basePath());
+        $this->assertSame('/base/path', $app->get('path.base'));
+    }
+
+    /** @test */
+    public function config_path_is_set_in_container_when_basepath_passed_to_constructor()
+    {
+        $app = new Application('/base/path');
+
+        $this->assertSame('/base/path/config', $app->configPath());
+        $this->assertSame('/base/path/config', $app->get('path.config'));
+    }
 
     /** @test */
     public function can_bind_a_value()
@@ -127,22 +146,80 @@ class ApplicationTest extends TestCase
     public function can_register_a_service_provider()
     {
         $app = new Application;
-        $provider = new TestServiceProvider;
-        $app->register($provider);
+        $app->register(TestServiceProvider::class);
 
         $providers = $app->getLoadedProviders();
 
-        $this->assertContains($provider, $providers);
+        $this->assertSame(1, count($providers));
+        $this->assertInstanceOf(TestServiceProvider::class, $providers[0]);
+    }
+
+    /** @test */
+    public function registered_service_provider_is_returned_by_register()
+    {
+        $app = new Application;
+
+        $provider = $app->register(TestServiceProvider::class);
+
+        $this->assertInstanceOf(TestServiceProvider::class, $provider);
+    }
+
+    /** @test */
+    public function can_retrieve_a_registered_service_provider()
+    {
+        $app = new Application;
+
+        $provider = $app->register(TestServiceProvider::class);
+
+        $this->assertInstanceOf(TestServiceProvider::class, $app->getProvider(TestServiceProvider::class));
+        $this->assertSame($provider, $app->getProvider(TestServiceProvider::class));
+    }
+
+    /** @test */
+    public function can_retrieve_a_registered_service_provider_by_object()
+    {
+        $app = new Application;
+
+        $provider = $app->register(TestServiceProvider::class);
+
+        $this->assertInstanceOf(TestServiceProvider::class, $app->getProvider($provider));
+        $this->assertSame($provider, $app->getProvider($provider));
+    }
+
+    /** @test */
+    public function can_not_register_the_same_service_provider_twice()
+    {
+        $app = new Application;
+
+        $provider1 = $app->register(TestServiceProvider::class);
+        $provider2 = $app->register(TestServiceProvider::class);
+
+        $providers = $app->getLoadedProviders();
+
+        $this->assertSame(1, count($providers));
+        $this->assertInstanceOf(TestServiceProvider::class, $providers[0]);
+        $this->assertSame($provider1, $provider2);
     }
 
     /** @test */
     public function service_providers_without_register_functions_dont_cause_an_exception()
     {
         $app = new Application;
-        $provider = new EmptyServiceProvider;
-        $app->register($provider);
+        $app->register(EmptyServiceProvider::class);
 
         $this->addToAssertionCount(1);  // does not throw an exception
+    }
+
+    /** @test */
+    public function can_register_service_provider_from_an_object()
+    {
+        $app = new Application;
+        $app->register(new TestServiceProvider);
+
+        $providers = $app->getLoadedProviders();
+
+        $this->assertSame(1, count($providers));
+        $this->assertInstanceOf(TestServiceProvider::class, $providers[0]);
     }
 
     /** @test */
@@ -231,6 +308,52 @@ class ApplicationTest extends TestCase
 
         $this->assertTrue($app->isBooted());
     }
+
+    /** @test */
+    public function can_bootstrap_the_app_with_an_array_of_bootstrappers()
+    {
+        $app = new Application;
+        $count = 0;
+        $tester = new BootstrapperBootstrapTester(function () use (&$count) {
+            $count++;
+        });
+        $app->bind(BootstrapperBootstrapTester::class, $tester);
+
+        $app->bootstrapWith([TestBootstrapper1::class, TestBootstrapper2::class]);
+
+        $this->assertSame(2, $count);
+    }
+}
+
+class BootstrapperBootstrapTester
+{
+    public function __construct($callback)
+    {
+        $this->callback = $callback;
+    }
+}
+
+abstract class TestBootstrapperBase
+{
+    public function __construct(BootstrapperBootstrapTester $tester)
+    {
+        $this->tester = $tester;
+    }
+
+    public function bootstrap(Application $app)
+    {
+        call_user_func($this->tester->callback);
+    }
+}
+
+class TestBootstrapper1 extends TestBootstrapperBase
+{
+
+}
+
+class TestBootstrapper2 extends TestBootstrapperBase
+{
+
 }
 
 interface TestInterface
