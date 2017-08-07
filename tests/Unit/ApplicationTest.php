@@ -100,6 +100,18 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function can_make_a_class_that_has_not_been_registered()
+    {
+        $app = new Application;
+        $app->bind(TestInterface::class, TestInterfaceImplementation::class);
+
+        $object = $app->make(NotRegisteredInContainer::class);
+
+        $this->assertInstanceOf(NotRegisteredInContainer::class, $object);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object->param);
+    }
+
+    /** @test */
     public function make_produces_unique_instances_of_the_bound_object()
     {
         $app = new Application;
@@ -266,5 +278,15 @@ class TestBootServiceProvider
 
     public function addBootCallback(\Closure $callback) {
         $this->bootCallback = $callback;
+    }
+}
+
+class NotRegisteredInContainer
+{
+    public $param;
+
+    public function __construct(TestInterface $test)
+    {
+        $this->param = $test;
     }
 }
