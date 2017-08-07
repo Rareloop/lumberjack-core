@@ -4,7 +4,6 @@ namespace Rareloop\Lumberjack\Test;
 
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\ServiceProvider;
 use Mockery;
 
 class ApplicationTest extends TestCase
@@ -125,13 +124,13 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function service_provider_must_implement_correct_contract()
+    public function service_providers_without_register_functions_dont_cause_an_exception()
     {
-        $this->expectException(\TypeError::class);
-
         $app = new Application;
-        $provider = new \StdClass;
+        $provider = new EmptyServiceProvider;
         $app->register($provider);
+
+        $this->addToAssertionCount(1);  // does not throw an exception
     }
 
     /** @test */
@@ -242,13 +241,18 @@ class TestSubInterfaceImplementation implements TestSubInterface
 
 }
 
-class TestServiceProvider implements ServiceProvider
+class TestServiceProvider
 {
     public function register(Application $app) {}
     public function boot() {}
 }
 
-class TestBootServiceProvider implements ServiceProvider
+class EmptyServiceProvider
+{
+
+}
+
+class TestBootServiceProvider
 {
     private $bootCallback;
 

@@ -64,9 +64,11 @@ class Application implements ContainerInterface
         return $this->container->has($id);
     }
 
-    public function register(ServiceProvider $provider)
+    public function register($provider)
     {
-        $provider->register($this);
+        if (method_exists($provider, 'register')) {
+            $provider->register($this);
+        }
 
         $this->loadedProviders[] = $provider;
 
@@ -93,7 +95,7 @@ class Application implements ContainerInterface
         $this->booted = true;
     }
 
-    private function bootProvider(ServiceProvider $provider)
+    private function bootProvider($provider)
     {
         if (method_exists($provider, 'boot')) {
             $this->container->call([$provider, 'boot']);
