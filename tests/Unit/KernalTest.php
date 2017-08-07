@@ -10,11 +10,14 @@ use Rareloop\Lumberjack\Http\Kernal;
 
 class KernalTest extends TestCase
 {
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         Monkey\setUp();
     }
-    public function tearDown() {
+
+    public function tearDown()
+    {
         parent::tearDown();
         Monkey\tearDown();
     }
