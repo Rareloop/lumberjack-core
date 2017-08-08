@@ -6,6 +6,7 @@ use DI\ContainerBuilder;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
+use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 
 class Kernal
@@ -14,6 +15,7 @@ class Kernal
 
     protected $bootstrappers = [
         LoadConfiguration::class,
+        RegisterFacades::class,
         RegisterProviders::class,
         BootProviders::class,
     ];

@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
+use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Http\Kernal;
 
@@ -44,6 +45,7 @@ class KernalTest extends TestCase
         $app = Mockery::mock(Application::class.'[bootstrapWith]');
         $app->shouldReceive('bootstrapWith')->with([
             LoadConfiguration::class,
+            RegisterFacades::class,
             RegisterProviders::class,
             BootProviders::class,
         ])->once();
