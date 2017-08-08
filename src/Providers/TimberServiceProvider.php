@@ -14,10 +14,12 @@ class TimberServiceProvider
         $app->bind('timber', $timber);
         $app->bind(Timber::class, $timber);
 
-        $paths = $app->get('config')->get('timber.paths');
+        if ($app->has('config')) {
+            $paths = $app->get('config')->get('timber.paths');
 
-        if ($paths) {
-            Timber::$dirname = $paths;
+            if ($paths) {
+                Timber::$dirname = $paths;
+            }
         }
     }
 }
