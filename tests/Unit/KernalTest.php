@@ -33,7 +33,7 @@ class KernalTest extends TestCase
     {
         $app = new Application();
 
-        $kernal = new TestKernal($app);
+        $kernal = new Kernal($app);
 
         $this->assertTrue(has_action('after_theme_setup', [$kernal, 'bootstrap']));
     }
@@ -48,9 +48,7 @@ class KernalTest extends TestCase
             BootProviders::class,
         ])->once();
 
-        $kernal = new TestKernal($app);
+        $kernal = new Kernal($app);
         $kernal->bootstrap();
     }
 }
-
-class TestKernal extends Kernal {}

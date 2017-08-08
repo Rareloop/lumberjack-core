@@ -8,7 +8,7 @@ use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 
-abstract class Kernal
+class Kernal
 {
     private $app;
 
