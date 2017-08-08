@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Facades;
 
 use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
