@@ -30,6 +30,15 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function logs_path_is_set_in_container_when_basepath_passed_to_constructor()
+    {
+        $app = new Application('/base/path');
+
+        $this->assertSame('/base/path/logs', $app->logsPath());
+        $this->assertSame('/base/path/logs', $app->get('path.logs'));
+    }
+
+    /** @test */
     public function can_bind_a_value()
     {
         $app = new Application;
