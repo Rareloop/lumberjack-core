@@ -12,22 +12,11 @@ use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Http\Kernal;
+use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class KernalTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
-    public function setUp()
-    {
-        parent::setUp();
-        Monkey\setUp();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-        Monkey\tearDown();
-    }
+    use BrainMonkeyPHPUnitIntegration;
 
     /** @test */
     public function creating_kernal_should_bind_action_to_after_theme_setup_action()
