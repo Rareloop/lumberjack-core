@@ -9,7 +9,7 @@ use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 
-class Kernal
+class Lumberjack
 {
     private $app;
 

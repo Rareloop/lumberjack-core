@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
-use Rareloop\Lumberjack\Http\Kernal;
+use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class LogServiceProviderTest extends TestCase
@@ -18,9 +18,9 @@ class LogServiceProviderTest extends TestCase
     public function log_object_is_always_registered()
     {
         $app = new Application(__DIR__.'/../');
-        $kernal = new Kernal($app);
+        $lumberjack = new Lumberjack($app);
 
-        $kernal->bootstrap();
+        $lumberjack->bootstrap();
 
         $this->assertTrue($app->has('logger'));
         $this->assertSame($app->get('logger'), $app->get(Logger::class));

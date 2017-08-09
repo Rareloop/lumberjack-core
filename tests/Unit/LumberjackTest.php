@@ -11,19 +11,19 @@ use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
-use Rareloop\Lumberjack\Http\Kernal;
+use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
-class KernalTest extends TestCase
+class LumberjackTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
     /** @test */
-    public function creating_kernal_should_bind_action_to_after_theme_setup_action()
+    public function creating_lumberjack_should_bind_action_to_after_theme_setup_action()
     {
         $app = new Application();
 
-        $kernal = new Kernal($app);
+        $kernal = new Lumberjack($app);
 
         $this->assertTrue(has_action('after_theme_setup', [$kernal, 'bootstrap']));
     }
@@ -39,7 +39,7 @@ class KernalTest extends TestCase
             BootProviders::class,
         ])->once();
 
-        $kernal = new Kernal($app);
+        $kernal = new Lumberjack($app);
         $kernal->bootstrap();
     }
 }

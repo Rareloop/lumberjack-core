@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
-use Rareloop\Lumberjack\Http\Kernal;
+use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Providers\TimberServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Timber\Timber;
@@ -20,10 +20,10 @@ class TimberServiceProviderTest extends TestCase
     public function timber_plugin_is_initialiased()
     {
         $app = new Application(__DIR__.'/../');
-        $kernal = new Kernal($app);
+        $lumberjack = new Lumberjack($app);
 
         $app->register(new TimberServiceProvider);
-        $kernal->bootstrap();
+        $lumberjack->bootstrap();
 
         $this->assertTrue($app->has('timber'));
         $this->assertSame($app->get('timber'), $app->get(Timber::class));
