@@ -6,7 +6,9 @@ use DI\ContainerBuilder;
 use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\ServiceProvider;
+use function Http\Response\send;
 
 class Application implements ContainerInterface, InteropContainerInterface
 {
@@ -167,5 +169,14 @@ class Application implements ContainerInterface, InteropContainerInterface
         foreach ($bootstrappers as $bootstrapper) {
             $this->make($bootstrapper)->bootstrap($this);
         }
+    }
+
+    public function shutdown(ResponseInterface $response = null)
+    {
+        if ($response) {
+            send($response);
+        }
+
+        wp_die();
     }
 }
