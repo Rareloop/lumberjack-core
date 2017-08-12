@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\ImageSizesServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
-class ImageSizesTest extends TestCase
+class ImageSizesServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
