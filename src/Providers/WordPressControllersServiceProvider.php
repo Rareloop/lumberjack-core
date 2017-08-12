@@ -9,14 +9,10 @@ use Rareloop\Router\ResponseFactory;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class WordPressControllersServiceProvider
+class WordPressControllersServiceProvider extends ServiceProvider
 {
-    private $app;
-
-    public function boot(Application $app)
+    public function boot()
     {
-        $this->app = $app;
-
         add_filter('template_include', [$this, 'handleTemplateInclude']);
     }
 

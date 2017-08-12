@@ -23,7 +23,7 @@ class RouterServiceProviderTest extends TestCase
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
 
-        $app->register(new RouterServiceProvider);
+        $app->register(new RouterServiceProvider($app));
         $lumberjack->bootstrap();
 
         $this->assertTrue($app->has('router'));
@@ -35,7 +35,7 @@ class RouterServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
-        $provider = new RouterServiceProvider;
+        $provider = new RouterServiceProvider($app);
 
         $app->register($provider);
         $lumberjack->bootstrap();
@@ -51,7 +51,7 @@ class RouterServiceProviderTest extends TestCase
         $app->shouldReceive('shutdown')->times(0)->with($response);
 
         $lumberjack = new Lumberjack($app);
-        $provider = new RouterServiceProvider;
+        $provider = new RouterServiceProvider($app);
 
         $app->register($provider);
         $lumberjack->bootstrap();

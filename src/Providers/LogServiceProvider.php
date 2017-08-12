@@ -6,19 +6,15 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Rareloop\Lumberjack\Application;
 
-class LogServiceProvider
+class LogServiceProvider extends ServiceProvider
 {
-    private $app;
-
-    public function register(Application $app)
+    public function register()
     {
-        $this->app = $app;
-
         $logger = new Logger('app');
-        $logger->pushHandler(new StreamHandler($app->logsPath(), $this->getLogLevel()));
+        $logger->pushHandler(new StreamHandler($this->app->logsPath(), $this->getLogLevel()));
 
-        $app->bind('logger', $logger);
-        $app->bind(Logger::class, $logger);
+        $this->app->bind('logger', $logger);
+        $this->app->bind(Logger::class, $logger);
     }
 
     private function getLogLevel()

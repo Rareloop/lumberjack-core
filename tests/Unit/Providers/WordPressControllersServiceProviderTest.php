@@ -21,7 +21,7 @@ class WordPressControllersServiceProviderTest extends TestCase
     public function template_include_filter_is_applied_on_boot()
     {
         $app = new Application(__DIR__.'/../');
-        $provider = new WordPressControllersServiceProvider;
+        $provider = new WordPressControllersServiceProvider($app);
 
         $app->register($provider);
         $app->boot();
@@ -32,9 +32,11 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_template_include_method_includes_the_requested_file()
     {
+        $app = new Application(__DIR__.'/../');
+
         $this->assertNotContains(__DIR__ . '/includes/single.php', get_included_files());
 
-        $provider = new WordPressControllersServiceProvider;
+        $provider = new WordPressControllersServiceProvider($app);
         $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
 
         $this->assertContains(__DIR__ . '/includes/single.php', get_included_files());
@@ -43,7 +45,8 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function can_get_name_of_controller_from_template()
     {
-        $provider = new WordPressControllersServiceProvider;
+        $app = new Application(__DIR__.'/../');
+        $provider = new WordPressControllersServiceProvider($app);
 
         $mappings = [
             'Theme\\SingleController' => __DIR__ . '/includes/single.php',
@@ -59,7 +62,8 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_returns_false_if_controller_does_not_exist()
     {
-        $provider = new WordPressControllersServiceProvider;
+        $app = new Application(__DIR__.'/../');
+        $provider = new WordPressControllersServiceProvider($app);
 
         $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
 
@@ -71,7 +75,7 @@ class WordPressControllersServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__.'/../');
 
-        $provider = new WordPressControllersServiceProvider;
+        $provider = new WordPressControllersServiceProvider($app);
         $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
@@ -86,7 +90,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
         $app->shouldReceive('shutdown')->times(1)->with($response);
 
-        $provider = Mockery::mock(WordPressControllersServiceProvider::class.'[handleRequest]');
+        $provider = Mockery::mock(WordPressControllersServiceProvider::class.'[handleRequest]', [$app]);
         $provider->shouldReceive('handleRequest')->once()->andReturn($response);
         $provider->boot($app);
 
@@ -99,7 +103,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
         $app->shouldReceive('shutdown')->times(0);
 
-        $provider = Mockery::mock(WordPressControllersServiceProvider::class.'[handleRequest]');
+        $provider = Mockery::mock(WordPressControllersServiceProvider::class.'[handleRequest]', [$app]);
         $provider->shouldReceive('handleRequest')->once()->andReturn(false);
         $provider->boot($app);
 

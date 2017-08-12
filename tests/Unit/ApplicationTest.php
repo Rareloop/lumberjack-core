@@ -6,6 +6,7 @@ use Mockery;
 use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Providers\ServiceProvider;
 
 class ApplicationTest extends TestCase
 {
@@ -223,7 +224,7 @@ class ApplicationTest extends TestCase
     public function can_register_service_provider_from_an_object()
     {
         $app = new Application;
-        $app->register(new TestServiceProvider);
+        $app->register(new TestServiceProvider($app));
 
         $providers = $app->getLoadedProviders();
 
@@ -235,8 +236,8 @@ class ApplicationTest extends TestCase
     public function registered_service_providers_have_their_register_function_called()
     {
         $app = new Application;
-        $provider = Mockery::mock(TestServiceProvider::class);
-        $provider->shouldReceive('register')->once()->with($app);
+        $provider = Mockery::mock(TestServiceProvider::class, [$app]);
+        $provider->shouldReceive('register')->once();
 
         $app->register($provider);
     }
@@ -245,7 +246,7 @@ class ApplicationTest extends TestCase
     public function calling_boot_on_app_should_call_boot_on_all_registered_service_providers()
     {
         $app = new Application;
-        $provider = Mockery::mock(new TestServiceProvider);
+        $provider = Mockery::mock(TestServiceProvider::class, [$app]);
         $provider->shouldReceive('register');
         $provider->shouldReceive('boot')->once();
         $app->register($provider);
@@ -257,7 +258,7 @@ class ApplicationTest extends TestCase
     public function calling_boot_multiple_times_should_not_fire_boot_on_service_providers_more_than_once()
     {
         $app = new Application;
-        $provider = Mockery::mock(new TestServiceProvider);
+        $provider = Mockery::mock(TestServiceProvider::class, [$app]);
         $provider->shouldReceive('register');
         $provider->shouldReceive('boot')->once();
         $app->register($provider);
@@ -271,7 +272,7 @@ class ApplicationTest extends TestCase
     {
         $app = new Application;
         $app->bind(TestInterface::class, TestInterfaceImplementation::class);
-        $provider = new TestBootServiceProvider;
+        $provider = new TestBootServiceProvider($app);
         $count = 0;
 
         $provider->addBootCallback(function (array $args) use (&$count, $app) {
@@ -292,7 +293,7 @@ class ApplicationTest extends TestCase
     public function services_registered_after_boot_should_have_their_boot_method_called_straight_away()
     {
         $app = new Application;
-        $provider = Mockery::mock(new TestServiceProvider);
+        $provider = Mockery::mock(TestServiceProvider::class, [$app]);
         $provider->shouldReceive('register');
         $provider->shouldReceive('boot')->once();
 
@@ -385,22 +386,22 @@ class TestSubInterfaceImplementation implements TestSubInterface
 
 }
 
-class TestServiceProvider
+class TestServiceProvider extends ServiceProvider
 {
-    public function register(Application $app) {}
+    public function register() {}
     public function boot() {}
 }
 
-class EmptyServiceProvider
+class EmptyServiceProvider extends ServiceProvider
 {
 
 }
 
-class TestBootServiceProvider
+class TestBootServiceProvider extends ServiceProvider
 {
     private $bootCallback;
 
-    public function register(Application $app) {}
+    public function register() {}
 
     public function boot(Application $app, TestInterface $test) {
         if (isset($this->bootCallback)) {

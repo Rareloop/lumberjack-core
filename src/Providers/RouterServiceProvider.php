@@ -6,18 +6,14 @@ use Psr\Http\Message\RequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Router\Router;
 
-class RouterServiceProvider
+class RouterServiceProvider extends ServiceProvider
 {
-    protected $app;
-
-    public function register(Application $app)
+    public function register()
     {
-        $this->app = $app;
+        $router = new Router($this->app);
 
-        $router = new Router($app);
-
-        $app->bind('router', $router);
-        $app->bind(Router::class, $router);
+        $this->app->bind('router', $router);
+        $this->app->bind(Router::class, $router);
 
         add_action('wp_loaded', function () {
             $request = ServerRequestFactory::fromGlobals(

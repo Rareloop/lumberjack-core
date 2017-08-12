@@ -8,6 +8,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Providers\ServiceProvider;
 
 class RegisterProvidersTest extends TestCase
 {
@@ -18,10 +19,10 @@ class RegisterProvidersTest extends TestCase
     {
         $app = new Application;
 
-        $provider1 = Mockery::mock(new RPTestServiceProvider1);
-        $provider1->shouldReceive('register')->with($app)->once();
-        $provider2 = Mockery::mock(new RPTestServiceProvider2);
-        $provider2->shouldReceive('register')->with($app)->once();
+        $provider1 = Mockery::mock(RPTestServiceProvider1::class, [$app]);
+        $provider1->shouldReceive('register')->once();
+        $provider2 = Mockery::mock(RPTestServiceProvider2::class, [$app]);
+        $provider2->shouldReceive('register')->once();
 
         $config = new Config;
         $config->set('app.providers', [
@@ -49,12 +50,12 @@ class RegisterProvidersTest extends TestCase
     }
 }
 
-class RPTestServiceProvider1
+class RPTestServiceProvider1 extends ServiceProvider
 {
     public function register() {}
 }
 
-class RPTestServiceProvider2
+class RPTestServiceProvider2 extends ServiceProvider
 {
     public function register() {}
 }

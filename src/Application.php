@@ -109,11 +109,11 @@ class Application implements ContainerInterface, InteropContainerInterface
         }
 
         if (is_string($provider)) {
-            $provider = new $provider;
+            $provider = new $provider($this);
         }
 
         if (method_exists($provider, 'register')) {
-            $provider->register($this);
+            $provider->register();
         }
 
         $this->loadedProviders[] = $provider;

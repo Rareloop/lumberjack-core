@@ -22,7 +22,7 @@ class TimberServiceProviderTest extends TestCase
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
 
-        $app->register(new TimberServiceProvider);
+        $app->register(new TimberServiceProvider($app));
         $lumberjack->bootstrap();
 
         $this->assertTrue($app->has('timber'));
@@ -47,7 +47,7 @@ class TimberServiceProviderTest extends TestCase
             RegisterProviders::class,
         ]);
 
-        $app->register(new TimberServiceProvider);
+        $app->register(new TimberServiceProvider($app));
 
         $this->assertTrue($app->has('timber'));
         $this->assertSame([
