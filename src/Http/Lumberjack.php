@@ -23,8 +23,6 @@ class Lumberjack
     public function __construct(Application $app)
     {
         $this->app = $app;
-
-        add_action('after_theme_setup', [$this, 'bootstrap']);
     }
 
     public function bootstrap()

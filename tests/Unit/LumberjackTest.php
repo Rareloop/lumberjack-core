@@ -16,17 +16,7 @@ use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class LumberjackTest extends TestCase
 {
-    use BrainMonkeyPHPUnitIntegration;
-
-    /** @test */
-    public function creating_lumberjack_should_bind_action_to_after_theme_setup_action()
-    {
-        $app = new Application();
-
-        $kernal = new Lumberjack($app);
-
-        $this->assertTrue(has_action('after_theme_setup', [$kernal, 'bootstrap']));
-    }
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
     /** @test */
     public function bootstrap_should_pass_bootstrappers_to_app()
