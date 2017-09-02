@@ -11,6 +11,10 @@ class MenusServiceProvider extends ServiceProvider
     {
         add_theme_support('menus');
 
-        register_nav_menus($config->get('menus.menus', []));
+        $menus = $config->get('menus.menus', []);
+
+        if (count($menus)) {
+            register_nav_menus($menus);
+        }
     }
 }
