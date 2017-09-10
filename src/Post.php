@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
 use Timber\Post as TimberPost;
+use Timber\Timber;
 
 class Post extends TimberPost
 {
@@ -16,7 +17,7 @@ class Post extends TimberPost
      */
     public static function getPostType()
     {
-        return null;
+        return 'post';
     }
 
     /**
@@ -36,7 +37,7 @@ class Post extends TimberPost
         $postType = static::getPostType();
         $config = static::getPostTypeConfig();
 
-        if (empty($postType)) {
+        if (empty($postType) || $postType === 'post') {
             throw new PostTypeRegistrationException('Post type not set');
         }
 
@@ -45,5 +46,58 @@ class Post extends TimberPost
         }
 
         register_post_type($postType, $config);
+    }
+
+    /**
+     * Get all posts of this type
+     *
+     * @param  integer $perPage The number of items to return (defaults to all)
+     * @return Illuminate\Support\Collection
+     */
+    public static function all($perPage = -1, $orderby = 'menu_order', $order = 'ASC')
+    {
+        $order = strtoupper($order);
+
+        $args = [
+            'posts_per_page' => $perPage,
+            'orderby'       => $orderby,
+            'order'         => $order,
+        ];
+
+        return static::posts($args);
+    }
+
+
+    /**
+     * Convenience function that takes a standard set of WP_Query arguments but mixes it with
+     * arguments that mean we're selecting the right post type
+     *
+     * @param  array $args standard WP_Query array
+     * @return Illuminate\Support\Collection
+     */
+    public static function query($args = null)
+    {
+        $args = is_array($args) ? $args : [];
+
+        // Set the correct post type
+        $args = array_merge($args, ['post_type' => static::getPostType()]);
+
+        if (!isset($args['post_status'])) {
+            $args['post_status'] = 'publish';
+        }
+
+        return static::posts($args);
+    }
+
+    /**
+     * Raw query function that uses the arguments provided to make a call to Timber::get_posts
+     * and casts the returning data in instances of ourself.
+     *
+     * @param  array $args standard WP_Query array
+     * @return Illuminate\Support\Collection
+     */
+    private static function posts($args = null)
+    {
+        return collect(Timber::get_posts($args, get_called_class()));
     }
 }

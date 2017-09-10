@@ -3,9 +3,12 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Brain\Monkey\Functions;
+use Illuminate\Support\Collection;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Timber\Timber;
 
 class PostTest extends TestCase
 {
@@ -37,6 +40,154 @@ class PostTest extends TestCase
     public function register_function_throws_exception_if_config_is_not_provided()
     {
         UnregisterablePostTypeWithoutConfig::register();
+    }
+
+    /**
+     * @test
+     */
+    public function query_defaults_to_current_post_type_and_published()
+    {
+        $args = [
+            'posts_per_page' => 10,
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            array_merge($args, [
+                'post_type' => Post::getPostType(),
+                'post_status' => 'publish',
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::query($args);
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function query_ignores_passed_in_post_type()
+    {
+        $args = [
+            'posts_per_page' => 10,
+            'post_type' => 'something-else',
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            array_merge($args, [
+                'post_type' => Post::getPostType(),
+                'post_status' => 'publish',
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::query($args);
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function post_subclass_query_has_correct_post_type()
+    {
+        $args = [
+            'posts_per_page' => 10,
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'post_type' => RegisterablePostType::getPostType(),
+            ]),
+            RegisterablePostType::class,
+        ])->once();
+
+        $posts = RegisterablePostType::query($args);
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function query_can_have_post_status_overwritten()
+    {
+        $args = [
+            'post_status' => ['draft', 'publish'],
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'post_status' => ['draft', 'publish'],
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::query($args);
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function all_defaults_to_unlimited_ordered_by_menu_order_ascending()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'posts_per_page' => -1,
+                'orderby' => 'menu_order',
+                'order' => 'ASC',
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::all();
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function all_can_have_post_limit_set()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'posts_per_page' => 10,
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::all(10);
+
+        $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    /**
+     * @test
+     */
+    public function all_can_have_order_set()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'orderby' => 'date',
+                'order' => 'DESC',
+            ]),
+            Post::class,
+        ])->once();
+
+        $posts = Post::all(-1, 'date', 'DESC');
+
+        $this->assertInstanceOf(Collection::class, $posts);
     }
 }
 
