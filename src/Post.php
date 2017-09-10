@@ -13,7 +13,7 @@ class Post extends TimberPost
      * First parameter of the `register_post_type` function:
      * https://codex.wordpress.org/Function_Reference/register_post_type
      *
-     * @return string|null
+     * @return string
      */
     public static function getPostType()
     {
