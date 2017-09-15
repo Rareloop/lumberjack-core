@@ -141,6 +141,23 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function can_make_a_class_with_additional_params_for_the_constructor()
+    {
+        $app = new Application;
+        $app->bind(TestInterface::class, TestInterfaceImplementation::class);
+
+        $object = $app->make(RequiresAdditionalConstructorParams::class, [
+            'param1' => 123,
+            'param2' => 'abc',
+        ]);
+
+        $this->assertInstanceOf(RequiresAdditionalConstructorParams::class, $object);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object->param);
+        $this->assertSame(123, $object->param1);
+        $this->assertSame('abc', $object->param2);
+    }
+
+    /** @test */
     public function make_produces_unique_instances_of_the_bound_object()
     {
         $app = new Application;
@@ -421,5 +438,19 @@ class NotRegisteredInContainer
     public function __construct(TestInterface $test)
     {
         $this->param = $test;
+    }
+}
+
+class RequiresAdditionalConstructorParams
+{
+    public $param;
+    public $param1;
+    public $param2;
+
+    public function __construct(TestInterface $test, $param1, $param2)
+    {
+        $this->param = $test;
+        $this->param1 = $param1;
+        $this->param2 = $param2;
     }
 }

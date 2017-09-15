@@ -66,9 +66,9 @@ class Application implements ContainerInterface, InteropContainerInterface
         $this->container->set($key, $value);
     }
 
-    public function make($key)
+    public function make($key, array $params = [])
     {
-        return $this->container->make($key);
+        return $this->container->make($key, $params);
     }
 
     /**
