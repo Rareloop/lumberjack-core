@@ -9,7 +9,7 @@ class TimberServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $timber = new Timber($this->app);
+        $timber = new Timber();
 
         $this->app->bind('timber', $timber);
         $this->app->bind(Timber::class, $timber);

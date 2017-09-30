@@ -10,6 +10,12 @@ use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Timber\Timber;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ * The above is required as we're using alias mocks which persist between tests
+ * https://laracasts.com/discuss/channels/testing/mocking-a-class-persists-over-tests/replies/103075
+ */
 class PostTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
