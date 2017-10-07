@@ -44,6 +44,22 @@ class RouterServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function request_object_is_bound_into_the_container()
+    {
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+        $app = new Application(__DIR__.'/../');
+        $lumberjack = new Lumberjack($app);
+        $provider = new RouterServiceProvider($app);
+
+        $app->register($provider);
+        $lumberjack->bootstrap();
+
+        $provider->processRequest($request);
+
+        $this->assertSame($request, $app->get('request'));
+    }
+
+    /** @test */
     public function unmatched_request_will_not_call_app_shutdown_method()
     {
         $response = new TextResponse('Testing 123', 404);

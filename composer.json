@@ -9,7 +9,8 @@
         "blast/facades": "^1.0",
         "timber/timber": "^1.4",
         "monolog/monolog": "^1.23",
-        "http-interop/response-sender": "^1.0"
+        "http-interop/response-sender": "^1.0",
+        "symfony/debug": "^3.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",

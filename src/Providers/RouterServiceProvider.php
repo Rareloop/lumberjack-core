@@ -30,6 +30,8 @@ class RouterServiceProvider extends ServiceProvider
 
     public function processRequest(RequestInterface $request)
     {
+        $this->app->bind('request', $request);
+
         $response = $this->app->get('router')->match($request);
 
         if ($response->getStatusCode() === 404) {
