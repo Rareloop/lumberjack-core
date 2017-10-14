@@ -2,11 +2,13 @@
 
 namespace Rareloop\Lumberjack\Bootstrappers;
 
+use Error;
 use ErrorException;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use function Http\Response\send;
 
 /**
@@ -33,6 +35,10 @@ class RegisterExceptionHandler
 
     public function handleException($e)
     {
+        if ($e instanceof Error) {
+            $e = new ErrorException($e->getMessage(), 0, null, $e->getFile(), $e->getLine());
+        }
+
         $handler = $this->getExceptionHandler();
         $handler->report($e);
         $this->send($handler->render($this->app->get('request'), $e));
@@ -40,7 +46,7 @@ class RegisterExceptionHandler
 
     public function send(ResponseInterface $response)
     {
-        send($response);
+        @send($response);
     }
 
     protected function getExceptionHandler() : HandlerInterface
