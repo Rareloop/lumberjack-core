@@ -38,6 +38,34 @@ class ImageSizesServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function add_image_size_should_not_be_called_if_images_sizes_config_is_empty()
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config;
+
+        $config->set('images.sizes', []);
+
+        Functions\expect('add_image_size')
+            ->times(0);
+
+        $provider = new ImageSizesServiceProvider($app);
+        $provider->boot($config);
+    }
+
+    /** @test */
+    public function add_image_size_should_not_be_called_if_images_sizes_config_is_not_set()
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config;
+
+        Functions\expect('add_image_size')
+            ->times(0);
+
+        $provider = new ImageSizesServiceProvider($app);
+        $provider->boot($config);
+    }
+
+    /** @test */
     public function crop_should_be_false_if_not_set()
     {
         $app = new Application(__DIR__ . '/..');

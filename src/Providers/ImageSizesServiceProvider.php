@@ -12,8 +12,10 @@ class ImageSizesServiceProvider extends ServiceProvider
     {
         $imageSizes = $config->get('images.sizes');
 
-        foreach ($imageSizes as $imageSize) {
-            add_image_size($imageSize['name'], $imageSize['width'], $imageSize['height'], $imageSize['crop'] ?? false);
+        if (is_array($imageSizes)) {
+            foreach ($imageSizes as $imageSize) {
+                add_image_size($imageSize['name'], $imageSize['width'], $imageSize['height'], $imageSize['crop'] ?? false);
+            }
         }
     }
 }
