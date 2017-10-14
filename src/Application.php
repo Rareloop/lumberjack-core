@@ -177,6 +177,6 @@ class Application implements ContainerInterface, InteropContainerInterface
             send($response);
         }
 
-        wp_die();
+        die();
     }
 }
