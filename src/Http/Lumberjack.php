@@ -6,6 +6,7 @@ use DI\ContainerBuilder;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
+use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 
@@ -15,6 +16,7 @@ class Lumberjack
 
     protected $bootstrappers = [
         LoadConfiguration::class,
+        RegisterExceptionHandler::class,
         RegisterFacades::class,
         RegisterProviders::class,
         BootProviders::class,
