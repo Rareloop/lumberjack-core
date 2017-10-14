@@ -42,7 +42,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $controllerName = studly_case(basename($template, '.php')).'Controller';
 
         $controllerName = apply_filters('lumberjack_controller_name', $controllerName);
-        $controllerNamespace = apply_filters('lumberjack_controller_namespace', 'Theme\\');
+        $controllerNamespace = apply_filters('lumberjack_controller_namespace', 'App\\');
 
         return $controllerNamespace.$controllerName;
     }

@@ -49,9 +49,9 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
 
         $mappings = [
-            'Theme\\SingleController' => __DIR__ . '/includes/single.php',
-            'Theme\\SingleEventsController' => __DIR__ . '/includes/single_events.php',
-            'Theme\\SingleRlEventsController' => __DIR__ . '/includes/single_rl_events.php',
+            'App\\SingleController' => __DIR__ . '/includes/single.php',
+            'App\\SingleEventsController' => __DIR__ . '/includes/single_events.php',
+            'App\\SingleRlEventsController' => __DIR__ . '/includes/single_rl_events.php',
         ];
 
         foreach ($mappings as $className => $template) {
