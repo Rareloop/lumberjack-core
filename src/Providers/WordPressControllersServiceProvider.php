@@ -6,6 +6,7 @@ use Psr\Http\Message\RequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Router\Invoker;
 use Rareloop\Router\ResponseFactory;
+use Stringy\Stringy;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -39,7 +40,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
     public function getControllerClassFromTemplate($template)
     {
-        $controllerName = studly_case(basename($template, '.php')).'Controller';
+        $controllerName = Stringy::create(basename($template, '.php'))->upperCamelize().'Controller';
 
         $controllerName = apply_filters('lumberjack_controller_name', $controllerName);
         $controllerNamespace = apply_filters('lumberjack_controller_namespace', 'App\\');
