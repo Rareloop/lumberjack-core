@@ -12,6 +12,7 @@ class RouterServiceProvider extends ServiceProvider
     public function register()
     {
         $router = new Router($this->app);
+        $router->setBasePath($this->getBasePathFromWPConfig());
 
         $this->app->bind('router', $router);
         $this->app->bind(Router::class, $router);
@@ -27,6 +28,23 @@ class RouterServiceProvider extends ServiceProvider
 
             $this->processRequest($request);
         });
+    }
+
+    private function getBasePathFromWPConfig()
+    {
+        // Infer the base path from the site's URL
+        $siteUrl = get_bloginfo('url');
+        $siteUrlParts = explode('/', rtrim($siteUrl, ' //'));
+        $siteUrlParts = array_slice($siteUrlParts, 3);
+        $basePath = implode('/', $siteUrlParts);
+
+        if (!$basePath) {
+            $basePath = '/';
+        } else {
+            $basePath = '/' . $basePath . '/';
+        }
+
+        return $basePath;
     }
 
     public function processRequest(RequestInterface $request)
