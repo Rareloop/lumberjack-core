@@ -1,5 +1,5 @@
 {
-    "name": "rareloop/lumberjack",
+    "name": "rareloop/lumberjack-core",
     "require": {
         "php-di/php-di": "^5.4.1",
         "rareloop/router": "^2.0.0",
