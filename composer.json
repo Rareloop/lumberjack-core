@@ -17,7 +17,8 @@
         "phpunit/phpunit": "^6.0",
         "satooshi/php-coveralls": "^1.0",
         "mockery/mockery": "^0.9.9",
-        "brain/monkey": "^2.0.2"
+        "brain/monkey": "^2.0.2",
+        "satooshi/php-coveralls": "^1.0"
     },
     "autoload": {
         "psr-4": {
