@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test\Http\Responses;
 
+use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
@@ -24,7 +25,7 @@ class TimberResponseTest extends TestCase
 
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')
-            ->with('template.twig', hasKeyValuePair('foo', 'bar'))
+            ->with('template.twig', IsArrayContainingKeyValuePair::hasKeyValuePair('foo', 'bar'))
             ->once()
             ->andReturn('testing123');
 
