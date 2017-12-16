@@ -108,6 +108,28 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
     }
 
+    /** @test */
+    public function matched_request_will_call_app_shutdown_method()
+    {
+        $this->setSiteUrl('http://example.com/sub-path/');
+        $response = new TextResponse('Testing 123', 200);
+        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app->shouldReceive('shutdown')->times(1)->with($response);
+
+        $lumberjack = new Lumberjack($app);
+        $provider = new RouterServiceProvider($app);
+
+        $app->register($provider);
+        $lumberjack->bootstrap();
+
+        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router->shouldReceive('match')->andReturn($response)->once();
+
+        $app->bind('router', $router);
+
+        $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
+    }
+
     private function setSiteUrl($url) {
         Functions\when('get_bloginfo')->alias(function ($key) use ($url) {
             if ($key === 'url') {
