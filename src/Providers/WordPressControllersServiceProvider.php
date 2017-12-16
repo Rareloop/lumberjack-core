@@ -42,6 +42,11 @@ class WordPressControllersServiceProvider extends ServiceProvider
     {
         $controllerName = Stringy::create(basename($template, '.php'))->upperCamelize().'Controller';
 
+        // Classes can't start with a number so we have to special case the behaviour here
+        if ($controllerName === '404Controller') {
+            $controllerName = 'Error' . $controllerName;
+        }
+
         $controllerName = apply_filters('lumberjack_controller_name', $controllerName);
         $controllerNamespace = apply_filters('lumberjack_controller_namespace', 'App\\');
 
