@@ -56,7 +56,7 @@ class RouterServiceProviderTest extends TestCase
     }
 
     /** @test */
-    public function wp_loading_action_is_bound()
+    public function wp_loaded_action_is_bound()
     {
         $this->setSiteUrl('http://example.com/sub-path/');
         $app = new Application(__DIR__.'/../');
