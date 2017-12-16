@@ -60,6 +60,32 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function can_get_special_case_name_of_404_controller_from_template()
+    {
+        $app = new Application(__DIR__.'/../');
+        $provider = new WordPressControllersServiceProvider($app);
+
+        $this->assertSame('App\\Error404Controller', $provider->getControllerClassFromTemplate(__DIR__ . 'includes/404.php'));
+    }
+
+    /** @test */
+    public function handle_template_include_applies_filters_on_controller_name_and_namespace()
+    {
+        $app = new Application(__DIR__.'/../');
+        $provider = new WordPressControllersServiceProvider($app);
+
+        Filters\expectApplied('lumberjack_controller_name')
+            ->once()
+            ->with('SingleController');
+
+        Filters\expectApplied('lumberjack_controller_namespace')
+            ->once()
+            ->with('App\\');
+
+        $provider->getControllerClassFromTemplate(__DIR__ . 'includes/single.php');
+    }
+
+    /** @test */
     public function handle_request_returns_false_if_controller_does_not_exist()
     {
         $app = new Application(__DIR__.'/../');
