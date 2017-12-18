@@ -39,7 +39,6 @@ class Application implements ContainerInterface, InteropContainerInterface
     {
         $this->bind('path.base', $this->basePath());
         $this->bind('path.config', $this->configPath());
-        $this->bind('path.logs', $this->logsPath());
     }
 
     public function basePath()
@@ -50,11 +49,6 @@ class Application implements ContainerInterface, InteropContainerInterface
     public function configPath()
     {
         return $this->basePath . DIRECTORY_SEPARATOR . 'config';
-    }
-
-    public function logsPath()
-    {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'logs';
     }
 
     public function bind($key, $value)
