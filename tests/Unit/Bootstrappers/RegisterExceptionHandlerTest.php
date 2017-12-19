@@ -50,4 +50,25 @@ class RegisterExceptionHandlerTest extends TestCase
 
         $bootstrapper->handleException($exception);
     }
+
+    /** @test */
+    public function handle_exception_should_call_handlers_report_and_render_methods_using_an_error()
+    {
+        $app = new Application;
+
+        $error = new \Error('Test Exception');
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+        $app->bind('request', $request);
+
+        $handler = Mockery::mock(Handler::class);
+        $handler->shouldReceive('report')->with(Mockery::type(\ErrorException::class))->once();
+        $handler->shouldReceive('render')->with($request, Mockery::type(\ErrorException::class))->once()->andReturn(new Response());
+        $app->bind(HandlerInterface::class, $handler);
+
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper->shouldReceive('send')->once();
+        $bootstrapper->bootstrap($app);
+
+        $bootstrapper->handleException($error);
+    }
 }
