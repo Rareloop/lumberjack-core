@@ -14,7 +14,12 @@ class ImageSizesServiceProvider extends ServiceProvider
 
         if (is_array($imageSizes)) {
             foreach ($imageSizes as $imageSize) {
-                add_image_size($imageSize['name'], $imageSize['width'], $imageSize['height'], $imageSize['crop'] ?? false);
+                add_image_size(
+                    $imageSize['name'],
+                    $imageSize['width'],
+                    $imageSize['height'],
+                    $imageSize['crop'] ?? false
+                );
             }
         }
     }
