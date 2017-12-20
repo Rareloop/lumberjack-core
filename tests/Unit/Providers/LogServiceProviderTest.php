@@ -61,7 +61,6 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame(Logger::ERROR, $app->get('logger')->getHandlers()[0]->getLevel());
     }
 
-
     /** @test */
     public function logs_path_can_be_changed_by_config_variable()
     {

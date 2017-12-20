@@ -16,11 +16,6 @@ class LogServiceProvider extends ServiceProvider
         $logger->pushHandler(new StreamHandler($this->getLogsPath(), $this->getLogLevel()));
         $handler = $logger->getHandlers()[0];
 
-        if ($this->app->has('config') && !$this->app->get('config')->get('app.logs.enabled', false)) {
-            $logger->popHandler();
-            $logger->pushHandler(new StreamHandler('php://memory', $this->getLogLevel()));
-        }
-
         $this->app->bind('logger', $logger);
         $this->app->bind(Logger::class, $logger);
     }
@@ -39,6 +34,10 @@ class LogServiceProvider extends ServiceProvider
     private function getLogsPath()
     {
         $logsPath = 'app.log';
+
+        if ($this->app->has('config') && !$this->app->get('config')->get('app.logs.enabled', false)) {
+            return 'php://memory';
+        }
 
         if ($this->app->has('config')) {
             $logsPath = $this->app->get('config')->get('app.logs.path', $logsPath);
