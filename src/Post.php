@@ -64,7 +64,7 @@ class Post extends TimberPost
             'order'         => $order,
         ];
 
-        return static::posts($args);
+        return static::query($args);
     }
 
 
