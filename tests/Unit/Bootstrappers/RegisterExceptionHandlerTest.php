@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Brain\Monkey\Functions;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Config;
@@ -23,6 +24,8 @@ class RegisterExceptionHandlerTest extends TestCase
      */
     public function errors_are_converted_to_exceptions()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $app = new Application;
 
         $bootstrapper = new RegisterExceptionHandler();

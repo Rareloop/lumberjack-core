@@ -27,6 +27,10 @@ class RegisterExceptionHandler
     {
         $this->app = $app;
 
+        if (is_admin()) {
+            return;
+        }
+
         error_reporting(-1);
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);

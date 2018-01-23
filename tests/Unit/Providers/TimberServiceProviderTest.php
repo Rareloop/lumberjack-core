@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey;
+use Brain\Monkey\Functions;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
@@ -19,6 +20,8 @@ class TimberServiceProviderTest extends TestCase
     /** @test */
     public function timber_plugin_is_initialiased()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
 

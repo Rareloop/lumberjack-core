@@ -22,6 +22,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function router_object_is_configured()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
@@ -36,6 +38,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function basedir_is_set_from_wordpress_config()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $request = new ServerRequest([], [], '/sub-path/test/123', 'GET');
 
@@ -58,6 +62,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function wp_loaded_action_is_bound()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
@@ -72,6 +78,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function request_object_is_bound_into_the_container()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $request = new ServerRequest([], [], '/test/123', 'GET');
         $app = new Application(__DIR__.'/../');
@@ -89,6 +97,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function unmatched_request_will_not_call_app_shutdown_method()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 404);
         $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
@@ -111,6 +121,8 @@ class RouterServiceProviderTest extends TestCase
     /** @test */
     public function matched_request_will_call_app_shutdown_method()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 200);
         $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);

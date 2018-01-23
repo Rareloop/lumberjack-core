@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
+use Brain\Monkey\Functions;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
@@ -17,6 +18,8 @@ class LogServiceProviderTest extends TestCase
     /** @test */
     public function log_object_is_always_registered()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $app = new Application(__DIR__.'/../');
         $lumberjack = new Lumberjack($app);
 
