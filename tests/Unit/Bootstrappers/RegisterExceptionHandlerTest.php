@@ -2,21 +2,22 @@
 
 namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
+use Brain\Monkey\Functions;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Brain\Monkey\Functions;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 
 class RegisterExceptionHandlerTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use BrainMonkeyPHPUnitIntegration;
 
     /**
      * @test
@@ -36,6 +37,8 @@ class RegisterExceptionHandlerTest extends TestCase
     /** @test */
     public function handle_exception_should_call_handlers_report_and_render_methods()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $app = new Application;
 
         $exception = new \Exception('Test Exception');
@@ -57,6 +60,8 @@ class RegisterExceptionHandlerTest extends TestCase
     /** @test */
     public function handle_exception_should_call_handlers_report_and_render_methods_using_an_error()
     {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
         $app = new Application;
 
         $error = new \Error('Test Exception');
@@ -73,5 +78,26 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->bootstrap($app);
 
         $bootstrapper->handleException($error);
+    }
+
+    /** @test */
+    public function handle_exception_should_call_handlers_report_and_render_methods_even_if_request_is_not_set_in_the_container()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+
+        $exception = new \Exception('Test Exception');
+
+        $handler = Mockery::mock(Handler::class);
+        $handler->shouldReceive('report')->with($exception)->once();
+        $handler->shouldReceive('render')->with(Mockery::type(ServerRequest::class), $exception)->once()->andReturn(new Response());
+        $app->bind(HandlerInterface::class, $handler);
+
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper->shouldReceive('send')->once();
+        $bootstrapper->bootstrap($app);
+
+        $bootstrapper->handleException($exception);
     }
 }

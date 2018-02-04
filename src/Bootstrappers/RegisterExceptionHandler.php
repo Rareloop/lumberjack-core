@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack\Bootstrappers;
 
+use DI\NotFoundException;
 use Error;
 use ErrorException;
 use Psr\Http\Message\ResponseInterface;
@@ -9,6 +10,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Zend\Diactoros\ServerRequestFactory;
 use function Http\Response\send;
 
 /**
@@ -45,7 +47,20 @@ class RegisterExceptionHandler
 
         $handler = $this->getExceptionHandler();
         $handler->report($e);
-        $this->send($handler->render($this->app->get('request'), $e));
+
+        try {
+            $request = $this->app->get('request');
+        } catch (NotFoundException $notFoundException) {
+            $request = ServerRequestFactory::fromGlobals(
+                $_SERVER,
+                $_GET,
+                $_POST,
+                $_COOKIE,
+                $_FILES
+            );
+        }
+
+        $this->send($handler->render($request, $e));
     }
 
     public function send(ResponseInterface $response)
