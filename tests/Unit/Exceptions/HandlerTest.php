@@ -32,6 +32,21 @@ class HandlerTest extends TestCase
         $handler->report($exception);
     }
 
+    public function blacklisted_exception_types_will_not_be_logged()
+    {
+        $app = new Application;
+
+        $exception = new BlacklistedException('Test Exception');
+
+        $logger = Mockery::mock(Logger::class);
+        $logger->shouldNotReceive('error');
+        $app->bind('logger', $logger);
+
+        $handler = new HandlerWithBlacklist($app);
+
+        $handler->report($exception);
+    }
+
     /** @test */
     public function render_should_return_an_html_response_when_debug_is_enabled()
     {
@@ -100,21 +115,6 @@ class HandlerTest extends TestCase
         $this->assertNotContains('Test Exception', $response->getBody()->getContents());
     }
 
-    /** @test */
-    public function blacklisted_exception_types_will_not_be_logged()
-    {
-        $app = new Application;
-
-        $exception = new BlacklistedException('Test Exception');
-
-        $logger = Mockery::mock(Logger::class);
-        $logger->shouldNotReceive('error');
-        $app->bind('logger', $logger);
-
-        $handler = new HandlerWithBlacklist($app);
-
-        $handler->report($exception);
-    }
 }
 
 class HandlerWithBlacklist extends Handler
