@@ -32,6 +32,7 @@ class HandlerTest extends TestCase
         $handler->report($exception);
     }
 
+    /** @test */
     public function blacklisted_exception_types_will_not_be_logged()
     {
         $app = new Application;
@@ -114,7 +115,6 @@ class HandlerTest extends TestCase
 
         $this->assertNotContains('Test Exception', $response->getBody()->getContents());
     }
-
 }
 
 class HandlerWithBlacklist extends Handler
