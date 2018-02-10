@@ -27,13 +27,23 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    public function get_ignores_default_when_no_value_is_set()
+    public function get_ignores_default_when_value_is_set()
     {
         $config = new Config;
 
         $config->set('app.environment', 'production');
 
         $this->assertSame('production', $config->get('app.environment', 'staging'));
+    }
+
+    /** @test */
+    public function get_returns_default_when_using_dot_notation_but_not_an_array()
+    {
+        $config = new Config;
+
+        $config->set('app.logs', 'app.log');
+
+        $this->assertSame(false, $config->get('app.logs.enabled', false));
     }
 
     /** @test */
