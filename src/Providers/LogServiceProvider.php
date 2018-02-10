@@ -34,12 +34,14 @@ class LogServiceProvider extends ServiceProvider
     {
         $logsPath = 'app.log';
 
-        if ($this->app->has('config') && !$this->app->get('config')->get('app.logs.enabled', false)) {
-            return 'php://memory';
-        }
-
         if ($this->app->has('config')) {
-            $logsPath = $this->app->get('config')->get('app.logs.path', $logsPath);
+            $config = $this->app->get('config');
+
+            if (!$config->get('app.logs.enabled', false)) {
+                return 'php://memory';
+            }
+
+            $logsPath = $config->get('app.logs.path', $logsPath);
         }
 
         return $logsPath;
