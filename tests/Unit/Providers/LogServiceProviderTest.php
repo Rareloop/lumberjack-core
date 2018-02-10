@@ -47,6 +47,38 @@ class LogServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function default_log_warning_level_is_debug()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $config = new Config;
+        $app->bind('config', $config);
+
+        $app->bootstrapWith([
+            RegisterProviders::class,
+        ]);
+
+        $this->assertSame(Logger::DEBUG, $app->get('logger')->getHandlers()[0]->getLevel());
+    }
+
+    /** @test */
+    public function stream_is_used_when_path_is_set_but_logging_is_disabled()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $config = new Config;
+        $config->set('app.logs.enabled', false);
+        $config->set('app.logs.path', 'app.log');
+        $app->bind('config', $config);
+
+        $app->bootstrapWith([
+            RegisterProviders::class,
+        ]);
+
+        $this->assertSame('php://memory', $app->get('logger')->getHandlers()[0]->getUrl());
+    }
+
+    /** @test */
     public function log_warning_level_can_be_set_in_config()
     {
         $app = new Application(__DIR__.'/../');
