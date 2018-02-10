@@ -14,7 +14,6 @@ class LogServiceProvider extends ServiceProvider
     {
         $logger = new Logger('app');
         $logger->pushHandler(new StreamHandler($this->getLogsPath(), $this->getLogLevel()));
-        $handler = $logger->getHandlers()[0];
 
         $this->app->bind('logger', $logger);
         $this->app->bind(Logger::class, $logger);

@@ -37,7 +37,6 @@ class LogServiceProviderTest extends TestCase
         $app = new Application(__DIR__.'/../');
 
         $config = new Config;
-        $config->set('app.logs.level', Logger::ERROR);
         $app->bind('config', $config);
 
         $app->bootstrapWith([
