@@ -168,6 +168,9 @@ class Application implements ContainerInterface, InteropContainerInterface
     public function shutdown(ResponseInterface $response = null)
     {
         if ($response) {
+            global $wp;
+            $wp->send_headers();
+            
             send($response);
         }
 
