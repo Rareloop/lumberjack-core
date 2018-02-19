@@ -35,6 +35,29 @@ class TimberResponseTest extends TestCase
         $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
+    /**
+     * @test
+     * @expectedException           Rareloop\Lumberjack\Exceptions\TwigTemplateNotFoundException
+     * @expectedExceptionMessage    template.twig
+     */
+    public function exception_is_thrown_if_twig_file_is_not_found()
+    {
+        $context = [
+            'foo' => 'bar',
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', IsArrayContainingKeyValuePair::hasKeyValuePair('foo', 'bar'))
+            ->once()
+            ->andReturn(false);
+
+        $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
+    }
+
     /** @test */
     public function can_set_headers()
     {
