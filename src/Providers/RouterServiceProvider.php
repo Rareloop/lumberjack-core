@@ -53,6 +53,8 @@ class RouterServiceProvider extends ServiceProvider
 
         $response = $this->app->get('router')->match($request);
 
+        $response = apply_filters('lumberjack_router_response', $response, $request);
+
         if ($response->getStatusCode() === 404) {
             return;
         }

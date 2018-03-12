@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey;
+use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
@@ -11,6 +12,7 @@ use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Router;
 use Zend\Diactoros\Request;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 use \Mockery;
@@ -140,6 +142,35 @@ class RouterServiceProviderTest extends TestCase
         $app->bind('router', $router);
 
         $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
+    }
+
+    /** @test */
+    public function lumberjack_router_response_filter_is_fired_when_request_is_processed()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+        $this->setSiteUrl('http://example.com/sub-path/');
+
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+        $response = new HtmlResponse('testing 123');
+
+        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app->shouldReceive('shutdown')->times(1)->with($response);
+        $lumberjack = new Lumberjack($app);
+        $provider = new RouterServiceProvider($app);
+
+        $app->register($provider);
+        $lumberjack->bootstrap();
+
+        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router->shouldReceive('match')->andReturn($response)->once();
+
+        $app->bind('router', $router);
+
+        Filters\expectApplied('lumberjack_router_response')
+            ->once()
+            ->with($response, $request);
+
+        $provider->processRequest($request);
     }
 
     private function setSiteUrl($url) {
