@@ -6,6 +6,7 @@ use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Rareloop\Lumberjack\ViewModel;
 use Timber\Timber;
 
 /**
@@ -85,5 +86,159 @@ class TimberResponseTest extends TestCase
         $response = new TimberResponse('template.twig', []);
 
         $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function contexts_with_view_models_are_converted()
+    {
+        $context = [
+            'foo' => TestViewModel::createFromArray([
+                'bar' => 123,
+            ]),
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertInternalType('array', $passedContext['foo']);
+                $this->assertSame(123, $passedContext['foo']['bar']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+
+    /** @test */
+    public function contexts_with_view_models_at_lower_levels_of_nesting_are_converted()
+    {
+        $context = [
+            'foo' => [
+                'bar' => TestViewModel::createFromArray([
+                    'baz' => 123,
+                ]),
+            ],
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertInternalType('array', $passedContext['foo']);
+                $this->assertInternalType('array', $passedContext['foo']['bar']);
+                $this->assertSame(123, $passedContext['foo']['bar']['baz']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+
+    /** @test */
+    public function original_data_structure_is_not_mutated()
+    {
+        $context = [
+            'foo' => TestViewModel::createFromArray([
+                'bar' => 123,
+            ]),
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->once()
+            ->andReturn('testing123');
+
+        new TimberResponse('template.twig', $context, 123);
+
+        $this->assertInstanceOf(TestViewModel::class, $context['foo']);
+    }
+
+    /** @test */
+    public function contexts_with_collections_are_converted()
+    {
+        $context = [
+            'foo' => collect([
+                ['bar' => 123,]
+            ]),
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertInternalType('array', $passedContext['foo']);
+                $this->assertSame(123, $passedContext['foo'][0]['bar']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+
+    /** @test */
+    public function contexts_with_collections_at_lower_levels_of_nesting_are_converted()
+    {
+        $context = [
+            'foo' => [
+                'bar' => collect([
+                    ['baz' => 123,]
+                ]),
+            ],
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertInternalType('array', $passedContext['foo']);
+                $this->assertInternalType('array', $passedContext['foo']['bar']);
+                $this->assertSame(123, $passedContext['foo']['bar'][0]['baz']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+
+    /** @test */
+    public function contexts_with_view_models_in_collections_are_converted()
+    {
+        $context = [
+            'foo' => collect([
+                TestViewModel::createFromArray([
+                    'bar' => 123,
+                ]),
+            ]),
+        ];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertInternalType('array', $passedContext['foo']);
+                $this->assertSame(123, $passedContext['foo'][0]['bar']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+}
+
+class TestViewModel extends ViewModel {
+    public static function createFromArray(array $array) {
+        $vm = new static;
+
+        foreach ($array as $key => $value) {
+            $vm->{$key} = $value;
+        }
+
+        return $vm;
     }
 }
