@@ -20,7 +20,7 @@ class SessionServiceProvider extends ServiceProvider
         $secure = Config::get('session.secure', false);
         $httpOnly = Config::get('session.http_only', true);
 
-        $handler = new FileSessionHandler(session_save_path());
+	$handler = new FileSessionHandler($this->getSessionPath());
 
         $store = new Store($name, $handler, $id);
 
@@ -36,5 +36,15 @@ class SessionServiceProvider extends ServiceProvider
                 $cookieSet = true;
             }
         });
+
+    private function getSessionPath()
+    {
+	$path = session_save_path();
+
+	if (empty($path)) {
+	    $path = sys_get_temp_dir();
+	}
+
+	return $path;
     }
 }
