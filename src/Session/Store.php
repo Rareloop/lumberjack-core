@@ -94,6 +94,13 @@ class Store
         $this->put($key, $value);
 
         $this->push('_flash.new', $key);
+
+        $this->removeFromOldFlashData([$key]);
+    }
+
+    protected function removeFromOldFlashData($keys)
+    {
+        $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
     }
 
     protected function ageFlashData()

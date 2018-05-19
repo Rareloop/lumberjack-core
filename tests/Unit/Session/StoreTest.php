@@ -149,7 +149,7 @@ class SessionTest extends TestCase
         $store->save();
     }
 
-        /** @test */
+    /** @test */
     public function can_flash_a_value_into_the_session()
     {
         $store = new Store('session-name', new NullSessionHandler, 'session-id');
@@ -180,5 +180,19 @@ class SessionTest extends TestCase
         $store->save();
 
         $this->assertSame(null, $store->get('foo'));
+    }
+
+    /** @test */
+    public function can_flash_the_same_key_on_consecutive_sessions()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->flash('foo', 'bar');
+        $store->save();
+
+        $store->flash('foo', 'not-bar');
+        $store->save();
+
+        $this->assertSame('not-bar', $store->get('foo'));
     }
 }
