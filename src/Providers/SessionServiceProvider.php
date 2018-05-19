@@ -20,9 +20,10 @@ class SessionServiceProvider extends ServiceProvider
         $secure = Config::get('session.secure', false);
         $httpOnly = Config::get('session.http_only', true);
 
-	$handler = new FileSessionHandler($this->getSessionPath());
+        $handler = new FileSessionHandler($this->getSessionPath());
 
         $store = new Store($name, $handler, $id);
+        $store->start();
 
         $this->app->bind('session', $store);
 
@@ -37,14 +38,19 @@ class SessionServiceProvider extends ServiceProvider
             }
         });
 
+        add_action('shutdown', function () use ($store) {
+            $store->save();
+        });
+    }
+
     private function getSessionPath()
     {
-	$path = session_save_path();
+        $path = session_save_path();
 
-	if (empty($path)) {
-	    $path = sys_get_temp_dir();
-	}
+        if (empty($path)) {
+            $path = sys_get_temp_dir();
+        }
 
-	return $path;
+        return $path;
     }
 }
