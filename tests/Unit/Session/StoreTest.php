@@ -96,6 +96,17 @@ class SessionTest extends TestCase
     }
 
     /** @test */
+    public function can_push_a_value_into_an_array_when_it_already_exists()
+    {
+	$store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+	$store->put('foo', ['bar1']);
+	$store->push('foo', 'bar2');
+
+	$this->assertSame(['bar1', 'bar2'], $store->get('foo'));
+    }
+
+    /** @test */
     public function can_forget_a_single_value()
     {
         $store = new Store('session-name', new NullSessionHandler, 'session-id');

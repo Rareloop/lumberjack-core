@@ -77,7 +77,7 @@ class Store
 
     public function push($key, $value)
     {
-        $array = $this->get('key', []);
+	$array = $this->get($key, []);
 
         $array[] = $value;
 
