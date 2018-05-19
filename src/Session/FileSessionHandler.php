@@ -2,6 +2,8 @@
 
 namespace Rareloop\Lumberjack\Session;
 
+use Exception;
+use Rareloop\Lumberjack\Facades\Log;
 use SessionHandlerInterface;
 
 class FileSessionHandler implements SessionHandlerInterface
@@ -41,7 +43,11 @@ class FileSessionHandler implements SessionHandlerInterface
 
     public function write($sessionId, $data)
     {
-        file_put_contents($this->getFilepath($sessionId), $data);
+        try {
+            file_put_contents($this->getFilepath($sessionId), $data);
+        } catch (Exception $e) {
+            Log::error('Failed to create session on disk');
+        }
 
         return true;
     }
