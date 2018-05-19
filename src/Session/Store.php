@@ -77,7 +77,7 @@ class Store
 
     public function push($key, $value)
     {
-	$array = $this->get($key, []);
+        $array = $this->get($key, []);
 
         $array[] = $value;
 
@@ -96,6 +96,24 @@ class Store
         $this->push('_flash.new', $key);
 
         $this->removeFromOldFlashData([$key]);
+    }
+
+    public function reflash()
+    {
+        $this->mergeNewFlashes($this->get('_flash.old', []));
+        $this->put('_flash.old', []);
+    }
+
+    public function keep($keys = null)
+    {
+        $this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
+        $this->removeFromOldFlashData($keys);
+    }
+
+    protected function mergeNewFlashes(array $keys)
+    {
+        $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
+        $this->put('_flash.new', $values);
     }
 
     protected function removeFromOldFlashData($keys)

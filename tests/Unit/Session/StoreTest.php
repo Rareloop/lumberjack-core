@@ -98,12 +98,12 @@ class SessionTest extends TestCase
     /** @test */
     public function can_push_a_value_into_an_array_when_it_already_exists()
     {
-	$store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
 
-	$store->put('foo', ['bar1']);
-	$store->push('foo', 'bar2');
+        $store->put('foo', ['bar1']);
+        $store->push('foo', 'bar2');
 
-	$this->assertSame(['bar1', 'bar2'], $store->get('foo'));
+        $this->assertSame(['bar1', 'bar2'], $store->get('foo'));
     }
 
     /** @test */
@@ -205,5 +205,61 @@ class SessionTest extends TestCase
         $store->save();
 
         $this->assertSame('not-bar', $store->get('foo'));
+    }
+
+    /** @test */
+    public function can_reflash_data()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->flash('foo1', 'bar1');
+        $store->flash('foo2', 'bar2');
+        $store->flash('foo3', 'bar3');
+        $store->save();
+
+        $store->reflash();
+        $store->save();
+
+        $this->assertArraySubset([
+            'foo1' => 'bar1',
+            'foo2' => 'bar2',
+            'foo3' => 'bar3',
+        ], $store->all());
+    }
+
+    /** @test */
+    public function can_keep_a_single_key()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->flash('foo1', 'bar1');
+        $store->flash('foo2', 'bar2');
+        $store->flash('foo3', 'bar3');
+        $store->save();
+
+        $store->keep('foo2');
+        $store->save();
+
+        $this->assertNull($store->get('foo1'));
+        $this->assertSame('bar2', $store->get('foo2'));
+        $this->assertNull($store->get('foo3'));
+    }
+
+    /** @test */
+    public function can_keep_multiple_keys()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->flash('foo1', 'bar1');
+        $store->flash('foo2', 'bar2');
+        $store->flash('foo3', 'bar3');
+        $store->save();
+
+        $store->keep(['foo2', 'foo3']);
+        $store->save();
+
+        $this->assertNull($store->get('foo1'));
+        $this->assertSame('bar2', $store->get('foo2'));
+        $this->assertSame('bar3', $store->get('foo3'));
     }
 }
