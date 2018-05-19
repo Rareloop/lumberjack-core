@@ -3,20 +3,20 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Facades\Config;
 
 class SessionServiceProvider extends ServiceProvider
 {
-    public function register(Config $config)
+    public function register()
     {
-        $name = $config->get('session.name', 'lumberjack');
+        $name = Config::get('session.name', 'lumberjack');
         $id = $_COOKIE[$name] ?? session_create_id();
 
-        $lifetime = $config->get('session.lifetime', 120);
-        $path = $config->get('session.path', '/');
-        $domain = $config->get('session.domain', null);
-        $secure = $config->get('session.secure', false);
-        $httpOnly = $config->get('session.http_only', true);
+        $lifetime = Config::get('session.lifetime', 120);
+        $path = Config::get('session.path', '/');
+        $domain = Config::get('session.domain', null);
+        $secure = Config::get('session.secure', false);
+        $httpOnly = Config::get('session.http_only', true);
 
         $handler = new FileSessionHandler(session_save_path());
 
