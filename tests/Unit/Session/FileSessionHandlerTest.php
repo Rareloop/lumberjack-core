@@ -105,17 +105,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertTrue($this->rootFileSystem->hasChild('lumberjack_session_12345'));
     }
 
-    /** @test */
-    public function gc_removes_files_that_are_older_than_the_lifetime()
-    {
-        $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
-        file_put_contents(vfsStream::url('exampleDir/lumberjack_session_12345'), 'abc');
-
-        sleep(2);
-
-        $response = $handler->gc(1);
-
-        $this->assertTrue($response);
-        $this->assertTrue($this->rootFileSystem->hasChild('lumberjack_session_12345'));
-    }
+    // TODO: add test gc_removes_files_that_are_older_than_the_lifetime()
+    // vsfStream doesn't support glob so we either need to change our implementation or
+    // figure out a way to get it working in the tests
 }
