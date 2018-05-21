@@ -11,7 +11,7 @@ class SessionServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $name = Config::get('session.name', 'lumberjack');
+        $name = Config::get('session.cookie', 'lumberjack');
         $id = $_COOKIE[$name] ?? uniqid();
 
         $cookieOptions = [
