@@ -12,7 +12,6 @@ class SessionServiceProvider extends ServiceProvider
     public function register()
     {
         $name = Config::get('session.cookie', 'lumberjack');
-        $id = $_COOKIE[$name] ?? uniqid();
 
         $cookieOptions = [
             'lifetime' => Config::get('session.lifetime', 120),
@@ -24,7 +23,7 @@ class SessionServiceProvider extends ServiceProvider
 
         $handler = new FileSessionHandler($this->getSessionPath());
 
-        $store = new Store($name, $handler, $id);
+        $store = new Store($name, $handler, ($_COOKIE[$name] ?? null));
         $store->start();
 
         $this->app->bind('session', $store);
@@ -33,11 +32,11 @@ class SessionServiceProvider extends ServiceProvider
         // called twice. Knowing this, we'll put a lock around adding the cookie
         $cookieSet = false;
 
-        add_action('send_headers', function () use ($name, $id, $cookieOptions, &$cookieSet) {
+        add_action('send_headers', function () use ($store, $cookieOptions, &$cookieSet) {
             if (!$cookieSet) {
                 setcookie(
-                    $name,
-                    $id,
+                    $store->getName(),
+                    $store->getId(),
                     time() + ($cookieOptions['lifetime'] * 60),
                     $cookieOptions['path'],
                     $cookieOptions['domain'],

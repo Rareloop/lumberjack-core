@@ -13,7 +13,7 @@ class Store
 
     protected $attributes = [];
 
-    public function __construct($name, SessionHandlerInterface $handler, $id)
+    public function __construct($name, SessionHandlerInterface $handler, $id = null)
     {
         $this->setName($name);
         $this->setId($id);
@@ -145,8 +145,10 @@ class Store
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId($id = null)
     {
+        $id = $id ?? uniqid();
+
         $this->id = $id;
     }
 }

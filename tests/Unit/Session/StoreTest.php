@@ -28,6 +28,14 @@ class SessionTest extends TestCase
     }
 
     /** @test */
+    public function id_is_generated_if_none_is_provided()
+    {
+        $store = new Store('session-name', new NullSessionHandler);
+
+        $this->assertNotNull($store->getId());
+    }
+
+    /** @test */
     public function can_put_a_single_key_value_pair()
     {
         $store = new Store('session-name', new NullSessionHandler, 'session-id');
