@@ -24,9 +24,12 @@ class SessionServiceProvider extends ServiceProvider
         $handler = new FileSessionHandler($this->getSessionPath());
 
         $store = new Store($name, $handler, ($_COOKIE[$name] ?? null));
-        $store->start();
 
         $this->app->bind('session', $store);
+
+        add_action('init', function () use ($store) {
+            $store->start();
+        });
 
         // Due to the way we handle WordPressControllers sometimes the `send_headers` action is
         // called twice. Knowing this, we'll put a lock around adding the cookie
