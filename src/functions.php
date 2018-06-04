@@ -1,5 +1,7 @@
 <?php
 
+use Rareloop\Lumberjack\Helpers;
+
 if (!function_exists('app')) {
     function app()
     {
