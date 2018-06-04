@@ -23,6 +23,8 @@ class Application implements ContainerInterface, InteropContainerInterface
 
         $this->bind(Application::class, $this);
 
+        $GLOBALS['__app__'] = $this;
+
         if ($basePath) {
             $this->setBasePath($basePath);
         }
@@ -170,7 +172,7 @@ class Application implements ContainerInterface, InteropContainerInterface
         if ($response) {
             global $wp;
             $wp->send_headers();
-            
+
             send($response);
         }
 
