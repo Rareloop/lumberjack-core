@@ -2,8 +2,10 @@
 
 namespace Rareloop\Lumberjack\Test;
 
+use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Helpers;
 
 class HelpersTest extends TestCase
@@ -38,6 +40,48 @@ class HelpersTest extends TestCase
         $this->assertInstanceOf(RequiresConstructorParams::class, $object);
         $this->assertSame(123, $object->param1);
         $this->assertSame('abc', $object->param2);
+    }
+
+    /** @test */
+    public function can_retrieve_a_config_value()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $config = new Config();
+        $config->set('app.environment', 'production');
+        $app->bind('config', $config);
+
+        $this->assertSame('production', Helpers::config('app.environment'));
+    }
+
+    /** @test */
+    public function can_retrieve_a_default_when_no_config_value_is_set()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $config = new Config();
+        $app->bind('config', $config);
+
+        $this->assertSame('production', Helpers::config('app.environment', 'production'));
+    }
+
+    /** @test */
+    public function can_set_a_config_value_when_array_passed_to_config_helper()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $config = new Config();
+        $app->bind('config', $config);
+
+        Helpers::config([
+            'app.environment' => 'production',
+            'app.debug' => true,
+        ]);
+
+        $this->assertSame('production', $config->get('app.environment'));
+        $this->assertSame(true, $config->get('app.debug'));
     }
 }
 

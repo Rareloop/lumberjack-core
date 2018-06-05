@@ -8,3 +8,10 @@ if (!function_exists('app')) {
         return call_user_func_array([Helpers::class, 'app'], func_get_args());
     }
 }
+
+if (!function_exists('config')) {
+    function config()
+    {
+        return call_user_func_array([Helpers::class, 'config'], func_get_args());
+    }
+}
