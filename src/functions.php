@@ -29,3 +29,10 @@ if (!function_exists('route')) {
         return call_user_func_array([Helpers::class, 'route'], func_get_args());
     }
 }
+
+if (!function_exists('redirect')) {
+    function redirect()
+    {
+        return call_user_func_array([Helpers::class, 'redirect'], func_get_args());
+    }
+}

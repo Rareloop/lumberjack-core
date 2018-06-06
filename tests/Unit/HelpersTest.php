@@ -11,6 +11,7 @@ use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Router\Router;
 use Timber\Timber;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * @runTestsInSeparateProcesses
@@ -171,6 +172,38 @@ class HelpersTest extends TestCase
         ]);
 
         $this->assertSame('test/route', trim($url, '/'));
+    }
+
+    /** @test */
+    public function can_get_a_redirect_response()
+    {
+        $response = Helpers::redirect('/new/url');
+        $headers = $response->getHeaders();
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertNotNull($headers['location']);
+        $this->assertSame('/new/url', $headers['location'][0]);
+    }
+
+    /** @test */
+    public function can_get_a_redirect_response_with_custom_status_code()
+    {
+        $response = Helpers::redirect('/new/url', 301);
+
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function can_get_a_redirect_response_with_custom_headers()
+    {
+        $response = Helpers::redirect('/new/url', 301, [
+            'X-Test-Header' => 'testing',
+        ]);
+
+        $headers = $response->getHeaders();
+
+        $this->assertNotNull($headers['X-Test-Header']);
+        $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
 }
 

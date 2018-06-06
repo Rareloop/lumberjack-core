@@ -5,6 +5,7 @@ namespace Rareloop\Lumberjack;
 use Rareloop\Lumberjack\Facades\Config;
 use Rareloop\Lumberjack\Facades\Router;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 
 class Helpers
 {
@@ -42,5 +43,10 @@ class Helpers
     public static function route($name, $params = [])
     {
         return Router::url($name, $params);
+    }
+
+    public static function redirect($url, $statusCode = 302, $headers = [])
+    {
+        return new RedirectResponse($url, $statusCode, $headers);
     }
 }
