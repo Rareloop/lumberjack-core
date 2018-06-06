@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Facades\Config;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
 class Helpers
 {
@@ -30,5 +31,10 @@ class Helpers
         }
 
         return Config::get($key, $default);
+    }
+
+    public static function view($template, $context = [], $statusCode = 200, $headers = [])
+    {
+        return new TimberResponse($template, $context, $statusCode, $headers);
     }
 }

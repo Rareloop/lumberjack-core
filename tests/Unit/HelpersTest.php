@@ -3,13 +3,22 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Blast\Facades\FacadeFactory;
+use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Helpers;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Timber\Timber;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class HelpersTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @test */
     public function can_retrieve_the_container_instance()
     {
@@ -82,6 +91,55 @@ class HelpersTest extends TestCase
 
         $this->assertSame('production', $config->get('app.environment'));
         $this->assertSame(true, $config->get('app.debug'));
+    }
+
+    /** @test */
+    public function can_get_a_timber_response()
+    {
+        $timber = \Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', IsArrayContainingKeyValuePair::hasKeyValuePair('foo', 'bar'))
+            ->once()
+            ->andReturn('testing123');
+
+        $view = Helpers::view('template.twig', [
+            'foo' => 'bar',
+        ]);
+
+        $this->assertInstanceOf(TimberResponse::class, $view);
+        $this->assertSame('testing123', $view->getBody()->getContents());
+        $this->assertSame(200, $view->getStatusCode());
+    }
+
+    /** @test */
+    public function can_get_a_timber_response_with_a_specific_status_code()
+    {
+        $timber = \Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->once()
+            ->andReturn('testing123');
+
+        $view = Helpers::view('template.twig', [], 404);
+
+        $this->assertSame(404, $view->getStatusCode());
+    }
+
+    /** @test */
+    public function can_get_a_timber_response_with_specific_headers()
+    {
+        $timber = \Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->once()
+            ->andReturn('testing123');
+
+        $view = Helpers::view('template.twig', [], 200, [
+            'X-Test-Header' => 'testing',
+        ]);
+
+        $headers = $view->getHeaders();
+
+        $this->assertNotNull($headers['X-Test-Header']);
+        $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
 }
 

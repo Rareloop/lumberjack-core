@@ -15,3 +15,10 @@ if (!function_exists('config')) {
         return call_user_func_array([Helpers::class, 'config'], func_get_args());
     }
 }
+
+if (!function_exists('view')) {
+    function view()
+    {
+        return call_user_func_array([Helpers::class, 'view'], func_get_args());
+    }
+}
