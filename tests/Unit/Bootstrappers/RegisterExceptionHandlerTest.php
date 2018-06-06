@@ -5,14 +5,18 @@ namespace Rareloop\Lumberjack\Test\Bootstrappers;
 use Brain\Monkey\Functions;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Router\Responsable;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 
 class RegisterExceptionHandlerTest extends TestCase
@@ -99,5 +103,38 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->bootstrap($app);
 
         $bootstrapper->handleException($exception);
+    }
+
+    /** @test */
+    public function handle_exception_should_not_call_render_methods_when_exception_is_responsable()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+        $app->bind('request', $request);
+
+        $exception = Mockery::mock(ResponsableException::class);
+        $exception->shouldReceive('toResponse')->with($request)->once();
+
+        $handler = Mockery::mock(Handler::class);
+        $handler->shouldReceive('report');
+        $handler->shouldNotReceive('render');
+        $app->bind(HandlerInterface::class, $handler);
+
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper->shouldReceive('send')->once();
+        $bootstrapper->bootstrap($app);
+
+        $bootstrapper->handleException($exception);
+    }
+}
+
+class ResponsableException extends \Exception implements Responsable
+{
+    public function toResponse(RequestInterface $request) : ResponseInterface
+    {
+        return new TextResponse('testing123');
     }
 }

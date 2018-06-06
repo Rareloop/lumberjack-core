@@ -2,16 +2,18 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
-use \Mockery;
 use Brain\Monkey\Filters;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Http\Kernal;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Router\Responsable;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
+use \Mockery;
 
 class WordPressControllersServiceProviderTest extends TestCase
 {
@@ -110,6 +112,20 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function handle_request_returns_response_when_controller_returns_a_responsable()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerReturningAResponsable::class, 'handle');
+
+        $this->assertInstanceOf(TextResponse::class, $response);
+        $this->assertSame('testing123', $response->getBody()->getContents());
+    }
+
+    /** @test */
     public function handle_request_resolves_constructor_params_from_container()
     {
         $app = new Application(__DIR__.'/../');
@@ -168,5 +184,21 @@ class TestControllerWithConstructorParams
     public function handle()
     {
 
+    }
+}
+
+class MyResponsable implements Responsable
+{
+    public function toResponse(RequestInterface $request) : ResponseInterface
+    {
+        return new TextResponse('testing123');
+    }
+}
+
+class TestControllerReturningAResponsable
+{
+    public function handle()
+    {
+        return new MyResponsable;
     }
 }

@@ -61,6 +61,6 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
         $invoker = new Invoker($this->app);
         $output = $invoker->setRequest($request)->call([$controllerName, $methodName]);
-        return ResponseFactory::create($output);
+        return ResponseFactory::create($output, $request);
     }
 }

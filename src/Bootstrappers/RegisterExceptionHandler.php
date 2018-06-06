@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Rareloop\Router\Responsable;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Zend\Diactoros\ServerRequestFactory;
 use function Http\Response\send;
@@ -58,6 +59,11 @@ class RegisterExceptionHandler
                 $_COOKIE,
                 $_FILES
             );
+        }
+
+        if ($e instanceof Responsable) {
+            $this->send($e->toResponse($request));
+            return;
         }
 
         $this->send($handler->render($request, $e));
