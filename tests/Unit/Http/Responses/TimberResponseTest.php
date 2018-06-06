@@ -17,6 +17,8 @@ use Timber\Timber;
  */
 class TimberResponseTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @test */
     public function constructor_calls_timber_compile()
     {
