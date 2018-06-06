@@ -9,6 +9,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Rareloop\Router\Router;
 use Timber\Timber;
 
 /**
@@ -140,6 +141,36 @@ class HelpersTest extends TestCase
 
         $this->assertNotNull($headers['X-Test-Header']);
         $this->assertSame('testing', $headers['X-Test-Header'][0]);
+    }
+
+    /** @test */
+    public function can_get_a_url_for_a_named_route()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $router = new Router;
+        $router->get('test/route', function () {})->name('test.route');
+        $app->bind('router', $router);
+
+        $url = Helpers::route('test.route');
+
+        $this->assertSame('test/route', trim($url, '/'));
+    }
+
+    /** @test */
+    public function can_get_a_url_for_a_named_route_with_params()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $router = new Router;
+        $router->get('test/{name}', function ($name) {})->name('test.route');
+        $app->bind('router', $router);
+
+        $url = Helpers::route('test.route', [
+            'name' => 'route',
+        ]);
+
+        $this->assertSame('test/route', trim($url, '/'));
     }
 }
 

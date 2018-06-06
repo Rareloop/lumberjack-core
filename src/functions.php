@@ -22,3 +22,10 @@ if (!function_exists('view')) {
         return call_user_func_array([Helpers::class, 'view'], func_get_args());
     }
 }
+
+if (!function_exists('route')) {
+    function route()
+    {
+        return call_user_func_array([Helpers::class, 'route'], func_get_args());
+    }
+}
