@@ -2,7 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.0 (2018-05-10)
+
+### Features
+
+- Add `Responsable` interface which can be used as a return object in Controllers or added to Exceptions and automatically handled by the application.
+- Add `Helpers` class with the following functions `app()`, `config()`, `view()`, `route()` & `redirect()`. These can be added to the global namespace by including the `src/functions.php` file.
+
 ## 3.1.0 (2018-03-28)
+
+### Features
+
 - Add support for view models
 
 ## 3.0.0 (2018-03-23)
