@@ -6,7 +6,7 @@ use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Session;
-use Rareloop\Lumberjack\Session\Store;
+use Rareloop\Lumberjack\Session\SessionManager;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
 class SessionTest extends TestCase
@@ -17,9 +17,9 @@ class SessionTest extends TestCase
         $app = new Application();
         FacadeFactory::setContainer($app);
 
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new SessionManager($app);
         $app->bind('session', $store);
 
-        $this->assertInstanceOf(Store::class, Session::__instance());
+        $this->assertInstanceOf(SessionManager::class, Session::__instance());
     }
 }

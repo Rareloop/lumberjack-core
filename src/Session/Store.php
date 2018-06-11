@@ -151,4 +151,9 @@ class Store
 
         $this->id = $id;
     }
+
+    public function getHandler()
+    {
+        return $this->handler;
+    }
 }

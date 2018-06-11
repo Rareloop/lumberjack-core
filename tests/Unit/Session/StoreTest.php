@@ -270,4 +270,13 @@ class SessionTest extends TestCase
         $this->assertSame('bar2', $store->get('foo2'));
         $this->assertSame('bar3', $store->get('foo3'));
     }
+
+    /** @test */
+    public function can_get_handler()
+    {
+        $handler = new NullSessionHandler;
+        $store = new Store('session-name', $handler, 'session-id');
+
+        $this->assertSame($handler, $store->getHandler());
+    }
 }
