@@ -6,6 +6,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
@@ -45,9 +46,11 @@ class TimberServiceProviderTest extends TestCase
         ]);
 
         $app->bind('config', $config);
+        $app->bind(Config::class, $config);
 
         $app->bootstrapWith([
             RegisterProviders::class,
+            BootProviders::class,
         ]);
 
         $app->register(new TimberServiceProvider($app));

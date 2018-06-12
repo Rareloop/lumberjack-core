@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Config;
 use Timber\Timber;
 
 class TimberServiceProvider extends ServiceProvider
@@ -13,13 +14,14 @@ class TimberServiceProvider extends ServiceProvider
 
         $this->app->bind('timber', $timber);
         $this->app->bind(Timber::class, $timber);
+    }
 
-        if ($this->app->has('config')) {
-            $paths = $this->app->get('config')->get('timber.paths');
+    public function boot(Config $config)
+    {
+        $paths = $config->get('timber.paths');
 
-            if ($paths) {
-                Timber::$dirname = $paths;
-            }
+        if ($paths) {
+            Timber::$dirname = $paths;
         }
     }
 }

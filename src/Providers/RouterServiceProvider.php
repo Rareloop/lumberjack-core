@@ -16,7 +16,10 @@ class RouterServiceProvider extends ServiceProvider
 
         $this->app->bind('router', $router);
         $this->app->bind(Router::class, $router);
+    }
 
+    public function boot()
+    {
         add_action('wp_loaded', function () {
             $request = ServerRequestFactory::fromGlobals(
                 $_SERVER,
