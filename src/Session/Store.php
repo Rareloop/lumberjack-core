@@ -34,7 +34,7 @@ class Store
     protected function readFromHandler()
     {
         $data = $this->handler->read($this->id);
-        $data = @unserialize($data);
+        $data = @unserialize($this->prepareForUnserialize($data));
 
         if ($data !== false && ! is_null($data) && is_array($data)) {
             return $data;
@@ -47,7 +47,17 @@ class Store
     {
         $this->ageFlashData();
 
-        $this->handler->write($this->id, @serialize($this->attributes));
+        $this->handler->write($this->id, $this->prepareForStorage(@serialize($this->attributes)));
+    }
+
+    protected function prepareForStorage($data)
+    {
+        return $data;
+    }
+
+    protected function prepareForUnserialize($data)
+    {
+        return $data;
     }
 
     public function put($key, $value)

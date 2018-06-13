@@ -11,7 +11,8 @@
         "http-interop/response-sender": "^1.0",
         "symfony/debug": "^3.3",
         "tightenco/collect": "^5.5.0",
-        "danielstjules/stringy": "~3.1.0"
+        "danielstjules/stringy": "~3.1.0",
+        "mmeyer2k/dcrypt": "~8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
-class SessionTest extends TestCase
+class StoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
