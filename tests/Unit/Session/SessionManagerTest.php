@@ -13,6 +13,7 @@ use Rareloop\Lumberjack\Session\FileSessionHandler;
 use Rareloop\Lumberjack\Session\SessionManager;
 use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use org\bovigo\vfs\vfsStream;
 
 class SessionManagerTest extends TestCase
 {
@@ -21,10 +22,12 @@ class SessionManagerTest extends TestCase
     private function appWithSessionDriverConfig($driver, $cookie = 'lumberjack', $encrypted = false)
     {
         $app = new Application;
-        $config = Mockery::mock(Config::class.'[get]');
-        $config->shouldReceive('get')->with('session.cookie', 'lumberjack')->andReturn($cookie);
-        $config->shouldReceive('get')->with('session.driver', 'file')->andReturn($driver);
-        $config->shouldReceive('get')->with('session.encrypt')->andReturn($encrypted);
+        $config = new Config;
+
+        $config->set('session.cookie', $cookie);
+        $config->set('session.driver', $driver);
+        $config->set('session.encrypt', $encrypted);
+
         $app->bind(Config::class, $config);
 
         return $app;
@@ -49,6 +52,20 @@ class SessionManagerTest extends TestCase
 
         $this->assertInstanceOf(FileSessionHandler::class, $manager->driver()->getHandler());
         $this->assertSame('lumberjack', $manager->driver()->getName());
+    }
+
+    /** @test */
+    public function file_driver_uses_path_from_config_when_present()
+    {
+        $rootFileSystem = vfsStream::setup('exampleDir');
+        $app = $this->appWithSessionDriverConfig('file', 'lumberjack');
+        $app->get(Config::class)->set('session.files', vfsStream::url('exampleDir'));
+
+        $manager = new SessionManager($app);
+
+        $manager->driver()->save();
+
+        $this->assertCount(1, $rootFileSystem->getChildren());
     }
 
     /** @test */

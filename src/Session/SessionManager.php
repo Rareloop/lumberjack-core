@@ -35,6 +35,10 @@ class SessionManager extends Manager
 
     protected function getFileDriverStoragePath()
     {
+        if ($path = $this->config->get('session.files')) {
+            return $path;
+        }
+
         $path = session_save_path();
 
         if (empty($path)) {
