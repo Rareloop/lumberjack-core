@@ -157,9 +157,27 @@ class Store
 
     public function setId($id = null)
     {
-        $id = $id ?? uniqid();
+        $id = $id ?? static::random(40);
 
         $this->id = $id;
+    }
+
+    /**
+     * Generate a more truly "random" alpha-numeric string.
+     * From: https://github.com/laravel/framework/blob/5.6/src/Illuminate/Support/Str.php#L289
+     *
+     * @param  int  $length
+     * @return string
+     */
+    protected static function random($length = 16)
+    {
+        $string = '';
+        while (($len = strlen($string)) < $length) {
+            $size = $length - $len;
+            $bytes = random_bytes($size);
+            $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
+        }
+        return $string;
     }
 
     public function getHandler()

@@ -33,6 +33,7 @@ class StoreTest extends TestCase
         $store = new Store('session-name', new NullSessionHandler);
 
         $this->assertNotNull($store->getId());
+        $this->assertEquals(40, strlen($store->getId()));
     }
 
     /** @test */
