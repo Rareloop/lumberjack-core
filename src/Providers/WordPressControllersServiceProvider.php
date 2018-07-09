@@ -56,6 +56,10 @@ class WordPressControllersServiceProvider extends ServiceProvider
     public function handleRequest(RequestInterface $request, $controllerName, $methodName)
     {
         if (!class_exists($controllerName)) {
+            if ($this->app->has('logger')) {
+                $this->app->get('logger')->warning('Controller class `' . $controllerName . '` not found');
+            }
+
             return false;
         }
 

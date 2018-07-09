@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey\Filters;
+use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -96,6 +97,20 @@ class WordPressControllersServiceProviderTest extends TestCase
         $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
 
         $this->assertFalse($response);
+    }
+
+    /** @test */
+    public function handle_request_writes_warning_to_logs_if_controller_does_not_exist()
+    {
+        $log = Mockery::mock(Logger::class);
+        $log->shouldReceive('warning')->once()->with('Controller class `Does\Not\Exist` not found');
+
+        $app = new Application(__DIR__.'/../');
+        $app->bind('logger', $log);
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot();
+
+        $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
     }
 
     /** @test */
