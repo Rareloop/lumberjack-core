@@ -205,4 +205,14 @@ class Application implements ContainerInterface, InteropContainerInterface
 
         return $responseToSend;
     }
+
+    /**
+     * Is PHP being run from a CLI
+     *
+     * @return boolean
+     */
+    public function runningInConsole()
+    {
+        return in_array(php_sapi_name(), ['cli', 'phpdbg']);
+    }
 }

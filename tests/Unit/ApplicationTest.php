@@ -7,10 +7,18 @@ use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
+use phpmock\Mock;
+use phpmock\MockBuilder;
 
 class ApplicationTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        Mock::disableAll();
+    }
 
     /** @test */
     public function base_path_is_set_in_container_when_basepath_passed_to_constructor()
@@ -340,6 +348,41 @@ class ApplicationTest extends TestCase
         $app->bootstrapWith([TestBootstrapper1::class, TestBootstrapper2::class]);
 
         $this->assertSame(2, $count);
+    }
+
+    private function createPhpSapiNameMock($value, $namespace)
+    {
+        $builder = new MockBuilder();
+
+        $builder->setNamespace($namespace)
+                ->setName('php_sapi_name')
+                ->setFunction(
+                    function () use ($value) {
+                        return $value;
+                    }
+                );
+
+        return $builder->build();
+    }
+
+    /** @test */
+    public function running_in_console_returns_true_for_cli()
+    {
+        $mock = $this->createPhpSapiNameMock('cli', 'Rareloop\Lumberjack');
+        $mock->enable();
+        $app = new Application;
+
+        $this->assertTrue($app->runningInConsole());
+    }
+
+    /** @test */
+    public function running_in_console_returns_true_for_phpdbg()
+    {
+        $mock = $this->createPhpSapiNameMock('phpdbg', 'Rareloop\Lumberjack');
+        $mock->enable();
+        $app = new Application;
+
+        $this->assertTrue($app->runningInConsole());
     }
 }
 
