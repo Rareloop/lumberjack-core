@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithInput;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithUri;
+use Zend\Diactoros\ServerRequest as DiactorosServerRequest;
 
 class ServerRequestTest extends TestCase
 {
@@ -30,5 +31,15 @@ class ServerRequestTest extends TestCase
 
         $this->assertContains(InteractsWithInput::class, $traits);
         $this->assertContains(InteractsWithUri::class, $traits);
+    }
+
+    /** @test */
+    public function can_create_from_a_request_instance()
+    {
+        $request = new DiactorosServerRequest([], [], '/test/123', 'GET');
+
+        $lumberjackRequest = ServerRequest::fromRequest($request);
+
+        $this->assertInstanceOf(ServerRequest::class, $lumberjackRequest);
     }
 }
