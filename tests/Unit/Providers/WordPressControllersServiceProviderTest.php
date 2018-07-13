@@ -154,6 +154,19 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function handle_request_resolves_controller_method_params_from_container()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithHandleParams::class, 'handle');
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+    }
+
+    /** @test */
     public function handle_template_include_will_call_app_shutdown_when_it_has_handled_a_request()
     {
         $response = new TextResponse('Testing 123', 404);
@@ -197,6 +210,14 @@ class TestControllerWithConstructorParams
     }
 
     public function handle()
+    {
+
+    }
+}
+
+class TestControllerWithHandleParams
+{
+    public function handle(Application $app)
     {
 
     }
