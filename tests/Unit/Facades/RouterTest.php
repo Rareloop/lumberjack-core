@@ -6,7 +6,7 @@ use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Router as RouterFacade;
-use Rareloop\Router\Router;
+use Rareloop\Lumberjack\Http\Router;
 
 class RouterTest extends TestCase
 {

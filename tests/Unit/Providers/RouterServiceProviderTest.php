@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
-use Rareloop\Router\Router;
+use Rareloop\Lumberjack\Http\Router;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
