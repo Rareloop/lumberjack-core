@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3.0 (2018-07-17)
+
+### Features
+
+- Add `runningInConsole()` function to `Application`
+- Add `mergeConfigFrom()` function to `ServiceProvider`
+- Add warning to log when no WP Controller is found
+
 ## 3.2.1 (2018-05-27)
 
 ### Bug Fixes
