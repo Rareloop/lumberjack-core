@@ -10,7 +10,7 @@
         "monolog/monolog": "^1.23",
         "http-interop/response-sender": "^1.0",
         "symfony/debug": "^3.3",
-        "tightenco/collect": "^5.5.0",
+        "tightenco/collect": "^5.5.33",
         "danielstjules/stringy": "~3.1.0"
     },
     "require-dev": {
