@@ -3,7 +3,6 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
-use Rareloop\Lumberjack\Application;
 use Rareloop\Router\Router;
 use Zend\Diactoros\ServerRequestFactory;
 

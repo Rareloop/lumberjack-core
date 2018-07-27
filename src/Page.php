@@ -2,8 +2,6 @@
 
 namespace Rareloop\Lumberjack;
 
-use Rareloop\Lumberjack\Post;
-
 class Page extends Post
 {
     /**

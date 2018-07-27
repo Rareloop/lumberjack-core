@@ -2,12 +2,9 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Monolog\Handler\BufferHandler;
 use Monolog\Handler\ErrorLogHandler;
-use Monolog\Handler\HandlerWrapper;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Rareloop\Lumberjack\Application;
 
 class LogServiceProvider extends ServiceProvider
 {
