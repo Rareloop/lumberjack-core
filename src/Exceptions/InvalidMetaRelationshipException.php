@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\QueryBuilder\Exceptions;
+namespace Rareloop\Lumberjack\Exceptions;
 
 class InvalidMetaRelationshipException extends \Exception
 {

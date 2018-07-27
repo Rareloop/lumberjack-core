@@ -1,12 +1,12 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test\QueryBuilder;
+namespace Rareloop\Lumberjack\Test;
 
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
+use Rareloop\Lumberjack\QueryBuilder;
 use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
@@ -309,7 +309,7 @@ class QueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @expectedException     Rareloop\Lumberjack\QueryBuilder\Exceptions\InvalidMetaRelationshipException
+     * @expectedException     Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException
      */
     public function invalid_meta_realtionship_throws_an_exception()
     {

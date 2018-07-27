@@ -1,14 +1,14 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test\QueryBuilder;
+namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
+use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
-use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
+use Rareloop\Lumberjack\QueryBuilder;
+use Rareloop\Lumberjack\ScopedQueryBuilder;
 
 class PostQueryBuilderTest extends TestCase
 {
@@ -43,7 +43,8 @@ class PostQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @expectedException ErrorException
+     * @runInSeparateProcess
+     * @expectedException \PHPUnit\Framework\Error\Error
      */
     public function throw_error_on_missing_static_function()
     {

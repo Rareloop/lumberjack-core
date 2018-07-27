@@ -1,9 +1,9 @@
 <?php
 
-namespace Rareloop\Lumberjack\QueryBuilder;
+namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
-use Rareloop\Lumberjack\QueryBuilder\Exceptions\InvalidMetaRelationshipException;
+use Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException;
 use Rareloop\Lumberjack\Post;
 use Tightenco\Collect\Support\Collection;
 use Timber\Timber;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Rareloop\Lumberjack\QueryBuilder;
+namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Helpers;
-use Rareloop\Lumberjack\QueryBuilder\Exceptions\CannotRedeclarePostTypeOnQueryException;
-use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
-use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
+use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException;
+use Rareloop\Lumberjack\QueryBuilder;
+use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use ReflectionClass;
 use ReflectionMethod;
 

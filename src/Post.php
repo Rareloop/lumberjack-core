@@ -3,7 +3,7 @@
 namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
-use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
+use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 

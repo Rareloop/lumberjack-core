@@ -1,15 +1,15 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test\QueryBuilder;
+namespace Rareloop\Lumberjack\Test;
 
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
+use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
-use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
+use Rareloop\Lumberjack\QueryBuilder;
+use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Timber\Timber;
 
 class ScopedQueryBuilderTest extends TestCase
@@ -37,7 +37,7 @@ class ScopedQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @expectedException Rareloop\Lumberjack\QueryBuilder\Exceptions\CannotRedeclarePostTypeOnQueryException
+     * @expectedException Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException
      */
     public function cannot_overwrite_post_type()
     {
@@ -86,7 +86,8 @@ class ScopedQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @expectedException ErrorException
+     * @runInSeparateProcess
+     * @expectedException \PHPUnit\Framework\Error\Error
      */
     public function missing_query_scope_throws_an_error()
     {
