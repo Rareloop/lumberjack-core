@@ -3,11 +3,39 @@
 namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
+use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
 class Post extends TimberPost
 {
+    public function __construct($pid = false, $preventTimberConstructor = false)
+    {
+        if (!$preventTimberConstructor) {
+            parent::__construct($pid);
+        }
+    }
+
+    public static function __callStatic($name, $arguments)
+    {
+        if (in_array($name, ['whereStatus', 'whereIdIn', 'whereIdNotIn'])) {
+            $builder = static::createBuilder();
+            return call_user_func_array([$builder, $name], $arguments);
+        }
+
+        trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+    }
+
+    /**
+     * Create a QueryBuilder scoped to this Post type
+     *
+     * @return QueryBuilder
+     */
+    public static function createBuilder() : ScopedQueryBuilder
+    {
+        return new ScopedQueryBuilder(static::class);
+    }
+
     /**
      * Return the key used to register the post type with WordPress
      * First parameter of the `register_post_type` function:
