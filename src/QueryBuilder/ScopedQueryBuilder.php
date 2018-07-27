@@ -6,6 +6,8 @@ use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\QueryBuilder\Exceptions\CannotRedeclarePostTypeOnQueryException;
 use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
 use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
+use ReflectionClass;
+use ReflectionMethod;
 
 class ScopedQueryBuilder
 {
@@ -30,13 +32,16 @@ class ScopedQueryBuilder
         // See if this is a scope function that needs calling
         $scopeFunctionName = 'scope' . ucfirst($name);
 
-        $post = new $this->postClass(false, true);
+        $reflection = new ReflectionClass($this->postClass);
+        $publicMethods = collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))->map(function ($method) {
+            return $method->getName();
+        })->toArray();
 
-        if (!method_exists($post, $scopeFunctionName)) {
+        if (!in_array($scopeFunctionName, $publicMethods)) {
             trigger_error('Call to undefined method '.$this->postClass.'::'.$scopeFunctionName.'()', E_USER_ERROR);
         }
 
-        return $post->{$scopeFunctionName}($this);
+        return (new $this->postClass(false, true))->{$scopeFunctionName}($this);
     }
 
     public function getParameters()

@@ -9,10 +9,14 @@ use Timber\Timber;
 
 class Post extends TimberPost
 {
-    public function __construct($pid = false, $preventTimberConstructor = false)
+    public function __construct($id = false, $preventTimberInit = false)
     {
-        if (!$preventTimberConstructor) {
-            parent::__construct($pid);
+        /**
+         * There are occasions where we do not want the bootstrap the data. At the moment this is
+         * designed to make Query Scopes possible
+         */
+        if (!$preventTimberInit) {
+            parent::__construct($id);
         }
     }
 
@@ -60,6 +64,11 @@ class Post extends TimberPost
         return null;
     }
 
+    /**
+     * Register this PostType with WordPress
+     *
+     * @return void
+     */
     public static function register()
     {
         $postType = static::getPostType();
