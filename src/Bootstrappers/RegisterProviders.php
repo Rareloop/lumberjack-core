@@ -3,7 +3,6 @@
 namespace Rareloop\Lumberjack\Bootstrappers;
 
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\LogServiceProvider;
 
 class RegisterProviders

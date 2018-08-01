@@ -3,11 +3,9 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
-use Rareloop\Lumberjack\Application;
 use Rareloop\Router\Invoker;
 use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
 class WordPressControllersServiceProvider extends ServiceProvider

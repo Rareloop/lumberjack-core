@@ -2,9 +2,7 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
-use Timber\Timber;
 
 class ImageSizesServiceProvider extends ServiceProvider
 {

@@ -2,7 +2,6 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 
 class CustomPostTypesServiceProvider extends ServiceProvider

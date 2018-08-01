@@ -2,7 +2,6 @@
 
 namespace Rareloop\Lumberjack\Http;
 
-use DI\ContainerBuilder;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;

@@ -7,7 +7,6 @@ use Error;
 use ErrorException;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Router\Responsable;
 use Symfony\Component\Debug\Exception\FatalErrorException;
