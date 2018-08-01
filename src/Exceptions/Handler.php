@@ -3,7 +3,6 @@
 namespace Rareloop\Lumberjack\Exceptions;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;

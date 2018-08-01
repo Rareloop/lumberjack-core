@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Rareloop\Lumberjack\ServiceProvider;
 use function Http\Response\send;
 
 class Application implements ContainerInterface, InteropContainerInterface
