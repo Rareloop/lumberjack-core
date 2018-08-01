@@ -120,6 +120,53 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function can_bind_a_singleton()
+    {
+        $app = new Application;
+        $count = 0;
+
+        $app->singleton(TestInterface::class, function () use (&$count) {
+            $count++;
+            return new TestInterfaceImplementation();
+        });
+
+        $object1 = $app->make(TestInterface::class);
+        $object2 = $app->make(TestInterface::class);
+
+        $this->assertSame(1, $count);
+        $this->assertEquals($object1, $object2);
+        $this->assertNotNull($object1);
+        $this->assertNotNull($object2);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object1);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
+    }
+
+    /** @test */
+    public function can_bind_a_singleton_and_get_dependencies_injected()
+    {
+        $app = new Application;
+        $count = 0;
+
+        $app->bind(TestSubInterface::class, TestSubInterfaceImplementation::class);
+
+        $app->singleton(TestInterface::class, function (TestSubInterface $foo) use (&$count) {
+            $this->assertInstanceOf(TestSubInterfaceImplementation::class, $foo);
+            $count++;
+            return new TestInterfaceImplementation();
+        });
+
+        $object1 = $app->make(TestInterface::class);
+        $object2 = $app->make(TestInterface::class);
+
+        $this->assertSame(1, $count);
+        $this->assertEquals($object1, $object2);
+        $this->assertNotNull($object1);
+        $this->assertNotNull($object2);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object1);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
+    }
+
+    /** @test */
     public function app_should_be_bound_into_the_container_on_construction()
     {
         $app = new Application;

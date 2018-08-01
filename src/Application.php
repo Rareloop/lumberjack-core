@@ -2,11 +2,13 @@
 
 namespace Rareloop\Lumberjack;
 
+use Closure;
 use DI\ContainerBuilder;
 use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Rareloop\Router\Invoker;
 use function Http\Response\send;
 
 class Application implements ContainerInterface, InteropContainerInterface
@@ -59,6 +61,22 @@ class Application implements ContainerInterface, InteropContainerInterface
         }
 
         $this->container->set($key, $value);
+    }
+
+    public function singleton($key, Closure $closure)
+    {
+        return $this->bind($key, function () use ($key, $closure) {
+            // Use the provided closure to create the Singleton
+            $invoker = new Invoker($this);
+            $singleton = $invoker->call($closure);
+
+            // Rebind the key to a closure that will return the singleton instance on future calls
+            $this->bind($key, function () use ($singleton) {
+                return $singleton;
+            });
+
+            return $singleton;
+        });
     }
 
     public function make($key, array $params = [])
