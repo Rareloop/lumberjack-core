@@ -4,12 +4,12 @@ namespace Rareloop\Lumberjack\Exceptions;
 
 use Exception;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
 use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\ServerRequest;
 
 class Handler implements HandlerInterface
 {
@@ -32,7 +32,7 @@ class Handler implements HandlerInterface
         $logger->error($e);
     }
 
-    public function render(ServerRequest $request, Exception $e) : ResponseInterface
+    public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
     {
         $e = FlattenException::create($e);
 

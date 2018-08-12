@@ -4,11 +4,11 @@ namespace Rareloop\Lumberjack\Exceptions;
 
 use Exception;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 interface HandlerInterface
 {
     public function report(Exception $e);
 
-    public function render(ServerRequest $request, Exception $e) : ResponseInterface;
+    public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface;
 }
