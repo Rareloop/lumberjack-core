@@ -1,8 +1,8 @@
 {
     "name": "rareloop/lumberjack-core",
     "require": {
-        "php-di/php-di": "^5.4.1",
-        "rareloop/router": "^3.0.0",
+	"php-di/php-di": "^6.0.0",
+	"rareloop/router": "dev-update-dependencies@dev",
         "symfony/finder": "^3.3",
         "psr/container": "^1.0",
         "blast/facades": "^1.0",

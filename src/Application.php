@@ -55,7 +55,7 @@ class Application implements ContainerInterface, InteropContainerInterface
     public function bind($key, $value)
     {
         if (is_string($value) && class_exists($value)) {
-            $value = \DI\Object($value);
+            $value = \DI\autowire($value);
         }
 
         $this->container->set($key, $value);
