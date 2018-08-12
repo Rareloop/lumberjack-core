@@ -19,6 +19,10 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class RegisterExceptionHandlerTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
