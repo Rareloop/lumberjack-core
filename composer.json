@@ -3,7 +3,6 @@
     "require": {
         "php-di/php-di": "^6.0.0",
         "rareloop/router": "dev-update-dependencies@dev",
-        "symfony/finder": "^3.3",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
