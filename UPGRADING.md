@@ -33,3 +33,5 @@ public function render(ServerRequestInterface $request, Exception $e) : Response
 
 }
 ```
+
+No changes should be required to your application logic as Zend subclasses will already comply with the new interface.
