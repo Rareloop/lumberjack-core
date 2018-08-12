@@ -2,6 +2,8 @@
 
 namespace Rareloop\Lumberjack;
 
+use Exception;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Facades\Config;
 use Rareloop\Lumberjack\Facades\Router;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
@@ -48,5 +50,10 @@ class Helpers
     public static function redirect($url, $statusCode = 302, $headers = [])
     {
         return new RedirectResponse($url, $statusCode, $headers);
+    }
+
+    public static function report(Exception $e)
+    {
+        return static::app()->get(HandlerInterface::class)->report($e);
     }
 }

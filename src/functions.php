@@ -36,3 +36,10 @@ if (!function_exists('redirect')) {
         return call_user_func_array([Helpers::class, 'redirect'], func_get_args());
     }
 }
+
+if (!function_exists('report')) {
+    function report()
+    {
+        return call_user_func_array([Helpers::class, 'report'], func_get_args());
+    }
+}

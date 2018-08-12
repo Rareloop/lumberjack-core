@@ -7,6 +7,8 @@ use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Exceptions\Handler;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Router\Router;
@@ -205,6 +207,26 @@ class HelpersTest extends TestCase
         $this->assertNotNull($headers['X-Test-Header']);
         $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
+
+    /** @test */
+    public function can_report_an_exception()
+    {
+        $app = new Application;
+        $exception = new \Exception('Testing 123');
+        $handler = \Mockery::mock(TestExceptionHandler::class.'[report]', [$app]);
+        $handler->shouldReceive('report')->with($exception)->once();
+
+        $app->bind(HandlerInterface::class, function () use ($handler) {
+            return $handler;
+        });
+
+        Helpers::report($exception);
+    }
+}
+
+class TestExceptionHandler extends Handler
+{
+
 }
 
 class RequiresConstructorParams
