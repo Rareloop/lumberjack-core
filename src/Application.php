@@ -63,8 +63,25 @@ class Application implements ContainerInterface, InteropContainerInterface
         $this->container->set($key, $value);
     }
 
-    public function singleton($key, Closure $closure)
+    /**
+     * Bind a singleton into the container
+     *
+     * Second parameter is either a class name or a closure factory.
+     *
+     * @param  String $key
+     * @param  String|Closure $value
+     * @return void
+     */
+    public function singleton($key, $value)
     {
+        $closure = $value;
+
+        if (is_string($value) && class_exists($value)) {
+            $closure = function () use ($value) {
+                return $this->get($value);
+            };
+        }
+
         return $this->bind($key, function () use ($key, $closure) {
             // Use the provided closure to create the Singleton
             $invoker = new Invoker($this);

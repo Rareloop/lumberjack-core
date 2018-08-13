@@ -120,7 +120,41 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function can_bind_a_singleton()
+    public function can_bind_a_singleton_concrete_class_to_an_interface()
+    {
+        $app = new Application;
+
+        $app->singleton(TestInterface::class, TestInterfaceImplementation::class);
+
+        $object1 = $app->make(TestInterface::class);
+        $object2 = $app->make(TestInterface::class);
+
+        $this->assertSame($object1, $object2);
+        $this->assertNotNull($object1);
+        $this->assertNotNull($object2);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object1);
+        $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
+    }
+
+    /** @test */
+    public function can_bind_a_singleton_concrete_class_with_constructor_params_to_an_interface()
+    {
+        $app = new Application;
+
+        $app->singleton(TestInterface::class, TestInterfaceImplementationWithConstructorParams::class);
+
+        $object1 = $app->make(TestInterface::class);
+        $object2 = $app->make(TestInterface::class);
+
+        $this->assertSame($object1, $object2);
+        $this->assertNotNull($object1);
+        $this->assertNotNull($object2);
+        $this->assertInstanceOf(TestInterfaceImplementationWithConstructorParams::class, $object1);
+        $this->assertInstanceOf(TestInterfaceImplementationWithConstructorParams::class, $object2);
+    }
+
+    /** @test */
+    public function can_bind_a_singleton_with_closure()
     {
         $app = new Application;
         $count = 0;
@@ -134,7 +168,7 @@ class ApplicationTest extends TestCase
         $object2 = $app->make(TestInterface::class);
 
         $this->assertSame(1, $count);
-        $this->assertEquals($object1, $object2);
+        $this->assertSame($object1, $object2);
         $this->assertNotNull($object1);
         $this->assertNotNull($object2);
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object1);
@@ -472,6 +506,11 @@ interface TestInterface
 class TestInterfaceImplementation implements TestInterface
 {
 
+}
+
+class TestInterfaceImplementationWithConstructorParams implements TestInterface
+{
+    public function __construct(TestServiceProvider $provider) {}
 }
 
 interface TestSubInterface
