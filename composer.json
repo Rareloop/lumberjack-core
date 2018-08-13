@@ -23,7 +23,8 @@
         "brain/monkey": "^2.0.2",
         "squizlabs/php_codesniffer": "^3.2",
         "php-mock/php-mock": "^2.0",
-        "codedungeon/phpunit-result-printer": "^0.19.0"
+        "codedungeon/phpunit-result-printer": "^0.19.13",
+        "codedungeon/php-cli-colors": "^1.10.7"
     },
     "autoload": {
         "psr-4": {
