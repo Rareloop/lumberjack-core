@@ -93,6 +93,14 @@ class Application implements ContainerInterface, InteropContainerInterface
         $this->container->set($key, $value);
     }
 
+    /**
+     * Always creates a new object instance, regardless of whether or not the $key has previously
+     * been bound as a singleton.
+     *
+     * @param  String $key
+     * @param  array  $params
+     * @return mixed
+     */
     public function make($key, array $params = [])
     {
         return $this->container->make($key, $params);
