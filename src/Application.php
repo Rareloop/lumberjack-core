@@ -63,16 +63,21 @@ class Application implements ContainerInterface, InteropContainerInterface
             $this->nonSingletonClassBinds[] = $key;
         }
 
-        if ($this->isClassString($value)) {
-            $value = \DI\Object($value);
-        }
-
-        $this->container->set($key, $value);
+        $this->addToContainer($key, $value);
     }
 
     protected function isClassString($value)
     {
         return is_string($value) && class_exists($value);
+    }
+
+    protected function addToContainer($key, $value)
+    {
+        if ($this->isClassString($value)) {
+            $value = \DI\Object($value);
+        }
+
+        $this->container->set($key, $value);
     }
 
     /**
@@ -86,11 +91,7 @@ class Application implements ContainerInterface, InteropContainerInterface
      */
     public function singleton($key, $value)
     {
-        if ($this->isClassString($value)) {
-            $value = \DI\Object($value);
-        }
-
-        $this->container->set($key, $value);
+        $this->addToContainer($key, $value);
     }
 
     /**
