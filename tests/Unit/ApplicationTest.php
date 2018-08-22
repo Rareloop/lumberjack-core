@@ -75,7 +75,7 @@ class ApplicationTest extends TestCase
         $app = new Application;
 
         $app->bind(TestInterface::class, TestInterfaceImplementation::class);
-        $object = $app->make(TestInterface::class);
+        $object = $app->get(TestInterface::class);
 
         $this->assertNotNull($object);
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object);
@@ -92,7 +92,7 @@ class ApplicationTest extends TestCase
             return new TestInterfaceImplementation();
         });
 
-        $object = $app->make(TestInterface::class);
+        $object = $app->get(TestInterface::class);
 
         $this->assertSame(1, $count);
         $this->assertNotNull($object);
@@ -112,7 +112,7 @@ class ApplicationTest extends TestCase
             return new TestInterfaceImplementation();
         });
 
-        $object = $app->make(TestInterface::class);
+        $object = $app->get(TestInterface::class);
 
         $this->assertSame(1, $count);
         $this->assertNotNull($object);
@@ -126,8 +126,8 @@ class ApplicationTest extends TestCase
 
         $app->singleton(TestInterface::class, TestInterfaceImplementation::class);
 
-        $object1 = $app->make(TestInterface::class);
-        $object2 = $app->make(TestInterface::class);
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
 
         $this->assertSame($object1, $object2);
         $this->assertNotNull($object1);
@@ -143,8 +143,8 @@ class ApplicationTest extends TestCase
 
         $app->singleton(TestInterface::class, TestInterfaceImplementationWithConstructorParams::class);
 
-        $object1 = $app->make(TestInterface::class);
-        $object2 = $app->make(TestInterface::class);
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
 
         $this->assertSame($object1, $object2);
         $this->assertNotNull($object1);
@@ -164,8 +164,8 @@ class ApplicationTest extends TestCase
             return new TestInterfaceImplementation();
         });
 
-        $object1 = $app->make(TestInterface::class);
-        $object2 = $app->make(TestInterface::class);
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
 
         $this->assertSame(1, $count);
         $this->assertSame($object1, $object2);
@@ -189,8 +189,8 @@ class ApplicationTest extends TestCase
             return new TestInterfaceImplementation();
         });
 
-        $object1 = $app->make(TestInterface::class);
-        $object2 = $app->make(TestInterface::class);
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
 
         $this->assertSame(1, $count);
         $this->assertEquals($object1, $object2);
@@ -209,12 +209,12 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function can_make_a_class_that_has_not_been_registered()
+    public function can_create_a_class_that_has_not_been_registered()
     {
         $app = new Application;
         $app->bind(TestInterface::class, TestInterfaceImplementation::class);
 
-        $object = $app->make(NotRegisteredInContainer::class);
+        $object = $app->get(NotRegisteredInContainer::class);
 
         $this->assertInstanceOf(NotRegisteredInContainer::class, $object);
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object->param);
@@ -247,6 +247,35 @@ class ApplicationTest extends TestCase
         $object2 = $app->make(TestInterface::class);
 
         $this->assertNotSame($object1, $object2);
+    }
+
+    /** @test */
+    public function using_bind_does_not_produce_a_singleton()
+    {
+        $app = new Application;
+        $app->bind(TestInterface::class, TestInterfaceImplementation::class);
+
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
+
+        $this->assertNotSame($object1, $object2);
+    }
+
+    /** @test */
+    public function using_bind_with_closure_does_not_produce_a_singleton()
+    {
+        $count = 0;
+        $app = new Application;
+        $app->bind(TestInterface::class, function () use (&$count) {
+            $count++;
+            return new TestInterfaceImplementation;
+        });
+
+        $object1 = $app->get(TestInterface::class);
+        $object2 = $app->get(TestInterface::class);
+
+        $this->assertNotSame($object1, $object2);
+        $this->assertSame(2, $count);
     }
 
     /** @test */

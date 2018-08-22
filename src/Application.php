@@ -18,6 +18,8 @@ class Application implements ContainerInterface, InteropContainerInterface
     private $booted = false;
     private $basePath;
 
+    private $nonSingletonClassBinds = [];
+
     public function __construct($basePath = false)
     {
         $this->container = ContainerBuilder::buildDevContainer();
@@ -56,11 +58,21 @@ class Application implements ContainerInterface, InteropContainerInterface
 
     public function bind($key, $value)
     {
-        if (is_string($value) && class_exists($value)) {
+        // Prevent PHP-DI from creating singletons from class binds or closure factories
+        if ($this->isClassString($value) || is_callable($value)) {
+            $this->nonSingletonClassBinds[] = $key;
+        }
+
+        if ($this->isClassString($value)) {
             $value = \DI\Object($value);
         }
 
         $this->container->set($key, $value);
+    }
+
+    protected function isClassString($value)
+    {
+        return is_string($value) && class_exists($value);
     }
 
     /**
@@ -74,26 +86,11 @@ class Application implements ContainerInterface, InteropContainerInterface
      */
     public function singleton($key, $value)
     {
-        $closure = $value;
-
-        if (is_string($value) && class_exists($value)) {
-            $closure = function () use ($value) {
-                return $this->get($value);
-            };
+        if ($this->isClassString($value)) {
+            $value = \DI\Object($value);
         }
 
-        return $this->bind($key, function () use ($key, $closure) {
-            // Use the provided closure to create the Singleton
-            $invoker = new Invoker($this);
-            $singleton = $invoker->call($closure);
-
-            // Rebind the key to a closure that will return the singleton instance on future calls
-            $this->bind($key, function () use ($singleton) {
-                return $singleton;
-            });
-
-            return $singleton;
-        });
+        $this->container->set($key, $value);
     }
 
     public function make($key, array $params = [])
@@ -113,6 +110,10 @@ class Application implements ContainerInterface, InteropContainerInterface
      */
     public function get($id)
     {
+        if (in_array($id, $this->nonSingletonClassBinds)) {
+            return $this->container->make($id);
+        }
+
         return $this->container->get($id);
     }
 
