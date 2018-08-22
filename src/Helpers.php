@@ -11,7 +11,7 @@ use Zend\Diactoros\Response\RedirectResponse;
 
 class Helpers
 {
-    public static function app($key = null, $params = [])
+    public static function app($key = null)
     {
         $app = $GLOBALS['__app__'];
 
@@ -19,7 +19,7 @@ class Helpers
             return $app;
         }
 
-        return $app->make($key, $params);
+        return $app->get($key);
     }
 
     public static function config($key, $default = null)

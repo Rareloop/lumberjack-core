@@ -38,3 +38,16 @@ public function render(ServerRequestInterface $request, Exception $e) : Response
 ```
 
 No changes should be required to your application logic as Zend subclasses will already comply with the new interface.
+
+### `Helpers::app()` helper
+`Helpers::app()` (and the `app()` global counterpart) no longer use the `make()` method of the Application instance and now rely on `get()`. This provides much more consistent behaviour with other uses of the Container. If you still want to use the helpers to get `make()` behaviour you can change your code from:
+
+```
+Helpers::app(MyClassName::class);
+```
+
+to:
+
+```
+Helpers::app()->make(MyClassName::class);
+```

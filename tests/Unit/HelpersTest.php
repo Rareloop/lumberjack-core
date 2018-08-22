@@ -41,21 +41,6 @@ class HelpersTest extends TestCase
     }
 
     /** @test */
-    public function can_make_a_class_with_additional_params_for_the_constructor()
-    {
-        $app = new Application;
-
-        $object = Helpers::app(RequiresConstructorParams::class, [
-            'param1' => 123,
-            'param2' => 'abc',
-        ]);
-
-        $this->assertInstanceOf(RequiresConstructorParams::class, $object);
-        $this->assertSame(123, $object->param1);
-        $this->assertSame('abc', $object->param2);
-    }
-
-    /** @test */
     public function can_retrieve_a_config_value()
     {
         $app = new Application;
