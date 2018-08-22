@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
+use Rareloop\Lumberjack\Bootstrappers\RegisterAliases;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
@@ -29,6 +30,7 @@ class LumberjackTest extends TestCase
             RegisterFacades::class,
             RegisterProviders::class,
             BootProviders::class,
+            RegisterAliases::class,
         ])->once();
 
         $kernal = new Lumberjack($app);
