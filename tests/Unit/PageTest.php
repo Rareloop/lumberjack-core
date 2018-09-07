@@ -8,7 +8,6 @@ use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class PageTest extends TestCase
 {
-
     /** @test */
     public function page_class_has_correct_post_type()
     {
