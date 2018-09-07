@@ -5,6 +5,17 @@
 ### PHP Version
 Support for PHP 7.0 has been dropped, ensure you're running at least PHP 7.1.
 
+### Service Providers
+Add the following providers to `config/app.php`:
+
+```
+'providers' => [
+    ...
+    Rareloop\Lumberjack\Providers\QueryBuilderServiceProvider::class
+    ...
+],
+```
+
 ### PSR-15 Middleware
 The `http-interop/http-server-middleware` package has been deprecated in favour of the now official PSR-15 interfaces found in `psr/http-server-middleware`.
 
