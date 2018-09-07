@@ -23,7 +23,7 @@ class Post extends TimberPost
     public static function __callStatic($name, $arguments)
     {
         if (in_array($name, ['whereStatus', 'whereIdIn', 'whereIdNotIn'])) {
-            $builder = static::createBuilder();
+            $builder = static::builder();
             return call_user_func_array([$builder, $name], $arguments);
         }
 
@@ -35,7 +35,7 @@ class Post extends TimberPost
      *
      * @return QueryBuilder
      */
-    public static function createBuilder() : ScopedQueryBuilder
+    public static function builder() : ScopedQueryBuilder
     {
         return new ScopedQueryBuilder(static::class);
     }

@@ -25,7 +25,7 @@ class PostQueryBuilderTest extends TestCase
     /** @test */
     public function can_create_a_builder()
     {
-        $builder = Post::createBuilder();
+        $builder = Post::builder();
 
         $this->assertInstanceOf(ScopedQueryBuilder::class, $builder);
         $this->assertArraySubset([
@@ -73,7 +73,7 @@ class QueryBuilderTestPost extends Post
         static::$injectedBuilder = $builder;
     }
 
-    public static function createBuilder() : ScopedQueryBuilder
+    public static function builder() : ScopedQueryBuilder
     {
         return static::$injectedBuilder;
     }
