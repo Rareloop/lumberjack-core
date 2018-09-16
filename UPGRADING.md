@@ -62,3 +62,19 @@ to:
 ```
 Helpers::app()->make(MyClassName::class);
 ```
+
+
+### `Router` class namespace
+If you resolve an instance of the `Router` class from the container, you'll need to change the class reference from:
+
+```
+use Rareloop\Router\Router
+```
+
+to:
+
+```
+Rareloop\Lumberjack\Http\Router
+```
+
+If you're just using the Router Facade, you do not need to change anything.
