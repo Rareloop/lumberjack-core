@@ -2,11 +2,13 @@
 
 namespace Rareloop\Lumberjack;
 
+use Closure;
 use DI\ContainerBuilder;
 use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Rareloop\Router\Invoker;
 use function Http\Response\send;
 
 class Application implements ContainerInterface, InteropContainerInterface
@@ -15,6 +17,8 @@ class Application implements ContainerInterface, InteropContainerInterface
     private $loadedProviders = [];
     private $booted = false;
     private $basePath;
+
+    private $nonSingletonClassBinds = [];
 
     public function __construct($basePath = false)
     {
@@ -54,13 +58,50 @@ class Application implements ContainerInterface, InteropContainerInterface
 
     public function bind($key, $value)
     {
-        if (is_string($value) && class_exists($value)) {
+        // Prevent PHP-DI from creating singletons from class binds or closure factories
+        if ($this->isClassString($value) || is_callable($value)) {
+            $this->nonSingletonClassBinds[] = $key;
+        }
+
+        $this->addToContainer($key, $value);
+    }
+
+    protected function isClassString($value)
+    {
+        return is_string($value) && class_exists($value);
+    }
+
+    protected function addToContainer($key, $value)
+    {
+        if ($this->isClassString($value)) {
             $value = \DI\autowire($value);
         }
 
         $this->container->set($key, $value);
     }
 
+    /**
+     * Bind a singleton into the container
+     *
+     * Second parameter is either a class name or a closure factory.
+     *
+     * @param  String $key
+     * @param  String|Closure $value
+     * @return void
+     */
+    public function singleton($key, $value)
+    {
+        $this->addToContainer($key, $value);
+    }
+
+    /**
+     * Always creates a new object instance, regardless of whether or not the $key has previously
+     * been bound as a singleton.
+     *
+     * @param  String $key
+     * @param  array  $params
+     * @return mixed
+     */
     public function make($key, array $params = [])
     {
         return $this->container->make($key, $params);
@@ -78,6 +119,10 @@ class Application implements ContainerInterface, InteropContainerInterface
      */
     public function get($id)
     {
+        if (in_array($id, $this->nonSingletonClassBinds)) {
+            return $this->container->make($id);
+        }
+
         return $this->container->get($id);
     }
 
