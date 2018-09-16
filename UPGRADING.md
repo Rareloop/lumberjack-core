@@ -37,6 +37,8 @@ Add the following providers to `config/app.php`:
 'providers' => [
     ...
     Rareloop\Lumberjack\Providers\QueryBuilderServiceProvider::class
+    Rareloop\Lumberjack\Providers\SessionServiceProvider::class
+    Rareloop\Lumberjack\Providers\EncryptionServiceProvider::class
     ...
 ],
 ```
