@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
+use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Lumberjack\Http\Router;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -20,13 +21,13 @@ class RouterServiceProvider extends ServiceProvider
     public function boot()
     {
         add_action('wp_loaded', function () {
-            $request = ServerRequestFactory::fromGlobals(
+            $request = ServerRequest::fromRequest(ServerRequestFactory::fromGlobals(
                 $_SERVER,
                 $_GET,
                 $_POST,
                 $_COOKIE,
                 $_FILES
-            );
+            ));
 
             $this->processRequest($request);
         });
