@@ -78,3 +78,10 @@ Rareloop\Lumberjack\Http\Router
 ```
 
 If you're just using the Router Facade, you do not need to change anything.
+
+### `ServerRequest` class (optional)
+If you're injecting an instance of the Diactoros `ServerRequest` class into a Controller, you can now switch this out for the following class if you want to benefit from some of the new helper functions:
+
+```
+Rareloop\Lumberjack\Http\ServerRequest
+```
