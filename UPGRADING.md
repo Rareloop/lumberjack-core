@@ -5,6 +5,31 @@
 ### PHP Version
 Support for PHP 7.0 has been dropped, ensure you're running at least PHP 7.1.
 
+### Container
+The `bind()` method on the `Application` container is no longer a singleton by default when the value (2nd param) is not a primitive or object instance.
+
+When binding a concrete implementation to an interface, being a singleton created unexpected side affects. 
+
+A new `singleton()` method has been provided to enable the previous behaviour. This enables the app developer to be more intentional about the behaviour they desire.
+
+e.g.
+
+```
+$app->singleton(App\AppInterface::class, App\AppImplementation::class);
+$object1 = $app->get(App\AppInterface::class);
+$object2 = $app->get(App\AppInterface::class);
+
+$object1 === $object2; true;
+
+// ---
+
+$app->bind(App\AppInterface::class, App\AppImplementation::class);
+$object1 = $app->get(App\AppInterface::class);
+$object2 = $app->get(App\AppInterface::class);
+
+$object1 === $object2; false;
+```
+
 ### Service Providers
 Add the following providers to `config/app.php`:
 
