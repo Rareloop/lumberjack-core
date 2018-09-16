@@ -6,8 +6,8 @@ use Exception;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Facades\Config;
 use Rareloop\Lumberjack\Facades\Router;
+use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
-use Zend\Diactoros\Response\RedirectResponse;
 
 class Helpers
 {

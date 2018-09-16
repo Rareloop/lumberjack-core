@@ -10,10 +10,10 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Helpers;
+use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Router\Router;
 use Timber\Timber;
-use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * @runTestsInSeparateProcesses
