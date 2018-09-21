@@ -253,6 +253,21 @@ class HelpersTest extends TestCase
     }
 
     /** @test */
+    public function can_add_multiple_items_to_the_session()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+
+        Helpers::session(['test' => 123, 'foo' => 'bar']);
+
+        $this->assertSame(123, Helpers::session('test'));
+        $this->assertSame('bar', Helpers::session('foo'));
+    }
+
+    /** @test */
     public function can_resolve_the_session_manager()
     {
         $app = new Application;
