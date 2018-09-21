@@ -2,18 +2,20 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Blast\Facades\FacadeFactory;
-use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
-use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Config;
-use Rareloop\Lumberjack\Exceptions\Handler;
-use Rareloop\Lumberjack\Exceptions\HandlerInterface;
-use Rareloop\Lumberjack\Helpers;
-use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
-use Rareloop\Lumberjack\Http\Responses\TimberResponse;
-use Rareloop\Router\Router;
 use Timber\Timber;
+use Rareloop\Router\Router;
+use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Config;
+use Blast\Facades\FacadeFactory;
+use Rareloop\Lumberjack\Helpers;
+use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Facades\Session;
+use Rareloop\Lumberjack\Exceptions\Handler;
+use Rareloop\Lumberjack\Session\SessionManager;
+use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 
 /**
  * @runTestsInSeparateProcesses
@@ -137,7 +139,8 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/route', function () {})->name('test.route');
+        $router->get('test/route', function () {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route');
@@ -151,7 +154,8 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/{name}', function ($name) {})->name('test.route');
+        $router->get('test/{name}', function ($name) {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route', [
@@ -198,7 +202,7 @@ class HelpersTest extends TestCase
     {
         $app = new Application;
         $exception = new \Exception('Testing 123');
-        $handler = \Mockery::mock(TestExceptionHandler::class.'[report]', [$app]);
+        $handler = \Mockery::mock(TestExceptionHandler::class . '[report]', [$app]);
         $handler->shouldReceive('report')->with($exception)->once();
 
         $app->bind(HandlerInterface::class, function () use ($handler) {
@@ -206,6 +210,58 @@ class HelpersTest extends TestCase
         });
 
         Helpers::report($exception);
+    }
+
+    /** @test */
+    public function can_access_an_item_in_the_session_by_key()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+
+        Session::put('test', 123);
+
+        $this->assertSame(123, Helpers::session('test'));
+    }
+
+    /** @test */
+    public function can_access_an_item_in_the_session_by_key_with_default()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+
+        $this->assertSame(123, Helpers::session('test', 123));
+    }
+
+    /** @test */
+    public function can_add_an_item_in_the_session()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+
+        Helpers::session(['test' => 123]);
+
+        $this->assertSame(123, Helpers::session('test'));
+    }
+
+    /** @test */
+    public function can_resolve_the_session_manager()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+
+        $this->assertSame($store, Helpers::session());
     }
 }
 

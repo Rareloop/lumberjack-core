@@ -43,3 +43,10 @@ if (!function_exists('report')) {
         return call_user_func_array([Helpers::class, 'report'], func_get_args());
     }
 }
+
+if (!function_exists('session')) {
+    function session()
+    {
+        return call_user_func_array([Helpers::class, 'session'], func_get_args());
+    }
+}

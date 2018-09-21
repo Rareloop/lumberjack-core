@@ -47,6 +47,16 @@ class StoreTest extends TestCase
     }
 
     /** @test */
+    public function can_put_a_single_key_value_pair_as_array()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->put(['foo' => 'bar']);
+
+        $this->assertSame('bar', $store->get('foo'));
+    }
+
+    /** @test */
     public function can_get_a_default_value_if_none_is_present()
     {
         $store = new Store('session-name', new NullSessionHandler, 'session-id');
@@ -142,7 +152,7 @@ class StoreTest extends TestCase
     /** @test */
     public function starting_a_session_loads_data_from_handler()
     {
-        $handler = Mockery::mock(NullSessionHandler::class.'[read]');
+        $handler = Mockery::mock(NullSessionHandler::class . '[read]');
         $handler->shouldReceive('read')->once()->with('session-id')->andReturn(serialize(['foo' => 'bar']));
 
         $store = new Store('session-name', $handler, 'session-id');
@@ -155,7 +165,7 @@ class StoreTest extends TestCase
     /** @test */
     public function saving_a_session_writes_data_to_handler()
     {
-        $handler = Mockery::mock(NullSessionHandler::class.'[write]');
+        $handler = Mockery::mock(NullSessionHandler::class . '[write]');
         $handler->shouldReceive('write')->once()->with('session-id', Mockery::on(function ($argument) {
             $array = @unserialize($argument);
 

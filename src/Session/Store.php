@@ -36,7 +36,7 @@ class Store
         $data = $this->handler->read($this->id);
         $data = @unserialize($this->prepareForUnserialize($data));
 
-        if ($data !== false && ! is_null($data) && is_array($data)) {
+        if ($data !== false && !is_null($data) && is_array($data)) {
             return $data;
         }
 
@@ -60,9 +60,15 @@ class Store
         return $data;
     }
 
-    public function put($key, $value)
+    public function put($key, $value = null)
     {
-        Arr::set($this->attributes, $key, $value);
+        if (!is_array($key)) {
+            $key = [$key => $value];
+        }
+
+        foreach ($key as $arrayKey => $arrayValue) {
+            Arr::set($this->attributes, $arrayKey, $arrayValue);
+        }
     }
 
     public function get($key, $default = null)

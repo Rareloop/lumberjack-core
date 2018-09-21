@@ -8,6 +8,7 @@ use Rareloop\Lumberjack\Facades\Config;
 use Rareloop\Lumberjack\Facades\Router;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use Rareloop\Lumberjack\Facades\Session;
 
 class Helpers
 {
@@ -55,5 +56,18 @@ class Helpers
     public static function report(Exception $e)
     {
         return static::app()->get(HandlerInterface::class)->report($e);
+    }
+
+    public static function session($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return static::app()->get('session');
+        }
+
+        if (is_array($key)) {
+            return Session::put($key);
+        }
+
+        return Session::get($key, $default);
     }
 }
