@@ -11,6 +11,7 @@ use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Exceptions\Handler;
+use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Lumberjack\Session\SessionManager;
 use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
@@ -292,6 +293,18 @@ class HelpersTest extends TestCase
 
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('http://domain.com/previous/url', $response->getHeader('Location')[0]);
+    }
+
+    /** @test */
+    public function can_get_server_request()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+        $app->bind('request', $request);
+
+        $this->assertSame($request, Helpers::request());
     }
 }
 

@@ -57,3 +57,10 @@ if (!function_exists('back')) {
         return call_user_func_array([Helpers::class, 'back'], func_get_args());
     }
 }
+
+if (!function_exists('request')) {
+    function request()
+    {
+        return call_user_func_array([Helpers::class, 'request'], func_get_args());
+    }
+}

@@ -55,13 +55,18 @@ class Helpers
 
     public static function report(Exception $e)
     {
-        return static::app()->get(HandlerInterface::class)->report($e);
+        return static::app(HandlerInterface::class)->report($e);
+    }
+
+    public static function request()
+    {
+        return static::app('request');
     }
 
     public static function session($key = null, $default = null)
     {
         if (is_null($key)) {
-            return static::app()->get('session');
+            return static::app('session');
         }
 
         if (is_array($key)) {
