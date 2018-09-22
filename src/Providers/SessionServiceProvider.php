@@ -51,6 +51,12 @@ class SessionServiceProvider extends ServiceProvider
         });
 
         add_action('shutdown', function () {
+            $request = Helpers::request();
+
+            if ($request->method() === 'get' && !$request->ajax()) {
+                $this->session->setPreviousUrl($request->fullUrl());
+            }
+
             $this->session->save();
         });
     }

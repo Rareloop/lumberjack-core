@@ -190,4 +190,14 @@ class Store
     {
         return $this->handler;
     }
+
+    public function setPreviousUrl($url)
+    {
+        $this->put('_previous.url', $url);
+    }
+
+    public function previousUrl()
+    {
+        return $this->get('_previous.url');
+    }
 }

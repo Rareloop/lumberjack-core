@@ -42,4 +42,25 @@ class ServerRequestTest extends TestCase
 
         $this->assertInstanceOf(ServerRequest::class, $lumberjackRequest);
     }
+
+    /** @test */
+    public function ajax_method_returns_true_when_from_ajax()
+    {
+        $request = new DiactorosServerRequest([], [], '/test/123', 'GET');
+        $request = $request->withHeader('X-Requested-With', 'XMLHttpRequest');
+
+        $lumberjackRequest = ServerRequest::fromRequest($request);
+
+        $this->assertTrue($lumberjackRequest->ajax());
+    }
+
+    /** @test */
+    public function ajax_method_returns_false_when_not_from_ajax()
+    {
+        $request = new DiactorosServerRequest([], [], '/test/123', 'GET');
+
+        $lumberjackRequest = ServerRequest::fromRequest($request);
+
+        $this->assertFalse($lumberjackRequest->ajax());
+    }
 }

@@ -278,6 +278,21 @@ class HelpersTest extends TestCase
 
         $this->assertSame($store, Helpers::session());
     }
+
+    /** @test */
+    public function can_redirect_back()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $store = new SessionManager($app);
+        $app->bind('session', $store);
+        $store->setPreviousUrl('http://domain.com/previous/url');
+
+        $response = Helpers::back();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('http://domain.com/previous/url', $response->getHeader('Location')[0]);
+    }
 }
 
 class TestExceptionHandler extends Handler

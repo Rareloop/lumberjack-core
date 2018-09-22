@@ -70,4 +70,9 @@ class Helpers
 
         return Session::get($key, $default);
     }
+
+    public static function back()
+    {
+        return static::redirect(static::session()->previousUrl());
+    }
 }

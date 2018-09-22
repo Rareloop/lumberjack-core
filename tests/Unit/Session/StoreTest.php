@@ -290,4 +290,14 @@ class StoreTest extends TestCase
 
         $this->assertSame($handler, $store->getHandler());
     }
+
+    /** @test */
+    public function can_store_previous_url()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->setPreviousUrl('/a/valid/route');
+
+        $this->assertSame('/a/valid/route', $store->previousUrl());
+    }
 }

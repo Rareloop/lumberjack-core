@@ -26,4 +26,13 @@ class ServerRequest extends DiactorosServerRequest
             $request->getProtocolVersion()
         );
     }
+
+    public function ajax() : bool
+    {
+        if (!$this->hasHeader('X-Requested-With')) {
+            return false;
+        }
+
+        return 'XMLHttpRequest' === $this->getHeader('X-Requested-With')[0];
+    }
 }
