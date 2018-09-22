@@ -131,6 +131,9 @@ class StoreTest extends TestCase
         $store = new Store('session-name', new NullSessionHandler, 'session-id');
 
         $store->push('foo', 'bar');
+
+        $this->assertTrue($store->has('foo'));
+
         $store->forget('foo');
 
         $this->assertFalse($store->has('foo'));
@@ -143,7 +146,28 @@ class StoreTest extends TestCase
 
         $store->push('foo1', 'bar1');
         $store->push('foo2', 'bar2');
+
+        $this->assertTrue($store->has('foo1'));
+        $this->assertTrue($store->has('foo2'));
+
         $store->forget(['foo1', 'foo2']);
+
+        $this->assertFalse($store->has('foo1'));
+        $this->assertFalse($store->has('foo2'));
+    }
+
+    /** @test */
+    public function can_flush_all_values()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->push('foo1', 'bar1');
+        $store->push('foo2', 'bar2');
+
+        $this->assertTrue($store->has('foo1'));
+        $this->assertTrue($store->has('foo2'));
+
+        $store->flush();
 
         $this->assertFalse($store->has('foo1'));
         $this->assertFalse($store->has('foo2'));

@@ -105,6 +105,11 @@ class Store
         Arr::forget($this->attributes, $key);
     }
 
+    public function flush()
+    {
+        $this->attributes = [];
+    }
+
     public function flash($key, $value)
     {
         $this->put($key, $value);
