@@ -234,6 +234,9 @@ class TimberResponseTest extends TestCase
 }
 
 class TestViewModel extends ViewModel {
+    public $bar;
+    public $baz;
+
     public static function createFromArray(array $array) {
         $vm = new static;
 
