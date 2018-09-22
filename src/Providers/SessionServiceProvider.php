@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
+use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
 use Rareloop\Lumberjack\Session\SessionManager;
