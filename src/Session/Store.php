@@ -24,6 +24,8 @@ class Store
     public function start()
     {
         $this->loadSession();
+
+        return $this;
     }
 
     protected function loadSession()
@@ -48,6 +50,8 @@ class Store
         $this->ageFlashData();
 
         $this->handler->write($this->id, $this->prepareForStorage(@serialize($this->attributes)));
+
+        return $this;
     }
 
     protected function prepareForStorage($data)
@@ -69,6 +73,8 @@ class Store
         foreach ($key as $arrayKey => $arrayValue) {
             Arr::set($this->attributes, $arrayKey, $arrayValue);
         }
+
+        return $this;
     }
 
     public function get($key, $default = null)
@@ -98,37 +104,57 @@ class Store
         $array[] = $value;
 
         $this->put($key, $array);
+
+        return $this;
     }
 
     public function forget($key)
     {
         Arr::forget($this->attributes, $key);
+
+        return $this;
     }
 
     public function flush()
     {
         $this->attributes = [];
+
+        return $this;
     }
 
-    public function flash($key, $value)
+    public function flash($key = null, $value = null)
     {
+        if (is_array($key)) {
+            foreach ($key as $arrayKey => $arrayValue) {
+                $this->flash($arrayKey, $arrayValue);
+            }
+
+            return $this;
+        }
+
         $this->put($key, $value);
 
         $this->push('_flash.new', $key);
 
         $this->removeFromOldFlashData([$key]);
+
+        return $this;
     }
 
     public function reflash()
     {
         $this->mergeNewFlashes($this->get('_flash.old', []));
         $this->put('_flash.old', []);
+
+        return $this;
     }
 
     public function keep($keys = null)
     {
         $this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
         $this->removeFromOldFlashData($keys);
+
+        return $this;
     }
 
     protected function mergeNewFlashes(array $keys)

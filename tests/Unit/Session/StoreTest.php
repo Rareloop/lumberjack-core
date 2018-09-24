@@ -11,6 +11,33 @@ class StoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
+    public function chainableMethods()
+    {
+        return [
+            'start' => ['start'],
+            'save' => ['save'],
+            'put' => ['put', 'key', 'value'],
+            'push' => ['push', 'key', 'value'],
+            'forget' => ['forget', 'key'],
+            'flush' => ['flush'],
+            'flash' => ['flash', 'key', 'value'],
+            'flash' => ['flash', ['key' => 'value']],
+            'reflash' => ['reflash'],
+            'keep' => ['keep'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider chainableMethods
+     */
+    public function public_methods_are_chainable($methodName, ...$params)
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $this->assertSame($store, $store->{$methodName}(...$params));
+    }
+
     /** @test */
     public function can_get_session_name()
     {
@@ -201,6 +228,20 @@ class StoreTest extends TestCase
         $store->start();
         $store->put('foo', 'bar');
         $store->save();
+    }
+
+    /** @test */
+    public function can_flash_values_into_the_session_using_array_syntax()
+    {
+        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+
+        $store->flash([
+            'key' => 'value',
+            'foo' => 'bar',
+        ]);
+
+        $this->assertSame('value', $store->get('key'));
+        $this->assertSame('bar', $store->get('foo'));
     }
 
     /** @test */
