@@ -52,13 +52,22 @@ class SessionServiceProvider extends ServiceProvider
         });
 
         add_action('shutdown', function () {
-            $request = Helpers::request();
-
-            if ($request->isMethod('GET') && !$request->ajax()) {
-                $this->session->setPreviousUrl($request->fullUrl());
-            }
-
-            $this->session->save();
+            $this->storePreviousUrlToSession();
         });
+    }
+    
+    private function storePreviousUrlToSession()
+    {
+        if (!Helpers::app()->has('request')) {
+            return;
+        }
+
+        $request = Helpers::request();
+
+        if ($request->isMethod('GET') && !$request->ajax()) {
+            $this->session->setPreviousUrl($request->fullUrl());
+        }
+
+        $this->session->save();
     }
 }
