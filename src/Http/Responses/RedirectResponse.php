@@ -7,8 +7,14 @@ use Zend\Diactoros\Response\RedirectResponse as DiactorosRedirectResponse;
 
 class RedirectResponse extends DiactorosRedirectResponse
 {
-    public function with($key, $value)
+    public function with($key = null, $value = null)
     {
-        Helpers::app('session')->flash($key, $value);
+        if (is_array($key)) {
+            Helpers::app('session')->flash($key);
+        } else {
+            Helpers::app('session')->flash($key, $value);
+        }
+
+        return $this;
     }
 }

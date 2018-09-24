@@ -51,9 +51,29 @@ class RedirectResponseTest extends TestCase
         $app = new Application;
         $session = Mockery::mock(SessionManager::class);
         $session->shouldReceive('flash')->with('key', 'value')->once();
+        $session->shouldReceive('flash')->with('foo', 'bar')->once();
         $app->bind('session', $session);
 
         $response = new RedirectResponse('/another.php');
-        $response->with('key', 'value');
+        // Make sure we get an instance of RedirectResponse back from 'with'
+        $this->assertSame($response, $response->with('key', 'value')->with('foo', 'bar'));
+    }
+
+    /** @test */
+    public function can_call_with_method_to_flash_data_to_the_session_using_an_array()
+    {
+        $app = new Application;
+        $session = Mockery::mock(SessionManager::class);
+        $session->shouldReceive('flash')->with([
+            'key' => 'value',
+            'foo' => 'bar',
+        ])->once();
+        $app->bind('session', $session);
+
+        $response = new RedirectResponse('/another.php');
+        $response->with([
+            'key' => 'value',
+            'foo' => 'bar',
+        ]);
     }
 }
