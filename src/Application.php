@@ -19,6 +19,7 @@ class Application implements ContainerInterface, InteropContainerInterface
     private $basePath;
 
     private $nonSingletonClassBinds = [];
+    private $allBinds = [];
 
     public function __construct($basePath = false)
     {
@@ -78,6 +79,8 @@ class Application implements ContainerInterface, InteropContainerInterface
         }
 
         $this->container->set($key, $value);
+
+        $this->allBinds[] = $key;
     }
 
     /**
@@ -119,11 +122,22 @@ class Application implements ContainerInterface, InteropContainerInterface
      */
     public function get($id)
     {
-        if (in_array($id, $this->nonSingletonClassBinds)) {
+        if (!$this->isSingletonClassBind($id)) {
             return $this->container->make($id);
         }
 
         return $this->container->get($id);
+    }
+
+    private function isSingletonClassBind($id)
+    {
+        if ($this->isClassString($id) && !in_array($id, $this->allBinds)) {
+            // This is a class and hasn't been previously bound to the container, we should assume
+            // it shouldn't be a singleton as this is our default stance
+            return false;
+        }
+
+        return !in_array($id, $this->nonSingletonClassBinds);
     }
 
     /**

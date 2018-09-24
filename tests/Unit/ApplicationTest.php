@@ -70,6 +70,17 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function can_bind_an_object_and_always_get_the_same_instance_back()
+    {
+        $app = new Application;
+        $object = new TestInterfaceImplementation;
+
+        $app->bind(TestInterface::class, $object);
+
+        $this->assertSame($app->get(TestInterface::class), $app->get(TestInterface::class));
+    }
+
+    /** @test */
     public function can_bind_a_concrete_class_to_an_interface()
     {
         $app = new Application;
@@ -257,6 +268,17 @@ class ApplicationTest extends TestCase
 
         $object1 = $app->get(TestInterface::class);
         $object2 = $app->get(TestInterface::class);
+
+        $this->assertNotSame($object1, $object2);
+    }
+
+    /** @test */
+    public function get_does_not_produce_a_singleton_when_the_key_has_not_been_previously_bound_to_the_container()
+    {
+        $app = new Application;
+
+        $object1 = $app->get(TestInterfaceImplementation::class);
+        $object2 = $app->get(TestInterfaceImplementation::class);
 
         $this->assertNotSame($object1, $object2);
     }
