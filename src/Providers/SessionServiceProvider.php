@@ -54,7 +54,7 @@ class SessionServiceProvider extends ServiceProvider
         add_action('shutdown', function () {
             $request = Helpers::request();
 
-            if ($request->method() === 'get' && !$request->ajax()) {
+            if ($request->isMethod('GET') && !$request->ajax()) {
                 $this->session->setPreviousUrl($request->fullUrl());
             }
 
