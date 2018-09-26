@@ -35,4 +35,9 @@ class ServerRequest extends DiactorosServerRequest
 
         return 'XMLHttpRequest' === $this->getHeader('X-Requested-With')[0];
     }
+
+    public function getMethod()
+    {
+        return strtoupper(parent::getMethod());
+    }
 }

@@ -63,4 +63,14 @@ class ServerRequestTest extends TestCase
 
         $this->assertFalse($lumberjackRequest->ajax());
     }
+
+    /** @test */
+    public function getMethod_is_always_uppercase()
+    {
+        $request1 = ServerRequest::fromRequest(new DiactorosServerRequest([], [], '/test/123', 'GET'));
+        $request2 = ServerRequest::fromRequest(new DiactorosServerRequest([], [], '/test/123', 'get'));
+
+        $this->assertSame('GET', $request1->getMethod());
+        $this->assertSame('GET', $request2->getMethod());
+    }
 }
