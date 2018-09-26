@@ -8,6 +8,7 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Providers\QueryBuilderServiceProvider;
+use Rareloop\Lumberjack\QueryBuilder;
 
 class QueryBuilderServiceProviderTest extends TestCase
 {
@@ -20,5 +21,6 @@ class QueryBuilderServiceProviderTest extends TestCase
         $provider->register();
 
         $this->assertTrue($app->has(QueryBuilderContract::class));
+        $this->assertInstanceOf(QueryBuilder::class, $app->get(QueryBuilderContract::class));
     }
 }
