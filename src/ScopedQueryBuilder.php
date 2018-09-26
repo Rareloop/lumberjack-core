@@ -38,10 +38,12 @@ class ScopedQueryBuilder
         })->toArray();
 
         if (!in_array($scopeFunctionName, $publicMethods)) {
-            trigger_error('Call to undefined method '.$this->postClass.'::'.$scopeFunctionName.'()', E_USER_ERROR);
+            trigger_error('Call to undefined method ' . $this->postClass . '::' . $scopeFunctionName . '()', E_USER_ERROR);
         }
 
-        return (new $this->postClass(false, true))->{$scopeFunctionName}($this);
+        array_unshift($arguments, $this);
+
+        return (new $this->postClass(false, true))->{$scopeFunctionName}(...$arguments);
     }
 
     public function getParameters()
