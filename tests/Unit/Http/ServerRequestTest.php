@@ -44,6 +44,16 @@ class ServerRequestTest extends TestCase
     }
 
     /** @test */
+    public function fromRequest_parses_json_requests()
+    {
+        $request = new DiactorosServerRequest([], [], '/test/123', 'POST', 'data://text/plain,{"foo": "bar"}', ['Content-Type' => 'application/json']);
+
+        $lumberjackRequest = ServerRequest::fromRequest($request);
+
+        $this->assertSame('bar', $lumberjackRequest->input('foo'));
+    }
+
+    /** @test */
     public function ajax_method_returns_true_when_from_ajax()
     {
         $request = new DiactorosServerRequest([], [], '/test/123', 'GET');

@@ -13,6 +13,13 @@ class ServerRequest extends DiactorosServerRequest
 
     public static function fromRequest(ServerRequestInterface $request)
     {
+        $parsedBody = $request->getParsedBody();
+
+        // Is this a JSON request?
+        if (stripos($request->getHeaderLine('Content-Type'), 'application/json') !== false) {
+            $parsedBody = @json_decode($request->getBody()->getContents(), true);
+        }
+
         return new static(
             $request->getServerParams(),
             $request->getUploadedFiles(),
@@ -22,7 +29,7 @@ class ServerRequest extends DiactorosServerRequest
             $request->getHeaders(),
             $request->getCookieParams(),
             $request->getQueryParams(),
-            $request->getParsedBody(),
+            $parsedBody,
             $request->getProtocolVersion()
         );
     }
