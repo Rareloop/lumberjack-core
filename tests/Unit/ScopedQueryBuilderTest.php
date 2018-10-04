@@ -84,6 +84,19 @@ class ScopedQueryBuilderTest extends TestCase
         ], $params);
     }
 
+    /** @test */
+    public function can_pass_params_into_a_query_scope_on_post_object()
+    {
+        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+        $chainedBuilder = $builder->without(1, 2);
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'post__not_in' => [1, 2],
+        ], $params);
+    }
+
     /**
      * @test
      * @runInSeparateProcess
@@ -125,4 +138,10 @@ class PostWithQueryScope extends Post
     {
         return $query->whereStatus('draft');
     }
+
+    public function scopeWithout($query, $id1, $id2)
+    {
+        return $query->whereIdNotIn([$id1, $id2]);
+    }
 }
+

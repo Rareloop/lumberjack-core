@@ -4,7 +4,7 @@ namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Providers\ServiceProvider;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
-use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
+use Rareloop\Lumberjack\QueryBuilder;
 
 class QueryBuilderServiceProvider extends ServiceProvider
 {
