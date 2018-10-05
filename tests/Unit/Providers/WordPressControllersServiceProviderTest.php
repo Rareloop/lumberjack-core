@@ -46,6 +46,37 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function handle_template_include_method_sets_details_in_container_when_controller_is_not_present()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
+
+        $this->assertTrue($app->has('__wp-controller-miss-template'));
+        $this->assertTrue($app->has('__wp-controller-miss-controller'));
+        $this->assertSame('single.php', $app->get('__wp-controller-miss-template'));
+        $this->assertSame('App\SingleController', $app->get('__wp-controller-miss-controller'));
+    }
+
+    /** @test */
+    public function handle_template_include_method_does_not_set_details_in_container_when_controller_is_present()
+    {
+        $response = new TextResponse('Testing 123', 200);
+        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app->shouldReceive('shutdown')->times(1);
+
+        $provider = Mockery::mock(WordPressControllersServiceProvider::class.'[handleRequest]', [$app]);
+        $provider->shouldReceive('handleRequest')->once()->andReturn($response);
+        $provider->boot($app);
+
+        $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
+
+        $this->assertFalse($app->has('__wp-controller-miss-template'));
+        $this->assertFalse($app->has('__wp-controller-miss-controller'));
+    }
+
+    /** @test */
     public function can_get_name_of_controller_from_template()
     {
         $app = new Application(__DIR__.'/../');
@@ -111,6 +142,32 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
+    }
+
+    /** @test */
+    public function handle_request_will_mark_request_handled_in_app_if_controller_does_exist()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot();
+
+        $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
+
+        $this->assertTrue($app->hasRequestBeenHandled());
+    }
+
+    /** @test */
+    public function handle_request_will_not_mark_request_handled_in_app_if_controller_does_not_exist()
+    {
+        $app = new Application(__DIR__.'/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot();
+
+        $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
+
+        $this->assertFalse($app->hasRequestBeenHandled());
     }
 
     /** @test */

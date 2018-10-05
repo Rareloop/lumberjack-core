@@ -17,6 +17,7 @@ class Application implements ContainerInterface, InteropContainerInterface
     private $loadedProviders = [];
     private $booted = false;
     private $basePath;
+    private $requestHandled = false;
 
     private $nonSingletonClassBinds = [];
     private $allBinds = [];
@@ -223,6 +224,29 @@ class Application implements ContainerInterface, InteropContainerInterface
         foreach ($bootstrappers as $bootstrapper) {
             $this->make($bootstrapper)->bootstrap($this);
         }
+    }
+
+    /**
+     * Has the current request been handled by Lumberjack or underlying WordPress
+     *
+     * This is specifically useful for catching errors with WordPress Controllers, e.g. typos in
+     * the Controller name
+     *
+     * @return boolean
+     */
+    public function hasRequestBeenHandled() : bool
+    {
+        return $this->requestHandled;
+    }
+
+    /**
+     * Flag that the request has been handled
+     *
+     * @return void
+     */
+    public function requestHasBeenHandled()
+    {
+        $this->requestHandled = true;
     }
 
     public function shutdown(ResponseInterface $response = null)

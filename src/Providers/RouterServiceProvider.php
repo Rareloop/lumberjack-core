@@ -62,6 +62,8 @@ class RouterServiceProvider extends ServiceProvider
             return;
         }
 
+        $this->app->requestHasBeenHandled();
+
         $this->app->shutdown($response);
     }
 }

@@ -173,6 +173,58 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest($request);
     }
 
+    /** @test */
+    public function matched_request_will_mark_request_handled_in_app()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $this->setSiteUrl('http://example.com/sub-path/');
+        $response = new TextResponse('Testing 123', 200);
+        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app->shouldReceive('shutdown');
+
+        $lumberjack = new Lumberjack($app);
+        $provider = new RouterServiceProvider($app);
+
+        $app->register($provider);
+        $lumberjack->bootstrap();
+
+        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router->shouldReceive('match')->andReturn($response)->once();
+
+        $app->bind('router', $router);
+
+        $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
+
+        $this->assertTrue($app->hasRequestBeenHandled());
+    }
+
+    /** @test */
+    public function unmatched_request_will_not_mark_request_handled_in_app()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $this->setSiteUrl('http://example.com/sub-path/');
+        $response = new TextResponse('Testing 123', 404);
+        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app->shouldReceive('shutdown');
+
+        $lumberjack = new Lumberjack($app);
+        $provider = new RouterServiceProvider($app);
+
+        $app->register($provider);
+        $lumberjack->bootstrap();
+
+        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router->shouldReceive('match')->andReturn($response)->once();
+
+        $app->bind('router', $router);
+
+        $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
+
+        $this->assertFalse($app->hasRequestBeenHandled());
+    }
+
     private function setSiteUrl($url) {
         Functions\when('get_bloginfo')->alias(function ($key) use ($url) {
             if ($key === 'url') {

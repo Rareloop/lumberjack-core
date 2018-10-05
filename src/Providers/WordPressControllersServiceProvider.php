@@ -33,6 +33,9 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
         if ($response) {
             $this->app->shutdown($response);
+        } else {
+            $this->app->bind('__wp-controller-miss-template', basename($template));
+            $this->app->bind('__wp-controller-miss-controller', $controller);
         }
     }
 
@@ -60,6 +63,8 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
             return false;
         }
+
+        $this->app->requestHasBeenHandled();
 
         $invoker = new Invoker($this->app);
         $output = $invoker->setRequest($request)->call([$controllerName, $methodName]);

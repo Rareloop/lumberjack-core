@@ -516,6 +516,18 @@ class ApplicationTest extends TestCase
 
         $this->assertTrue($app->runningInConsole());
     }
+
+    /** @test */
+    public function can_test_if_request_has_been_handled()
+    {
+        $app = new Application;
+
+        $this->assertFalse($app->hasRequestBeenHandled());
+
+        $app->requestHasBeenHandled();
+
+        $this->assertTrue($app->hasRequestBeenHandled());
+    }
 }
 
 class BootstrapperBootstrapTester
