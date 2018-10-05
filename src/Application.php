@@ -249,6 +249,32 @@ class Application implements ContainerInterface, InteropContainerInterface
         $this->requestHandled = true;
     }
 
+    /**
+     * Detect when the request has not been handled and throw an exception
+     *
+     * @return void
+     */
+    public function detectWhenRequestHasNotBeenHandled()
+    {
+        add_action('wp_footer', function () {
+            $this->requestHasBeenHandled();
+        });
+
+        add_action('shutdown', function () {
+            if (!$this->hasRequestBeenHandled()) {
+                if ($this->has('__wp-controller-miss-template') && $this->has('__wp-controller-miss-controller')) {
+                    wp_die(
+                        'Loaded template <code>' .
+                        $this->get('__wp-controller-miss-template') .
+                        '</code> but couldn\'t find class <code>' .
+                        $this->get('__wp-controller-miss-controller') .
+                        '</code>'
+                    );
+                }
+            }
+        });
+    }
+
     public function shutdown(ResponseInterface $response = null)
     {
         if ($response) {

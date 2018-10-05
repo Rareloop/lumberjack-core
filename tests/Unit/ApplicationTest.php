@@ -7,12 +7,13 @@ use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
+use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 
 class ApplicationTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use BrainMonkeyPHPUnitIntegration;
 
     public function tearDown()
     {
@@ -527,6 +528,17 @@ class ApplicationTest extends TestCase
         $app->requestHasBeenHandled();
 
         $this->assertTrue($app->hasRequestBeenHandled());
+    }
+
+    /** @test */
+    public function calling_detectWhenRequestHasNotBeenHandled_adds_actions()
+    {
+        $app = new Application;
+
+        $app->detectWhenRequestHasNotBeenHandled();
+
+        $this->assertTrue(has_action('wp_footer'));
+        $this->assertTrue(has_action('shutdown'));
     }
 }
 

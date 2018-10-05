@@ -13,6 +13,7 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterAliases;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
+use Rareloop\Lumberjack\Bootstrappers\RegisterRequestHandler;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
@@ -31,6 +32,7 @@ class LumberjackTest extends TestCase
             RegisterProviders::class,
             BootProviders::class,
             RegisterAliases::class,
+            RegisterRequestHandler::class,
         ])->once();
 
         $kernal = new Lumberjack($app);

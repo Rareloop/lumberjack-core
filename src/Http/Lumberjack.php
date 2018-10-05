@@ -9,6 +9,7 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterAliases;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
+use Rareloop\Lumberjack\Bootstrappers\RegisterRequestHandler;
 
 class Lumberjack
 {
@@ -21,6 +22,7 @@ class Lumberjack
         RegisterProviders::class,
         BootProviders::class,
         RegisterAliases::class,
+        RegisterRequestHandler::class,
     ];
 
     public function __construct(Application $app)
