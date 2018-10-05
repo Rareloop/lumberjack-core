@@ -10,15 +10,23 @@ use Rareloop\Lumberjack\Providers\ServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use phpmock\Mock;
 use phpmock\MockBuilder;
+use Brain\Monkey;
 
 class ApplicationTest extends TestCase
 {
-    use BrainMonkeyPHPUnitIntegration;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+    public function setUp()
+    {
+        Monkey\setUp();
+        parent::setUp();
+    }
 
     public function tearDown()
     {
-        parent::tearDown();
+        Monkey\tearDown();
         Mock::disableAll();
+        parent::tearDown();
     }
 
     /** @test */
