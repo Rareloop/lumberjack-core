@@ -3,7 +3,7 @@
     "require": {
         "php": ">=7.1.0",
         "php-di/php-di": "^6.0.0",
-        "rareloop/router": "dev-update-dependencies@dev",
+        "rareloop/router": "^4.0.0",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
