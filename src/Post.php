@@ -4,11 +4,17 @@ namespace Rareloop\Lumberjack;
 
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
+use Spatie\Macroable\Macroable;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
 class Post extends TimberPost
 {
+    use Macroable {
+        Macroable::__call as __macroableCall;
+        Macroable::__callStatic as __macroableCallStatic;
+    }
+
     public function __construct($id = false, $preventTimberInit = false)
     {
         /**
@@ -20,8 +26,21 @@ class Post extends TimberPost
         }
     }
 
+    public function __call($name, $arguments)
+    {
+        if (static::hasMacro($name)) {
+            return $this->__macroableCall($name, $arguments);
+        }
+
+        return parent::__call($name, $arguments);
+    }
+
     public static function __callStatic($name, $arguments)
     {
+        if (static::hasMacro($name)) {
+            return static::__macroableCallStatic($name, $arguments);
+        }
+
         if (in_array($name, ['whereStatus', 'whereIdIn', 'whereIdNotIn'])) {
             $builder = static::builder();
             return call_user_func_array([$builder, $name], $arguments);

@@ -57,6 +57,43 @@ class RouterTest extends TestCase
 
         $this->assertSame('Closure', $route->getActionName());
     }
+
+    /**
+     * @test
+     */
+    public function can_extend_post_behaviour_with_macros()
+    {
+        Router::macro('testFunctionAddedByMacro', function () {
+            return 'abc123';
+        });
+
+        $queryBuilder = new Router();
+
+        $this->assertSame('abc123', $queryBuilder->testFunctionAddedByMacro());
+        $this->assertSame('abc123', Router::testFunctionAddedByMacro());
+    }
+
+    /**
+     * @test
+     */
+    public function can_extend_post_behaviour_with_mixin()
+    {
+        Router::mixin(new RouterMixin);
+
+        $queryBuilder = new Router();
+
+        $this->assertSame('abc123', $queryBuilder->testFunctionAddedByMixin());
+    }
+}
+
+class RouterMixin
+{
+    function testFunctionAddedByMixin()
+    {
+        return function() {
+            return 'abc123';
+        };
+    }
 }
 
 class RouterTestController

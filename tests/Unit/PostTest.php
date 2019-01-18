@@ -195,6 +195,58 @@ class PostTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $posts);
     }
+
+    /**
+     * @test
+     */
+    public function can_extend_post_behaviour_with_macros()
+    {
+	Post::macro('testFunctionAddedByMacro', function () {
+	    return 'abc123';
+	});
+
+	$post = new Post(false, true);
+
+	$this->assertSame('abc123', $post->testFunctionAddedByMacro());
+	$this->assertSame('abc123', Post::testFunctionAddedByMacro());
+    }
+
+    /**
+     * @test
+     */
+    public function macros_set_correct_this_context_on_instances()
+    {
+	Post::macro('testFunctionAddedByMacro', function () {
+	    return $this->dummyData();
+	});
+
+	$post = new Post(false, true);
+	$post->dummyData = 'abc123';
+
+	$this->assertSame('abc123', $post->testFunctionAddedByMacro());
+    }
+
+    /**
+     * @test
+     */
+    public function can_extend_post_behaviour_with_mixin()
+    {
+	Post::mixin(new PostMixin);
+
+	$post = new Post(false, true);
+
+	$this->assertSame('abc123', $post->testFunctionAddedByMixin());
+    }
+}
+
+class PostMixin
+{
+    function testFunctionAddedByMixin()
+    {
+	return function() {
+	    return 'abc123';
+	};
+    }
 }
 
 class RegisterablePostType extends Post
