@@ -83,4 +83,22 @@ class ConfigTest extends TestCase
 
         $this->assertSame($config, $config->load(__DIR__ . '/config'));
     }
+
+    /** @test */
+    public function config_values_can_be_checked_for_existence()
+    {
+        $config = new Config;
+
+        $config->set('app.environment', 'production');
+        $config->set('app.null', null);
+        $config->set('app.false', false);
+
+        $this->assertTrue($config->has('app.environment'));
+        $this->assertTrue($config->has('app'));
+        $this->assertTrue($config->has('app.false'));
+        $this->assertTrue($config->has('app.null'));
+
+        $this->assertFalse($config->has('app.nope'));
+        $this->assertFalse($config->has('nope.nope'));
+    }
 }

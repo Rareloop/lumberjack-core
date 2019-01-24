@@ -28,6 +28,11 @@ class Config
         return Arr::get($this->data, $key, $default);
     }
 
+    public function has(string $key)
+    {
+        return Arr::has($this->data, $key);
+    }
+
     public function load(string $path) : Config
     {
         $files = glob($path . '/*.php');
