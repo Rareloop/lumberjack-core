@@ -346,6 +346,29 @@ class QueryBuilderTest extends TestCase
         $this->assertSame($posts, $returnedPosts->toArray());
     }
 
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function can_specify_the_class_type_to_return()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'offset' => 10,
+                ]),
+                PostWithCustomPostType::class,
+            ])
+            ->once();
+
+        $builder = new QueryBuilder();
+        $builder->whereStatus('publish')->offset(10)->as(PostWithCustomPostType::class)->get();
+    }
+
     /** @test */
     public function can_clone_an_instance()
     {
@@ -369,4 +392,12 @@ class QueryBuilderTest extends TestCase
     }
 
     // TODO: Test that undefined functions throw an appropriate error
+}
+
+class PostWithCustomPostType extends Post
+{
+    public static function getPostType()
+    {
+        return 'post_with_query_scope';
+    }
 }

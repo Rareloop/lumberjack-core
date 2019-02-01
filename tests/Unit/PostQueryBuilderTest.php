@@ -53,7 +53,7 @@ class PostQueryBuilderTest extends TestCase
 
     private function assertQueryBuilder($function, $params, $postType)
     {
-        $builder = Mockery::mock(ScopedQueryBuilder::class.'['.$function.']', [call_user_func([$postType, 'getPostType'])]);
+        $builder = Mockery::mock(ScopedQueryBuilder::class.'['.$function.']', [$postType]);
         $builder->shouldReceive($function)->withArgs($params)->once();
 
         // Inject the mock builder

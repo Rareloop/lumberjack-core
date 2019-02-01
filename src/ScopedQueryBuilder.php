@@ -2,20 +2,27 @@
 
 namespace Rareloop\Lumberjack;
 
-use Rareloop\Lumberjack\Helpers;
-use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException;
-use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
+use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException;
+use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException;
+use Rareloop\Lumberjack\Helpers;
+use Rareloop\Lumberjack\QueryBuilder;
 use ReflectionClass;
 use ReflectionMethod;
 
 class ScopedQueryBuilder
 {
+    protected $postClass;
+
     public function __construct($postClass)
     {
         $this->postClass = $postClass;
 
         $this->queryBuilder = Helpers::app(QueryBuilderContract::class);
+
+        $this->queryBuilder
+            ->as($postClass)
+            ->wherePostType(call_user_func([$this->postClass, 'getPostType']));
     }
 
     public function __call($name, $arguments)
@@ -49,21 +56,13 @@ class ScopedQueryBuilder
         return (new $this->postClass(false, true))->{$scopeFunctionName}(...$arguments);
     }
 
-    public function getParameters()
-    {
-        return array_merge(
-            $this->queryBuilder->getParameters(),
-            ['post_type' => call_user_func([$this->postClass, 'getPostType'])]
-        );
-    }
-
     public function wherePostType($postType)
     {
         throw new CannotRedeclarePostTypeOnQueryException;
     }
 
-    public function get()
+    public function as($postClass)
     {
-        return $this->postClass::query($this->getParameters());
+        throw new CannotRedeclarePostClassOnQueryException;
     }
 }

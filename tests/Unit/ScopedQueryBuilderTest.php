@@ -47,6 +47,16 @@ class ScopedQueryBuilderTest extends TestCase
 
     /**
      * @test
+     * @expectedException Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException
+     */
+    public function cannot_overwrite_post_class()
+    {
+        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+        $builder->as(Post::class);
+    }
+
+    /**
+     * @test
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */

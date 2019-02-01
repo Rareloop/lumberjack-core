@@ -194,6 +194,13 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
+    public function as($postClass) : QueryBuilderContract
+    {
+        $this->postClass = $postClass;
+
+        return $this;
+    }
+
     public function get() : Collection
     {
         return collect(Timber::get_posts($this->getParameters(), $this->postClass));
