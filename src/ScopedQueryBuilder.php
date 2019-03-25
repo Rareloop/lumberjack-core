@@ -63,7 +63,7 @@ class ScopedQueryBuilder
      * @param  string  $name The method name
      * @return boolean
      */
-    protected function hasQueryBuilderMethod(string name) : bool
+    protected function hasQueryBuilderMethod(string $name) : bool
     {
         if (method_exists($this->queryBuilder, $name)) {
             return true;
