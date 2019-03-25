@@ -171,6 +171,20 @@ class QueryBuilder implements QueryBuilderContract
         return collect(Timber::get_posts($this->getParameters(), $this->postClass));
     }
 
+    /**
+     * Get the first Post that matches the current query. If no Post matches then return `null`.
+     *
+     * @return Rareloop\Lumberjack\Post|null
+     */
+    public function first() : ?Post
+    {
+        $params = array_merge($this->getParameters(), [
+            'limit' => 1,
+        ]);
+
+        return collect(Timber::get_posts($params, $this->postClass))->first();
+    }
+
     public function clone() : QueryBuilderContract
     {
         $clone = clone $this;

@@ -369,6 +369,63 @@ class QueryBuilderTest extends TestCase
         $builder->whereStatus('publish')->offset(10)->as(PostWithCustomPostType::class)->get();
     }
 
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function first_retrieves_first_relevant_match()
+    {
+        $post = new Post(1, true);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'limit' => 1,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn([$post]);
+
+        $builder = new QueryBuilder();
+        $returnedPost = $builder->whereStatus('publish')->first();
+
+        $this->assertInstanceOf(Post::class, $returnedPost);
+        $this->assertSame($post, $returnedPost);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function first_returns_null_if_no_matching_post()
+    {
+        $post = new Post(1, true);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'limit' => 1,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn([]);
+
+        $builder = new QueryBuilder();
+        $returnedPost = $builder->whereStatus('publish')->first();
+
+        $this->assertSame(null, $returnedPost);
+    }
+
     /** @test */
     public function can_clone_an_instance()
     {
