@@ -5,11 +5,14 @@ namespace Rareloop\Lumberjack;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException;
 use Rareloop\Lumberjack\Post;
+use Spatie\Macroable\Macroable;
 use Tightenco\Collect\Support\Collection;
 use Timber\Timber;
 
 class QueryBuilder implements QueryBuilderContract
 {
+    use Macroable;
+
     protected $postClass = Post::class;
 
     private $postType;
@@ -30,6 +33,8 @@ class QueryBuilder implements QueryBuilderContract
     private $metaRelationship;
     private $metaQueries = [];
 
+    private $params = [];
+
     // Order Directions
     const DESC = 'DESC';
     const ASC = 'ASC';
@@ -43,73 +48,26 @@ class QueryBuilder implements QueryBuilderContract
 
     public function getParameters() : array
     {
-        $params = [
-            'post_type' => $this->postType,
-        ];
-
-        if (isset($this->limit)) {
-            $params['posts_per_page'] = $this->limit;
-        }
-
-        if (isset($this->offset)) {
-            $params['offset'] = $this->offset;
-        }
-
-        if (isset($this->orderBy)) {
-            $params['orderby'] = $this->orderBy;
-            $params['order'] = $this->order;
-        }
-
-        if (isset($this->metaOrderBy)) {
-            $params['orderby'] = $this->metaOrderNumeric ? 'meta_value_num' : 'meta_value';
-            $params['order'] = $this->metaOrder;
-            $params['meta_key'] = $this->metaOrderBy;
-        }
-
-        if (!empty($this->whereIn)) {
-            $params['post__in'] = $this->whereIn;
-        }
-
-        if (!empty($this->whereNotIn)) {
-            $params['post__not_in'] = $this->whereNotIn;
-        }
-
-        if (isset($this->whereStatus)) {
-            $params['post_status'] = $this->whereStatus;
-        }
-
-        if (!empty($this->metaQueries)) {
-            $params['meta_query'] = [];
-
-            if (isset($this->metaRelationship)) {
-                $params['meta_query']['relation'] = $this->metaRelationship;
-            }
-
-            foreach ($this->metaQueries as $query) {
-                $params['meta_query'][] = $query;
-            }
-        }
-
-        return $params;
+        return $this->params;
     }
 
     public function wherePostType($postType) : QueryBuilderContract
     {
-        $this->postType = $postType;
+        $this->params['post_type'] = $postType;
 
         return $this;
     }
 
     public function limit($limit) : QueryBuilderContract
     {
-        $this->limit = $limit;
+        $this->params['posts_per_page'] = $limit;
 
         return $this;
     }
 
     public function offset($offset) : QueryBuilderContract
     {
-        $this->offset = $offset;
+        $this->params['offset'] = $offset;
 
         return $this;
     }
@@ -118,8 +76,8 @@ class QueryBuilder implements QueryBuilderContract
     {
         $order = strtoupper($order);
 
-        $this->orderBy = $orderBy;
-        $this->order = $order;
+        $this->params['orderby'] = $orderBy;
+        $this->params['order'] = $order;
 
         return $this;
     }
@@ -128,23 +86,23 @@ class QueryBuilder implements QueryBuilderContract
     {
         $order = strtoupper($order);
 
-        $this->metaOrderBy = $metaKey;
-        $this->metaOrder = $order;
-        $this->metaOrderNumeric = ($type === QueryBuilder::NUMERIC ? true : false);
+        $this->params['orderby'] = ($type === QueryBuilder::NUMERIC ? true : false) ? 'meta_value_num' : 'meta_value';
+        $this->params['order'] = $order;
+        $this->params['meta_key'] = $metaKey;
 
         return $this;
     }
 
     public function whereIdIn(array $ids) : QueryBuilderContract
     {
-        $this->whereIn = $ids;
+        $this->params['post__in'] = $ids;
 
         return $this;
     }
 
     public function whereIdNotIn(array $ids) : QueryBuilderContract
     {
-        $this->whereNotIn = $ids;
+        $this->params['post__not_in'] = $ids;
 
         return $this;
     }
@@ -157,24 +115,30 @@ class QueryBuilder implements QueryBuilderContract
             throw new \InvalidArgumentException('`whereStatus` must be called with at least one argument');
         }
 
-        $this->whereStatus = count($args) > 1 ? $args : $args[0];
+        $this->params['post_status'] = count($args) > 1 ? $args : $args[0];
 
         return $this;
     }
 
+    protected function initialiseMetaQuery()
+    {
+        $this->params['meta_query'] = $this->params['meta_query'] ?? [];
+    }
+
     public function whereMeta($key, $value, $compare = '=', $type = null) : QueryBuilderContract
     {
-        $params = [
+        $meta = [
             'key' => $key,
             'value' => $value,
             'compare' => $compare,
         ];
 
         if ($type) {
-            $params['type'] = $type;
+            $meta['type'] = $type;
         }
 
-        $this->metaQueries[] = $params;
+        $this->initialiseMetaQuery();
+        $this->params['meta_query'][] = $meta;
 
         return $this;
     }
@@ -189,7 +153,8 @@ class QueryBuilder implements QueryBuilderContract
             );
         }
 
-        $this->metaRelationship = $relation;
+        $this->initialiseMetaQuery();
+        $this->params['meta_query']['relation'] = $relation;
 
         return $this;
     }

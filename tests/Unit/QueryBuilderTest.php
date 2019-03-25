@@ -391,7 +391,47 @@ class QueryBuilderTest extends TestCase
         ], $builder2->getParameters());
     }
 
+    /**
+     * @test
+     */
+    public function can_extend_querybuilder_behaviour_with_macros()
+    {
+        QueryBuilder::macro('testFunctionAddedByMacro', function () {
+            $this->params['foo'] = 'bar';
+
+            return $this;
+        });
+
+        $queryBuilder = new QueryBuilder();
+
+        $this->assertSame(['foo' => 'bar'], $queryBuilder->testFunctionAddedByMacro()->getParameters());
+    }
+
+    /**
+     * @test
+     */
+    public function can_extend_querybuilder_behaviour_with_mixin()
+    {
+        QueryBuilder::mixin(new QueryBuilderMixin);
+
+        $queryBuilder = new QueryBuilder();
+
+        $this->assertSame(['foo' => 'bar'], $queryBuilder->testFunctionAddedByMixin()->getParameters());
+    }
+
     // TODO: Test that undefined functions throw an appropriate error
+}
+
+class QueryBuilderMixin
+{
+    function testFunctionAddedByMixin()
+    {
+        return function() {
+            $this->params['foo'] = 'bar';
+
+            return $this;
+        };
+    }
 }
 
 class PostWithCustomPostType extends Post

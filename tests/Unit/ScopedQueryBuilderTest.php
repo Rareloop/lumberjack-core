@@ -127,6 +127,25 @@ class ScopedQueryBuilderTest extends TestCase
 
         $this->assertSame('it works', $builder->nonStandardMethod());
     }
+
+    /** @test */
+    public function can_call_a_function_added_to_querybuilder_via_a_macro()
+    {
+        QueryBuilder::macro('testFunctionAddedByMacro', function () {
+            $this->params['foo'] = 'bar';
+
+            return $this;
+        });
+
+        $builder = new ScopedQueryBuilder(Post::class);
+        $chainedBuilder = $builder->testFunctionAddedByMacro();
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'foo' => 'bar',
+        ], $params);
+    }
 }
 
 class CustomQueryBuilder extends QueryBuilder

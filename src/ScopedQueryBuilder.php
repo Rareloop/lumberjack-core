@@ -28,7 +28,7 @@ class ScopedQueryBuilder
     public function __call($name, $arguments)
     {
         // Proxy QueryBuilder methods
-        if (method_exists($this->queryBuilder, $name)) {
+        if ($this->hasQueryBuilderMethod($name)) {
             $response = call_user_func_array([$this->queryBuilder, $name], $arguments);
 
             // We want to make sure that chaining continues through this proxy object so we
@@ -54,6 +54,26 @@ class ScopedQueryBuilder
         array_unshift($arguments, $this);
 
         return (new $this->postClass(false, true))->{$scopeFunctionName}(...$arguments);
+    }
+
+    /**
+     * Does the QueryBuilder we're using have a method with the provided name? This will also
+     * check any functionality added via a macro.
+     *
+     * @param  string  $name The method name
+     * @return boolean
+     */
+    protected function hasQueryBuilderMethod(string name) : bool
+    {
+        if (method_exists($this->queryBuilder, $name)) {
+            return true;
+        }
+
+        if (method_exists($this->queryBuilder, 'hasMacro') && $this->queryBuilder->hasMacro($name)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function wherePostType($postType)
