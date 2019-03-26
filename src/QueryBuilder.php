@@ -168,7 +168,13 @@ class QueryBuilder implements QueryBuilderContract
 
     public function get() : Collection
     {
-        return collect(Timber::get_posts($this->getParameters(), $this->postClass));
+        $posts = Timber::get_posts($this->getParameters(), $this->postClass);
+
+        if (!is_array($posts)) {
+            $posts = [];
+        }
+
+        return collect($posts);
     }
 
     /**
@@ -182,7 +188,13 @@ class QueryBuilder implements QueryBuilderContract
             'limit' => 1,
         ]);
 
-        return collect(Timber::get_posts($params, $this->postClass))->first();
+        $posts = Timber::get_posts($params, $this->postClass);
+
+        if (!is_array($posts)) {
+            return null;
+        }
+
+        return collect($posts)->first();
     }
 
     public function clone() : QueryBuilderContract

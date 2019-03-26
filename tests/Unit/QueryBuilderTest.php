@@ -351,6 +351,60 @@ class QueryBuilderTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
+    public function get_retrieves_empty_collection_when_timber_returns_false()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'offset' => 10,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn(false);
+
+        $builder = new QueryBuilder();
+        $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
+
+        $this->assertInstanceOf(Collection::class, $returnedPosts);
+        $this->assertSame(0, $returnedPosts->count());
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function get_retrieves_empty_collection_when_timber_returns_null()
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'offset' => 10,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn(null);
+
+        $builder = new QueryBuilder();
+        $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
+
+        $this->assertInstanceOf(Collection::class, $returnedPosts);
+        $this->assertSame(0, $returnedPosts->count());
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function can_specify_the_class_type_to_return()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -419,6 +473,62 @@ class QueryBuilderTest extends TestCase
             ])
             ->once()
             ->andReturn([]);
+
+        $builder = new QueryBuilder();
+        $returnedPost = $builder->whereStatus('publish')->first();
+
+        $this->assertSame(null, $returnedPost);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function first_returns_null_when_timber_returns_false()
+    {
+        $post = new Post(1, true);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'limit' => 1,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn(false);
+
+        $builder = new QueryBuilder();
+        $returnedPost = $builder->whereStatus('publish')->first();
+
+        $this->assertSame(null, $returnedPost);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function first_returns_null_when_timber_returns_null()
+    {
+        $post = new Post(1, true);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'limit' => 1,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn(null);
 
         $builder = new QueryBuilder();
         $returnedPost = $builder->whereStatus('publish')->first();
