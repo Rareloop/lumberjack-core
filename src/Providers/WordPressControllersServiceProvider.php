@@ -4,9 +4,12 @@ namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
 use Rareloop\Router\Invoker;
+use Rareloop\Router\ProvidesControllerMiddleware;
 use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
+use Tightenco\Collect\Support\Collection;
 use Zend\Diactoros\ServerRequestFactory;
+use mindplay\middleman\Dispatcher;
 
 class WordPressControllersServiceProvider extends ServiceProvider
 {
@@ -66,8 +69,26 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
         $this->app->requestHasBeenHandled();
 
-        $invoker = new Invoker($this->app);
-        $output = $invoker->setRequest($request)->call([$controllerName, $methodName]);
-        return ResponseFactory::create($output, $request);
+        $controller = $this->app->get($controllerName);
+        $middlewares = [];
+
+        if ($controller instanceof ProvidesControllerMiddleware) {
+            $controllerMiddleware = new Collection($controller->getControllerMiddleware());
+
+            $middlewares = $controllerMiddleware->reject(function ($cm) use ($methodName) {
+                return $cm->excludedForMethod($methodName);
+            })->map(function ($cm) {
+                return $cm->middleware();
+            });
+        }
+
+        $middlewares[] = function ($request) use ($controller, $methodName) {
+            $invoker = new Invoker($this->app);
+            $output = $invoker->setRequest($request)->call([$controller, $methodName]);
+            return ResponseFactory::create($output, $request);
+        };
+
+        $dispatcher = new Dispatcher($middlewares);
+        return $dispatcher->dispatch($request);
     }
 }

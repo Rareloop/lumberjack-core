@@ -7,7 +7,11 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Http\Controller;
 use Rareloop\Lumberjack\Http\Kernal;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
@@ -224,6 +228,55 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function handle_request_supports_middleware()
+    {
+        $app = new Application(__DIR__.'/../');
+        $controller = new TestControllerWithMiddleware;
+        $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'));
+        $app->bind(TestControllerWithMiddleware::class, $controller);
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+
+        $this->assertTrue($response->hasHeader('X-Header'));
+        $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
+    }
+
+    /** @test */
+    public function handle_request_supports_middleware_applied_to_a_specific_method_using_only()
+    {
+        $app = new Application(__DIR__.'/../');
+        $controller = new TestControllerWithMiddleware;
+        $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->only('notHandle');
+        $app->bind(TestControllerWithMiddleware::class, $controller);
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+
+        $this->assertFalse($response->hasHeader('X-Header'));
+    }
+
+    /** @test */
+    public function handle_request_supports_middleware_applied_to_a_specific_method_using_except()
+    {
+        $app = new Application(__DIR__.'/../');
+        $controller = new TestControllerWithMiddleware;
+        $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->except('handle');
+        $app->bind(TestControllerWithMiddleware::class, $controller);
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+
+        $this->assertFalse($response->hasHeader('X-Header'));
+    }
+
+    /** @test */
     public function handle_template_include_will_call_app_shutdown_when_it_has_handled_a_request()
     {
         $response = new TextResponse('Testing 123', 404);
@@ -293,5 +346,32 @@ class TestControllerReturningAResponsable
     public function handle()
     {
         return new MyResponsable;
+    }
+}
+
+class TestControllerWithMiddleware extends Controller
+{
+    public function handle()
+    {
+
+    }
+}
+
+class AddHeaderMiddleware implements MiddlewareInterface
+{
+    private $key;
+    private $value;
+
+    public function __construct($key, $value)
+    {
+        $this->key = $key;
+        $this->value = $value;
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
+        $response = $handler->handle($request);
+
+        return $response->withHeader($this->key, $this->value);
     }
 }
