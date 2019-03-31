@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0
+
+### Added
+
+- Macroable support to `QueryBuilder`
+- Add `first()` method to `QueryBuilder`
+- Allow middleware to be added within a controller, including WordPress controllers
+- Add `has()` method to `Config`
+
+### Patched
+
+- Ensure `get()` and `first()` on the `QueryBuilder` return consistent responses
+
 ## 4.1.0
 
 ### Added
