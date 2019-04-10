@@ -5,7 +5,7 @@ namespace Rareloop\Lumberjack\Test\Http;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Contracts\StoresMiddlewareAliases;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 use Rareloop\Lumberjack\Http\MiddlewareResolver;
 
@@ -38,7 +38,7 @@ class MiddlewareResolverTest extends TestCase
     public function can_resolve_a_middleware_alias()
     {
         $app = new Application;
-        $store = Mockery::mock(StoresMiddlewareAliases::class);
+        $store = Mockery::mock(MiddlewareAliases::class);
         $store->shouldReceive('has')->with('middlewarekey')->once()->andReturn(true);
         $store->shouldReceive('get')->with('middlewarekey')->once()->andReturn(new MRTestClass);
         $resolver = new MiddlewareResolver($app, $store);

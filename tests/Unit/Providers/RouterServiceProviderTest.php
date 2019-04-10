@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Contracts\StoresMiddlewareAliases;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
-use Rareloop\Router\ResolvesMiddleware;
+use Rareloop\Router\MiddlewareResolver;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
@@ -56,10 +56,10 @@ class RouterServiceProviderTest extends TestCase
         $lumberjack->bootstrap();
 
         $this->assertTrue($app->has('middleware-alias-store'));
-        $this->assertSame($app->get('middleware-alias-store'), $app->get(StoresMiddlewareAliases::class));
+        $this->assertSame($app->get('middleware-alias-store'), $app->get(MiddlewareAliases::class));
 
         $this->assertTrue($app->has('middleware-resolver'));
-        $this->assertSame($app->get('middleware-resolver'), $app->get(ResolvesMiddleware::class));
+        $this->assertSame($app->get('middleware-resolver'), $app->get(MiddlewareResolver::class));
     }
 
     /** @test */
@@ -75,7 +75,7 @@ class RouterServiceProviderTest extends TestCase
         $lumberjack->bootstrap();
 
         $router = $app->get(Router::class);
-        $store = $app->get(StoresMiddlewareAliases::class);
+        $store = $app->get(MiddlewareAliases::class);
         $store->set('middleware-key', new RSPAddHeaderMiddleware('X-Key', 'abc'));
         $request = new ServerRequest([], [], '/test/123', 'GET');
 

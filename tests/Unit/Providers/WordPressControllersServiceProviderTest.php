@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Contracts\StoresMiddlewareAliases;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Controller;
 use Rareloop\Lumberjack\Http\Kernal;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
@@ -302,7 +302,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $routerProvider->boot();
         $provider->boot($app);
 
-        $store = $app->get(StoresMiddlewareAliases::class);
+        $store = $app->get(MiddlewareAliases::class);
         $store->set('middleware-key', new AddHeaderMiddleware('X-Header', 'testing123'));
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');

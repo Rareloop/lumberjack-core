@@ -4,9 +4,9 @@ namespace Rareloop\Lumberjack\Http;
 
 use Closure;
 use Psr\Container\ContainerInterface;
-use Rareloop\Lumberjack\Contracts\StoresMiddlewareAliases;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 
-class MiddlewareAliasStore implements StoresMiddlewareAliases
+class MiddlewareAliasStore implements MiddlewareAliases
 {
     protected $aliases = [];
 

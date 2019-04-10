@@ -3,15 +3,15 @@
 namespace Rareloop\Lumberjack\Http;
 
 use Psr\Container\ContainerInterface;
-use Rareloop\Lumberjack\Contracts\StoresMiddlewareAliases;
-use Rareloop\Router\ResolvesMiddleware;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
+use Rareloop\Router\MiddlewareResolver as MiddlewareResolverInterface;
 
-class MiddlewareResolver implements ResolvesMiddleware
+class MiddlewareResolver implements MiddlewareResolverInterface
 {
     protected $app;
     protected $store;
 
-    public function __construct(ContainerInterface $app, StoresMiddlewareAliases $store)
+    public function __construct(ContainerInterface $app, MiddlewareAliases $store)
     {
         $this->app = $app;
         $this->store = $store;
