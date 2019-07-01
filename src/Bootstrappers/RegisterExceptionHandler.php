@@ -92,8 +92,15 @@ class RegisterExceptionHandler
      */
     public function handleError($level, $message, $file = '', $line = 0, $context = [])
     {
+        $exception = new ErrorException($message, 0, $level, $file, $line);
+
+        if ($level === E_USER_NOTICE) {
+            $this->getExceptionHandler()->report($exception);
+            return;
+        }
+
         if (error_reporting() & $level) {
-            throw new ErrorException($message, 0, $level, $file, $line);
+            throw $exception;
         }
     }
 
