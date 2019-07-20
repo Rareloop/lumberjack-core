@@ -94,7 +94,7 @@ class RegisterExceptionHandler
     {
         $exception = new ErrorException($message, 0, $level, $file, $line);
 
-        if ($level === E_USER_NOTICE) {
+        if ($level === E_USER_NOTICE || $level === E_USER_DEPRECATED) {
             $this->getExceptionHandler()->report($exception);
             return;
         }

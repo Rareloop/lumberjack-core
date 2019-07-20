@@ -62,6 +62,26 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_USER_NOTICE, 'Test Error');
     }
 
+    /**
+     * @test
+     */
+    public function E_USER_DEPRECATED_errors_are_not_converted_to_exceptions()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+        $handler = Mockery::mock(HandlerInterface::class);
+        $app->bind(HandlerInterface::class, $handler);
+
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_USER_DEPRECATED && $e->getMessage() === 'Test Error';
+        }));
+
+        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
+    }
+
     /** @test */
     public function handle_exception_should_call_handlers_report_and_render_methods()
     {
