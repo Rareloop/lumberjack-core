@@ -5,6 +5,7 @@ namespace Rareloop\Lumberjack\Providers;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class LogServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class LogServiceProvider extends ServiceProvider
 
         $this->app->bind('logger', $logger);
         $this->app->bind(Logger::class, $logger);
+        $this->app->bind(LoggerInterface::class, $logger);
     }
 
     private function shouldUseErrorLogHandler()

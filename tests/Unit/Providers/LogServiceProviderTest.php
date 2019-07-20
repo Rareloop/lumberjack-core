@@ -6,6 +6,7 @@ use Brain\Monkey\Functions;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
@@ -28,6 +29,7 @@ class LogServiceProviderTest extends TestCase
 
         $this->assertTrue($app->has('logger'));
         $this->assertSame($app->get('logger'), $app->get(Logger::class));
+        $this->assertSame($app->get('logger'), $app->get(LoggerInterface::class));
     }
 
     /**
