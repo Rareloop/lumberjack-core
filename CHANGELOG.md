@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.0
+
+### Added
+
+- Support Middleware Aliases on Routes & Controllers
+- `Helpers::logger()` (and global `logger()`) helper functions
+- Bound the `Logger` instance to the PSR-3 interface `Psr\Log\LoggerInterface` in the Container.
+
+### Patched
+
+- Prevent Errors with a level of `E_USER_NOTICE` or `E_USER_DEPRECATED` from being fatal.
+
 ## 4.2.0
 
 ### Added
