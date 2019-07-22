@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey\Filters;
+use Brain\Monkey\Functions;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -11,8 +12,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Controller;
 use Rareloop\Lumberjack\Http\Kernal;
+use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
+use Rareloop\Lumberjack\Http\MiddlewareResolver;
+use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
@@ -274,6 +279,36 @@ class WordPressControllersServiceProviderTest extends TestCase
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
         $this->assertFalse($response->hasHeader('X-Header'));
+    }
+
+    /** @test */
+    public function handle_request_supports_middleware_aliases()
+    {
+        Functions\when('get_bloginfo')->alias(function ($key) {
+            if ($key === 'url') {
+                return 'http://example.com';
+            }
+        });
+
+        $app = new Application(__DIR__.'/../');
+
+        $controller = new TestControllerWithMiddleware;
+        $controller->middleware('middleware-key');
+        $app->bind(TestControllerWithMiddleware::class, $controller);
+
+        $routerProvider = new RouterServiceProvider($app);
+        $provider = new WordPressControllersServiceProvider($app);
+        $routerProvider->register();
+        $routerProvider->boot();
+        $provider->boot($app);
+
+        $store = $app->get(MiddlewareAliases::class);
+        $store->set('middleware-key', new AddHeaderMiddleware('X-Header', 'testing123'));
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+
+        $this->assertTrue($response->hasHeader('X-Header'));
+        $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
     }
 
     /** @test */

@@ -3,19 +3,32 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
-use Rareloop\Lumberjack\Http\ServerRequest;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
+use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
+use Rareloop\Lumberjack\Http\MiddlewareResolver;
 use Rareloop\Lumberjack\Http\Router;
+use Rareloop\Lumberjack\Http\ServerRequest;
+use Rareloop\Router\MiddlewareResolver as MiddlewareResolverInterface;
 use Zend\Diactoros\ServerRequestFactory;
 
 class RouterServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $router = new Router($this->app);
+        $store = new MiddlewareAliasStore;
+        $resolver = new MiddlewareResolver($this->app, $store);
+
+        $router = new Router($this->app, $resolver);
         $router->setBasePath($this->getBasePathFromWPConfig());
 
         $this->app->bind('router', $router);
         $this->app->bind(Router::class, $router);
+
+        $this->app->bind('middleware-alias-store', $store);
+        $this->app->bind(MiddlewareAliases::class, $store);
+
+        $this->app->bind('middleware-resolver', $resolver);
+        $this->app->bind(MiddlewareResolverInterface::class, $resolver);
     }
 
     public function boot()

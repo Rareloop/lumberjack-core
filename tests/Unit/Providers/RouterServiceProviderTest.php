@@ -5,17 +5,23 @@ namespace Rareloop\Lumberjack\Test\Providers;
 use Brain\Monkey;
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Lumberjack;
+use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
-use Rareloop\Lumberjack\Http\Router;
+use Rareloop\Router\MiddlewareResolver;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
-use \Mockery;
 
 class RouterServiceProviderTest extends TestCase
 {
@@ -35,6 +41,49 @@ class RouterServiceProviderTest extends TestCase
 
         $this->assertTrue($app->has('router'));
         $this->assertSame($app->get('router'), $app->get(Router::class));
+    }
+
+    /** @test */
+    public function middleware_alias_objects_are_configured()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $this->setSiteUrl('http://example.com/sub-path/');
+        $app = new Application(__DIR__.'/../');
+        $lumberjack = new Lumberjack($app);
+
+        $app->register(new RouterServiceProvider($app));
+        $lumberjack->bootstrap();
+
+        $this->assertTrue($app->has('middleware-alias-store'));
+        $this->assertSame($app->get('middleware-alias-store'), $app->get(MiddlewareAliases::class));
+
+        $this->assertTrue($app->has('middleware-resolver'));
+        $this->assertSame($app->get('middleware-resolver'), $app->get(MiddlewareResolver::class));
+    }
+
+    /** @test */
+    public function configured_router_can_resolve_middleware_aliases()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $this->setSiteUrl('http://example.com/');
+        $app = new Application(__DIR__.'/../');
+        $lumberjack = new Lumberjack($app);
+
+        $app->register(new RouterServiceProvider($app));
+        $lumberjack->bootstrap();
+
+        $router = $app->get(Router::class);
+        $store = $app->get(MiddlewareAliases::class);
+        $store->set('middleware-key', new RSPAddHeaderMiddleware('X-Key', 'abc'));
+        $request = new ServerRequest([], [], '/test/123', 'GET');
+
+        $router->get('/test/123', function () {})->middleware('middleware-key');
+        $response = $router->match($request);
+
+        $this->assertTrue($response->hasHeader('X-Key'));
+        $this->assertSame('abc', $response->getHeader('X-Key')[0]);
     }
 
     /** @test */
@@ -231,5 +280,24 @@ class RouterServiceProviderTest extends TestCase
                 return $url;
             }
         });
+    }
+}
+
+class RSPAddHeaderMiddleware implements MiddlewareInterface
+{
+    private $key;
+    private $value;
+
+    public function __construct($key, $value)
+    {
+        $this->key = $key;
+        $this->value = $value;
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
+        $response = $handler->handle($request);
+
+        return $response->withHeader($this->key, $this->value);
     }
 }

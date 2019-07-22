@@ -79,7 +79,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
                 return $cm->excludedForMethod($methodName);
             })->map(function ($cm) {
                 return $cm->middleware();
-            });
+            })->all();
         }
 
         $middlewares[] = function ($request) use ($controller, $methodName) {
@@ -88,7 +88,20 @@ class WordPressControllersServiceProvider extends ServiceProvider
             return ResponseFactory::create($output, $request);
         };
 
-        $dispatcher = new Dispatcher($middlewares);
+        $dispatcher = $this->createDispatcher($middlewares);
         return $dispatcher->dispatch($request);
+    }
+
+    private function createDispatcher(array $middlewares) : Dispatcher
+    {
+        $resolver = null;
+
+        if ($this->app->has('middleware-resolver')) {
+            $resolver = function ($name) {
+                return $this->app->get('middleware-resolver')->resolve($name);
+            };
+        }
+
+        return new Dispatcher($middlewares, $resolver);
     }
 }
