@@ -315,9 +315,10 @@ class HelpersTest extends TestCase
         $logger = new Logger('app');
         $app->bind('logger', $logger);
 
-        Helpers::logger();
+        $newLogger = Helpers::logger();
 
-        $this->assertInstanceOf(Logger::class, $logger);
+        $this->assertInstanceOf(Logger::class, $newLogger);
+        $this->assertSame($logger, $newLogger);
     }
 
     /** @test */
