@@ -64,3 +64,10 @@ if (!function_exists('request')) {
         return call_user_func_array([Helpers::class, 'request'], func_get_args());
     }
 }
+
+if (!function_exists('logger')) {
+    function logger()
+    {
+        return call_user_func_array([Helpers::class, 'logger'], func_get_args());
+    }
+}

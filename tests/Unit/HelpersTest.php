@@ -17,6 +17,7 @@ use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
+use Monolog\Logger;
 
 /**
  * @runTestsInSeparateProcesses
@@ -140,8 +141,7 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/route', function () {
-        })->name('test.route');
+        $router->get('test/route', function () { })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route');
@@ -155,8 +155,7 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/{name}', function ($name) {
-        })->name('test.route');
+        $router->get('test/{name}', function ($name) { })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route', [
@@ -306,11 +305,58 @@ class HelpersTest extends TestCase
 
         $this->assertSame($request, Helpers::request());
     }
+
+    /** @test */
+    public function can_get_logger()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $logger = new Logger('app');
+        $app->bind('logger', $logger);
+
+        $newLogger = Helpers::logger();
+
+        $this->assertInstanceOf(Logger::class, $newLogger);
+        $this->assertSame($logger, $newLogger);
+    }
+
+    /** @test */
+    public function can_write_debug_log()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $logger = \Mockery::mock(Logger::class)->makePartial();
+        $logger->shouldReceive('debug')->with('Example message', [])->once();
+
+        $app->bind('logger', $logger);
+
+        Helpers::logger('Example message');
+    }
+
+    /** @test */
+    public function can_write_debug_log_with_context()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+
+        $logger = \Mockery::mock(Logger::class)->makePartial();
+        $logger->shouldReceive('debug')->with('Example message', [
+            'test' => 123,
+        ])->once();
+
+        $app->bind('logger', $logger);
+
+        Helpers::logger('Example message', [
+            'test' => 123,
+        ]);
+    }
 }
 
 class TestExceptionHandler extends Handler
 {
-
+    // ...
 }
 
 class RequiresConstructorParams

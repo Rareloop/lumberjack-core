@@ -9,6 +9,7 @@ use Rareloop\Lumberjack\Facades\Router;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Facades\Session;
+use Rareloop\Lumberjack\Facades\Log;
 
 class Helpers
 {
@@ -79,5 +80,14 @@ class Helpers
     public static function back()
     {
         return static::redirect(static::session()->previousUrl());
+    }
+
+    public static function logger($message = null, $context = [])
+    {
+        if (is_null($message)) {
+            return static::app('logger');
+        }
+
+        return Log::debug($message, $context);
     }
 }
