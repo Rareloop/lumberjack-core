@@ -108,7 +108,7 @@ class Post extends TimberPost
      * Get all posts of this type
      *
      * @param  integer $perPage The number of items to return (defaults to all)
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public static function all($perPage = -1, $orderby = 'menu_order', $order = 'ASC')
     {
@@ -129,7 +129,7 @@ class Post extends TimberPost
      * arguments that mean we're selecting the right post type
      *
      * @param  array $args standard WP_Query array
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public static function query($args = null)
     {
@@ -150,7 +150,7 @@ class Post extends TimberPost
      * and casts the returning data in instances of ourself.
      *
      * @param  array $args standard WP_Query array
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     private static function posts($args = null)
     {
