@@ -33,6 +33,10 @@ class RouterServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
         add_action('wp_loaded', function () {
             $request = ServerRequest::fromRequest(ServerRequestFactory::fromGlobals(
                 $_SERVER,
