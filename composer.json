@@ -15,7 +15,7 @@
         "http-interop/response-sender": "^1.0",
         "symfony/debug": "^4.1",
         "tightenco/collect": "^5.6.0",
-        "danielstjules/stringy": "~3.1.0",
+        "statamic/stringy": "~3.1.0",
         "zendframework/zend-diactoros": "^1.8",
         "rareloop/psr7-server-request-extension": "^2.0.0",
         "mmeyer2k/dcrypt": "^8.0.1",
