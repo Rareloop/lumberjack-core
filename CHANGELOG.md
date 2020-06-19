@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.1
+
+### Patched
+
+- Switched to the Statamic fork of `Stringy` to fully support PHP 7.4
+
 ## 4.3.0
 
 ### Added
