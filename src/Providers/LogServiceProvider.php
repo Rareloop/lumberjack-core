@@ -2,10 +2,11 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Monolog\Handler\ErrorLogHandler;
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\ErrorLogHandler;
 
 class LogServiceProvider extends ServiceProvider
 {
@@ -15,10 +16,16 @@ class LogServiceProvider extends ServiceProvider
 
         // If the `path` config is set to false then use the Apache/Nginx error logs
         if ($this->shouldUseErrorLogHandler()) {
-            $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $this->getLogLevel()));
+            $handler = new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $this->getLogLevel());
         } else {
-            $logger->pushHandler(new StreamHandler($this->getLogsPath(), $this->getLogLevel()));
+            $handler = new StreamHandler($this->getLogsPath(), $this->getLogLevel());
         }
+
+        $formatter = new LineFormatter(null, null, true, true);
+        $formatter->includeStacktraces();
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
 
         $this->app->bind('logger', $logger);
         $this->app->bind(Logger::class, $logger);
