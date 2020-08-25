@@ -15,24 +15,6 @@ class QueryBuilder implements QueryBuilderContract
 
     protected $postClass = Post::class;
 
-    private $postType;
-
-    private $limit;
-    private $offset;
-
-    private $orderby;
-    private $order;
-
-    private $metaOrderBy;
-    private $metaOrder;
-    private $metaOrderNumeric;
-
-    private $whereIn;
-    private $whereNotIn;
-
-    private $metaRelationship;
-    private $metaQueries = [];
-
     private $params = [];
 
     // Order Directions
