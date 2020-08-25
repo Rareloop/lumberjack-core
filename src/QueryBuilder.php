@@ -7,6 +7,7 @@ use Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException;
 use Rareloop\Lumberjack\Post;
 use Spatie\Macroable\Macroable;
 use Tightenco\Collect\Support\Collection;
+use Timber\PostQuery;
 use Timber\Timber;
 
 class QueryBuilder implements QueryBuilderContract
@@ -28,33 +29,33 @@ class QueryBuilder implements QueryBuilderContract
     const OR = 'OR';
     const AND = 'AND';
 
-    public function getParameters() : array
+    public function getParameters(): array
     {
         return $this->params;
     }
 
-    public function wherePostType($postType) : QueryBuilderContract
+    public function wherePostType($postType): QueryBuilderContract
     {
         $this->params['post_type'] = $postType;
 
         return $this;
     }
 
-    public function limit($limit) : QueryBuilderContract
+    public function limit($limit): QueryBuilderContract
     {
         $this->params['posts_per_page'] = $limit;
 
         return $this;
     }
 
-    public function offset($offset) : QueryBuilderContract
+    public function offset($offset): QueryBuilderContract
     {
         $this->params['offset'] = $offset;
 
         return $this;
     }
 
-    public function orderBy($orderBy, string $order = QueryBuilder::ASC) : QueryBuilderContract
+    public function orderBy($orderBy, string $order = QueryBuilder::ASC): QueryBuilderContract
     {
         $order = strtoupper($order);
 
@@ -64,7 +65,7 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null) : QueryBuilderContract
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null): QueryBuilderContract
     {
         $order = strtoupper($order);
 
@@ -75,21 +76,21 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function whereIdIn(array $ids) : QueryBuilderContract
+    public function whereIdIn(array $ids): QueryBuilderContract
     {
         $this->params['post__in'] = $ids;
 
         return $this;
     }
 
-    public function whereIdNotIn(array $ids) : QueryBuilderContract
+    public function whereIdNotIn(array $ids): QueryBuilderContract
     {
         $this->params['post__not_in'] = $ids;
 
         return $this;
     }
 
-    public function whereStatus() : QueryBuilderContract
+    public function whereStatus(): QueryBuilderContract
     {
         $args = func_get_args();
 
@@ -107,7 +108,7 @@ class QueryBuilder implements QueryBuilderContract
         $this->params['meta_query'] = $this->params['meta_query'] ?? [];
     }
 
-    public function whereMeta($key, $value, $compare = '=', $type = null) : QueryBuilderContract
+    public function whereMeta($key, $value, $compare = '=', $type = null): QueryBuilderContract
     {
         $meta = [
             'key' => $key,
@@ -125,7 +126,7 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function whereMetaRelationshipIs(string $relation) : QueryBuilderContract
+    public function whereMetaRelationshipIs(string $relation): QueryBuilderContract
     {
         $relation = strtoupper($relation);
 
@@ -141,14 +142,14 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function as($postClass) : QueryBuilderContract
+    public function as($postClass): QueryBuilderContract
     {
         $this->postClass = $postClass;
 
         return $this;
     }
 
-    public function get() : Collection
+    public function get(): Collection
     {
         $posts = Timber::get_posts($this->getParameters(), $this->postClass);
 
@@ -159,12 +160,30 @@ class QueryBuilder implements QueryBuilderContract
         return collect($posts);
     }
 
+    public function paginate($perPage = 10, $page = 1): PostQuery
+    {
+        global $paged;
+
+        if (isset($page)) {
+            $paged = $page;
+        }
+
+        if (!isset($paged) || !$paged) {
+            $paged = 1;
+        }
+
+        $this->limit($perPage);
+        $this->params['paged'] = $paged;
+
+        return new PostQuery($this->getParameters(), $this->postClass);
+    }
+
     /**
      * Get the first Post that matches the current query. If no Post matches then return `null`.
      *
      * @return \Rareloop\Lumberjack\Post|null
      */
-    public function first() : ?Post
+    public function first(): ?Post
     {
         $params = array_merge($this->getParameters(), [
             'limit' => 1,
@@ -179,7 +198,7 @@ class QueryBuilder implements QueryBuilderContract
         return collect($posts)->first();
     }
 
-    public function clone() : QueryBuilderContract
+    public function clone(): QueryBuilderContract
     {
         $clone = clone $this;
 
