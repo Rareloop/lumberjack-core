@@ -365,4 +365,16 @@ class StoreTest extends TestCase
 
         $this->assertSame('/a/valid/route', $store->previousUrl());
     }
+
+    /** @test */
+    public function can_garbage_collect()
+    {
+        $lifetime = 1234;
+        $handler = Mockery::mock(NullSessionHandler::class . '[gc]');
+        $handler->shouldReceive('gc')->with($lifetime)->once();
+
+        $store = new Store('session-name', $handler, 'session-id');
+
+        $store->collectGarbage($lifetime);
+    }
 }
