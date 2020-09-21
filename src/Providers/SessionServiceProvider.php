@@ -23,7 +23,7 @@ class SessionServiceProvider extends ServiceProvider
             $this->session->start();
 
             if ($this->shouldGarbageCollect()) {
-                $this->session->collectGarbage();
+                $this->session->collectGarbage(Config::get('session.lifetime', 120));
             }
         });
 
