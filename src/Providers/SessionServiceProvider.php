@@ -21,6 +21,10 @@ class SessionServiceProvider extends ServiceProvider
     {
         add_action('init', function () {
             $this->session->start();
+
+            if ($this->shouldGarbageCollect()) {
+                $this->session->collectGarbage(Config::get('session.lifetime', 120));
+            }
         });
 
         // Due to the way we handle WordPressControllers sometimes the `send_headers` action is
@@ -55,7 +59,7 @@ class SessionServiceProvider extends ServiceProvider
             $this->storePreviousUrlToSession();
         });
     }
-    
+
     private function storePreviousUrlToSession()
     {
         if (!Helpers::app()->has('request')) {
@@ -69,5 +73,16 @@ class SessionServiceProvider extends ServiceProvider
         }
 
         $this->session->save();
+    }
+
+    private function shouldGarbageCollect()
+    {
+        $lottery = Config::get('session.lottery');
+
+        if (!is_array($lottery) || count($lottery) < 2 || !is_numeric($lottery[0]) || !is_numeric($lottery[1])) {
+            $lottery = [2, 100];
+        }
+
+        return random_int(1, $lottery[1]) <= $lottery[0];
     }
 }
