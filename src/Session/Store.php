@@ -231,4 +231,9 @@ class Store
     {
         return $this->get('_previous.url');
     }
+
+    public function collectGarbage(int $lifetime)
+    {
+        return $this->handler->gc($lifetime);
+    }
 }
