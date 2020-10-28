@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Contracts;
 
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 interface QueryBuilder
 {
