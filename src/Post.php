@@ -52,7 +52,7 @@ class Post extends TimberPost
     /**
      * Create a QueryBuilder scoped to this Post type
      *
-     * @return QueryBuilder
+     * @return ScopedQueryBuilder
      */
     public static function builder() : ScopedQueryBuilder
     {
