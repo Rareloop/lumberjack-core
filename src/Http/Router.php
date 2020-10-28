@@ -15,7 +15,7 @@ class Router extends RareRouter
      * @param  array  $verbs
      * @param  string $uri
      * @param  callable|string $callback
-     * @return Rareloop\Router\Route
+     * @return \Rareloop\Router\Route
      */
     public function map(array $verbs, string $uri, $callback): Route
     {
