@@ -180,7 +180,7 @@ class QueryBuilder implements QueryBuilderContract
     /**
      * Get the first Post that matches the current query. If no Post matches then return `null`.
      *
-     * @return Rareloop\Lumberjack\Post|null
+     * @return \Rareloop\Lumberjack\Post|null
      */
     public function first() : ?Post
     {
