@@ -14,6 +14,8 @@ class ScopedQueryBuilder
 {
     protected $postClass;
 
+    protected $queryBuilder;
+
     public function __construct($postClass)
     {
         $this->postClass = $postClass;
