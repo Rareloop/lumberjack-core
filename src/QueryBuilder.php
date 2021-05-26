@@ -6,7 +6,7 @@ use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException;
 use Rareloop\Lumberjack\Post;
 use Spatie\Macroable\Macroable;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 use Timber\Timber;
 
 class QueryBuilder implements QueryBuilderContract

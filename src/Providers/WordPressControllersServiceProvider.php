@@ -7,7 +7,7 @@ use Rareloop\Router\Invoker;
 use Rareloop\Router\ProvidesControllerMiddleware;
 use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 use Zend\Diactoros\ServerRequestFactory;
 use mindplay\middleman\Dispatcher;
 
