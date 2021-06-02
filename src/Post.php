@@ -15,7 +15,7 @@ class Post extends TimberPost
         Macroable::__callStatic as __macroableCallStatic;
     }
 
-    public function __construct($id = false, $preventTimberInit = false)
+    public function __construct($id = null, $preventTimberInit = false)
     {
         /**
          * There are occasions where we do not want the bootstrap the data. At the moment this is
