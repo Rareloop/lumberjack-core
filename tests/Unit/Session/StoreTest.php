@@ -9,7 +9,8 @@ use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
 class StoreTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
+        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
     public function chainableMethods()
     {

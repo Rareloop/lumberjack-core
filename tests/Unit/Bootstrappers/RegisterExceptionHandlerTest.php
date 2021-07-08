@@ -27,12 +27,10 @@ class RegisterExceptionHandlerTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /**
-     * @test
-     * @expectedException     ErrorException
-     */
+    /** @test */
     public function errors_are_converted_to_exceptions()
     {
+        $this->expectException(\ErrorException::class);
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $app = new Application;
@@ -98,7 +96,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with($request, $exception)->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -121,7 +119,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with($request, Mockery::type(\ErrorException::class))->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -142,7 +140,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with(Mockery::type(ServerRequest::class), $exception)->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -167,7 +165,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldNotReceive('render');
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class.'[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -177,7 +175,7 @@ class RegisterExceptionHandlerTest extends TestCase
 
 class ResponsableException extends \Exception implements Responsable
 {
-    public function toResponse(RequestInterface $request) : ResponseInterface
+    public function toResponse(RequestInterface $request): ResponseInterface
     {
         return new TextResponse('testing123');
     }

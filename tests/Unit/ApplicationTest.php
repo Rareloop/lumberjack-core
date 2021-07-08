@@ -16,13 +16,13 @@ class ApplicationTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    public function setUp(): void
     {
         Monkey\setUp();
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Monkey\tearDown();
         Mock::disableAll();
@@ -496,12 +496,12 @@ class ApplicationTest extends TestCase
         $builder = new MockBuilder();
 
         $builder->setNamespace($namespace)
-                ->setName('php_sapi_name')
-                ->setFunction(
-                    function () use ($value) {
-                        return $value;
-                    }
-                );
+            ->setName('php_sapi_name')
+            ->setFunction(
+                function () use ($value) {
+                    return $value;
+                }
+            );
 
         return $builder->build();
     }
@@ -573,63 +573,66 @@ abstract class TestBootstrapperBase
 
 class TestBootstrapper1 extends TestBootstrapperBase
 {
-
 }
 
 class TestBootstrapper2 extends TestBootstrapperBase
 {
-
 }
 
 interface TestInterface
 {
-
 }
 
 class TestInterfaceImplementation implements TestInterface
 {
-
 }
 
 class TestInterfaceImplementationWithConstructorParams implements TestInterface
 {
-    public function __construct(TestServiceProvider $provider) {}
+    public function __construct(TestServiceProvider $provider)
+    {
+    }
 }
 
 interface TestSubInterface
 {
-
 }
 
 class TestSubInterfaceImplementation implements TestSubInterface
 {
-
 }
 
 class TestServiceProvider extends ServiceProvider
 {
-    public function register() {}
-    public function boot() {}
+    public function register()
+    {
+    }
+    public function boot()
+    {
+    }
 }
 
 class EmptyServiceProvider extends ServiceProvider
 {
-
 }
 
 class TestBootServiceProvider extends ServiceProvider
 {
     private $bootCallback;
 
-    public function register() {}
+    public function register()
+    {
+    }
 
-    public function boot(Application $app, TestInterface $test) {
+    public function boot(Application $app, TestInterface $test)
+    {
         if (isset($this->bootCallback)) {
             call_user_func($this->bootCallback, func_get_args());
         }
     }
 
-    public function addBootCallback(\Closure $callback) {
+    public function addBootCallback(\Closure $callback)
+    {
         $this->bootCallback = $callback;
     }
 }

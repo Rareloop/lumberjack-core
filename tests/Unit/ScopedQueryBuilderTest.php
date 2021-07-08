@@ -14,9 +14,10 @@ use Timber\Timber;
 
 class ScopedQueryBuilderTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
+        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->app = new Application;
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
@@ -35,22 +36,20 @@ class ScopedQueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /**
-     * @test
-     * @expectedException Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException
-     */
+    /** @test */
     public function cannot_overwrite_post_type()
     {
+        $this->expectException(\Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException::class);
+
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $builder->wherePostType('test_post_type');
     }
 
-    /**
-     * @test
-     * @expectedException Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException
-     */
+    /** @test */
     public function cannot_overwrite_post_class()
     {
+        $this->expectException(\Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException::class);
+
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $builder->as(Post::class);
     }
@@ -110,10 +109,11 @@ class ScopedQueryBuilderTest extends TestCase
     /**
      * @test
      * @runInSeparateProcess
-     * @expectedException \PHPUnit\Framework\Error\Error
      */
     public function missing_query_scope_throws_an_error()
     {
+        $this->expectError();
+
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $builder->nonExistentScope();
     }
@@ -173,4 +173,3 @@ class PostWithQueryScope extends Post
         return $query->whereIdNotIn([$id1, $id2]);
     }
 }
-

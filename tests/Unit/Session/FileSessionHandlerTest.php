@@ -14,7 +14,7 @@ class FileSessionHandlerTest extends TestCase
 
     private $rootFileSystem;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rootFileSystem = vfsStream::setup('exampleDir');
     }

@@ -1,12 +1,13 @@
 options:
-  cd-printer-hide-class: false
-  cd-printer-simple-output: false
-  cd-printer-show-config: true
-  cd-printer-hide-namespace: true
+    cd-printer-hide-class: false
+    cd-printer-simple-output: false
+    cd-printer-show-config: true
+    cd-printer-hide-namespace: true
+    cd-printer-dont-format-classname: false
 markers:
-  cd-pass: "✓ "
-  cd-fail: "✖ "
-  cd-error: "⚈ "
-  cd-skipped: "→ "
-  cd-incomplete: "∅ "
-  cd-risky: "⌽ "
+    cd-pass: "✓ "
+    cd-fail: "✖ "
+    cd-error: "⚈ "
+    cd-skipped: "→ "
+    cd-incomplete: "∅ "
+    cd-risky: "⌽ "

@@ -96,7 +96,7 @@ class HandlerTest extends TestCase
 
         $response = $handler->render(new ServerRequest, $exception);
 
-        $this->assertContains('Test Exception', $response->getBody()->getContents());
+        $this->assertStringContainsString('Test Exception', $response->getBody()->getContents());
     }
 
     /** @test */
@@ -113,7 +113,7 @@ class HandlerTest extends TestCase
 
         $response = $handler->render(new ServerRequest, $exception);
 
-        $this->assertNotContains('Test Exception', $response->getBody()->getContents());
+        $this->assertStringNotContainsString('Test Exception', $response->getBody()->getContents());
     }
 }
 
@@ -124,4 +124,6 @@ class HandlerWithBlacklist extends Handler
     ];
 }
 
-class BlacklistedException extends \Exception {}
+class BlacklistedException extends \Exception
+{
+}

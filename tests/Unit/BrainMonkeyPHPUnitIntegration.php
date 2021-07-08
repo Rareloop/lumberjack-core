@@ -8,13 +8,13 @@ trait BrainMonkeyPHPUnitIntegration
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Monkey\setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         Monkey\tearDown();
