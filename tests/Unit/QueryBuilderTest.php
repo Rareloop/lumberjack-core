@@ -2,16 +2,21 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Illuminate\Support\Collection;
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\QueryBuilder;
 use Timber\Timber;
+use Timber\PostQuery;
+use Timber\PostGetter;
+use Timber\PostCollection;
+use Brain\Monkey\Functions;
+use Rareloop\Lumberjack\Post;
+use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Collection;
+use Rareloop\Lumberjack\QueryBuilder;
+use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class QueryBuilderTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use BrainMonkeyPHPUnitIntegration;
 
     /** @test */
     public function correct_post_type_is_set()
@@ -405,6 +410,75 @@ class QueryBuilderTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
+    public function paginate_retrieves_PostQuery_object_with_correct_defaults()
+    {
+        $this->assertPostQueryParameters([
+            'post_status' => 'publish',
+            'posts_per_page' => 10,
+            'paged' => 1,
+        ]);
+
+        $builder = new QueryBuilder();
+        $returnedPostQuery = $builder->whereStatus('publish')->paginate();
+
+        $this->assertInstanceOf(PostQuery::class, $returnedPostQuery);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function paginate_retrieves_PostQuery_object_with_provided_arguments()
+    {
+        $this->assertPostQueryParameters([
+            'post_status' => 'publish',
+            'posts_per_page' => 20,
+            'paged' => 2,
+        ]);
+
+        $builder = new QueryBuilder();
+        $returnedPostQuery = $builder->whereStatus('publish')->paginate(20, 2);
+
+        $this->assertInstanceOf(PostQuery::class, $returnedPostQuery);
+    }
+
+    /**
+     * We have to mock quite a bit more than is ideal for this but there is no other way to hook
+     * into this bit of Timber that I've found. It does leave us a little open to failing tests
+     * if Timber change their implementation but not much we can do about that.
+     *
+     * @param array $params The parameters to assert are passed in construction
+     * @return void
+     */
+    protected function assertPostQueryParameters(array $params)
+    {
+        Functions\expect('get_post_type')
+            ->andReturn('post');
+
+        $posts = [new Post(1, true), new Post(2, true)];
+
+        $postGetter = Mockery::mock('alias:' . PostGetter::class);
+
+        $postGetter
+            ->shouldReceive('get_post_class')
+            ->andReturn(Post::class);
+
+        $postGetter
+            ->shouldReceive('query_posts')
+            ->withArgs([
+                Mockery::subset($params),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn(new PostCollection($posts, Post::class));
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function can_specify_the_class_type_to_return()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -593,7 +667,7 @@ class QueryBuilderMixin
 {
     function testFunctionAddedByMixin()
     {
-        return function() {
+        return function () {
             $this->params['foo'] = 'bar';
 
             return $this;
