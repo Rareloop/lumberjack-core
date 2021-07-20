@@ -30,7 +30,7 @@
         "brain/monkey": "~2.4.0",
         "squizlabs/php_codesniffer": "^3.6.0",
         "php-mock/php-mock": "^2.0",
-        "codedungeon/phpunit-result-printer": "^0.29.2",
+        "codedungeon/phpunit-result-printer": "^0.30",
         "codedungeon/php-cli-colors": "^1.10.7",
         "mikey179/vfsstream": "^1.6.8",
         "antecedent/patchwork": "^2.1.8",
