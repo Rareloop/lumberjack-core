@@ -23,7 +23,7 @@ jobs:
     - name: Run tests
       uses: php-actions/phpunit@v3
       with:
-        version: 8
+        version: 6
         php_version: ${{ matrix.php_version }}
         args: '--coverage-clover ./tests/logs/clover.xml'
         php_extensions: xdebug
