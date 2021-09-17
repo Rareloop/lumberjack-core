@@ -21,11 +21,9 @@ jobs:
         command: update
 
     - name: Run tests
-      uses: php-actions/phpunit@v3
+      run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
       with:
-        version: 9
         php_version: ${{ matrix.php_version }}
-        args: '--coverage-clover ./tests/logs/clover.xml'
         php_extensions: xdebug
       env:
           XDEBUG_MODE: coverage
