@@ -13,6 +13,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php_version }}
+        extensions: xdebug
+
     - name: Install dependencies
       uses: php-actions/composer@v5
       with:
@@ -22,9 +28,6 @@ jobs:
 
     - name: Run tests
       run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
-      with:
-        php_version: ${{ matrix.php_version }}
-        php_extensions: xdebug
       env:
           XDEBUG_MODE: coverage
 
