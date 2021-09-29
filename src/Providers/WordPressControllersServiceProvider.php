@@ -85,7 +85,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $middlewares[] = function ($request) use ($controller, $methodName) {
             $invoker = new Invoker($this->app);
             $output = $invoker->setRequest($request)->call([$controller, $methodName]);
-            return ResponseFactory::create($output, $request);
+            return ResponseFactory::create($request, $output);
         };
 
         $dispatcher = $this->createDispatcher($middlewares);
