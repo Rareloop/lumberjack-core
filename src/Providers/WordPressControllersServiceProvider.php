@@ -8,7 +8,7 @@ use Rareloop\Router\ProvidesControllerMiddleware;
 use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
 use Tightenco\Collect\Support\Collection;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 use mindplay\middleman\Dispatcher;
 
 class WordPressControllersServiceProvider extends ServiceProvider

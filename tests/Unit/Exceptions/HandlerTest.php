@@ -9,8 +9,8 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\ServerRequest;
 
 class HandlerTest extends TestCase
 {
@@ -124,4 +124,6 @@ class HandlerWithBlacklist extends Handler
     ];
 }
 
-class BlacklistedException extends \Exception {}
+class BlacklistedException extends \Exception
+{
+}

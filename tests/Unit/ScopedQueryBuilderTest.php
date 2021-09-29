@@ -16,7 +16,7 @@ class ScopedQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->app = new Application;
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
@@ -173,4 +173,3 @@ class PostWithQueryScope extends Post
         return $query->whereIdNotIn([$id1, $id2]);
     }
 }
-
