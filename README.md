@@ -1,6 +1,6 @@
 # Lumberjack Core Framework
 [![Latest Stable Version](https://poser.pugx.org/rareloop/lumberjack-core/v/stable)](https://packagist.org/packages/rareloop/lumberjack-core)
-![CI](https://travis-ci.org/Rareloop/lumberjack-core.svg?branch=master)
+![CI](https://github.com/rareloop/lumberjack-core/actions/workflows/ci.yml/badge.svg?branch=master)
 ![Coveralls](https://coveralls.io/repos/github/Rareloop/lumberjack-core/badge.svg?branch=master)
 ![Downloads](https://img.shields.io/packagist/dt/rareloop/lumberjack-core.svg)
 [![Trees Planted](https://img.shields.io/ecologi/trees/rareloop.svg?label=trees%20planted)](https://ecologi.com/rareloop?r=60618d1bcdd7a4001d7b86f2)
