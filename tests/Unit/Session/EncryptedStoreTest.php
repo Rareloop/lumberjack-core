@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Session\EncryptedStore;
 use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
-class EncyptedStoreTest extends TestCase
+class EncryptedStoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
@@ -18,7 +18,7 @@ class EncyptedStoreTest extends TestCase
     public function data_is_encrypted_before_it_is_saved()
     {
         $serializedString = @serialize(['foo' => 'bar']);
-        $encrypter = Mockery::mock(Encrypter::class.'[encrypt]', ['encryption-key']);
+        $encrypter = Mockery::mock(Encrypter::class . '[encrypt]', ['encryption-key']);
         $encrypter->shouldReceive('encrypt')->withArgs(function ($string) {
             $array = @unserialize($string);
 
@@ -42,7 +42,7 @@ class EncyptedStoreTest extends TestCase
         $encryptedString = AesCbc::encrypt(@serialize(@serialize(['foo' => 'bar'])), $encryptionKey);
 
         // Use a mock handler to fake a previously stored state
-        $handler = Mockery::mock(NullSessionHandler::class.'[read]');
+        $handler = Mockery::mock(NullSessionHandler::class . '[read]');
         $handler->shouldReceive('read')->andReturn($encryptedString);
 
         $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id');
