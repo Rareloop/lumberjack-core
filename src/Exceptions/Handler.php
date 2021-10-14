@@ -28,7 +28,7 @@ class Handler implements HandlerInterface
             return;
         }
 
-        if ($this->app->has('logger') {
+        if ($this->app->has('logger')) {
             $logger = $this->app->get('logger');
             $logger->error($e);
         }
