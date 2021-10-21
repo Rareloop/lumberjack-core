@@ -28,8 +28,10 @@ class Handler implements HandlerInterface
             return;
         }
 
-        $logger = $this->app->get('logger');
-        $logger->error($e);
+        if ($this->app->has('logger')) {
+            $logger = $this->app->get('logger');
+            $logger->error($e);
+        }
     }
 
     public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
