@@ -14,7 +14,7 @@ class PostQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->app = new Application;
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);

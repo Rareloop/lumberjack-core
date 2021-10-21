@@ -9,7 +9,7 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
+         >
     <testsuites>
         <testsuite name="Rareloop Router Test Suite">
             <directory>tests</directory>

@@ -8,7 +8,7 @@ use Rareloop\Router\ProvidesControllerMiddleware;
 use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
 use Tightenco\Collect\Support\Collection;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 use mindplay\middleman\Dispatcher;
 
 class WordPressControllersServiceProvider extends ServiceProvider
@@ -85,7 +85,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $middlewares[] = function ($request) use ($controller, $methodName) {
             $invoker = new Invoker($this->app);
             $output = $invoker->setRequest($request)->call([$controller, $methodName]);
-            return ResponseFactory::create($output, $request);
+            return ResponseFactory::create($request, $output);
         };
 
         $dispatcher = $this->createDispatcher($middlewares);

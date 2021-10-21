@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithInput;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithUri;
-use Zend\Diactoros\ServerRequest as DiactorosServerRequest;
+use Laminas\Diactoros\ServerRequest as DiactorosServerRequest;
 
 class ServerRequestTest extends TestCase
 {

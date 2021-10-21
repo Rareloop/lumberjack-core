@@ -21,8 +21,8 @@ use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
-use Zend\Diactoros\Response\TextResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ServerRequest;
 use \Mockery;
 
 class WordPressControllersServiceProviderTest extends TestCase
@@ -343,7 +343,6 @@ class TestController
 {
     public function handle()
     {
-
     }
 }
 
@@ -351,12 +350,10 @@ class TestControllerWithConstructorParams
 {
     public function __construct(Application $app)
     {
-
     }
 
     public function handle()
     {
-
     }
 }
 
@@ -364,7 +361,6 @@ class TestControllerWithHandleParams
 {
     public function handle(Application $app)
     {
-
     }
 }
 
@@ -388,7 +384,6 @@ class TestControllerWithMiddleware extends Controller
 {
     public function handle()
     {
-
     }
 }
 

@@ -14,7 +14,7 @@ class GlobalFunctionsTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    protected function setUp(): void
     {
         include_once(__DIR__ . '/../../src/functions.php');
 

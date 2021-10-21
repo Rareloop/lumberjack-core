@@ -9,7 +9,7 @@ use Rareloop\Lumberjack\Http\MiddlewareResolver;
 use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Router\MiddlewareResolver as MiddlewareResolverInterface;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 
 class RouterServiceProvider extends ServiceProvider
 {
