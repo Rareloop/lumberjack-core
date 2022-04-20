@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.1
+
+### Patched
+
+- Added PHP 8 support
+
 ## 5.0.0
 
 ### Changed
