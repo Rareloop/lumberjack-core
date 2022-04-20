@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
@@ -11,7 +12,8 @@ use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
+        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
     /** @test */
     public function correct_post_type_is_set()
@@ -161,12 +163,11 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /**
-     * @test
-     * @expectedException     InvalidArgumentException
-     */
+    /** @test */
     public function calling_where_status_without_params_throws_an_exception()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $builder = new QueryBuilder();
         $chainedBuilder = $builder->whereStatus();
     }
@@ -307,12 +308,11 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /**
-     * @test
-     * @expectedException     Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException
-     */
+    /** @test */
     public function invalid_meta_realtionship_throws_an_exception()
     {
+        $this->expectException(\Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException::class);
+
         $builder = new QueryBuilder();
         $builder->whereMetaRelationshipIs('INVALID');
     }
@@ -593,7 +593,7 @@ class QueryBuilderMixin
 {
     function testFunctionAddedByMixin()
     {
-        return function() {
+        return function () {
             $this->params['foo'] = 'bar';
 
             return $this;

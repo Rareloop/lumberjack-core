@@ -14,7 +14,7 @@ class GlobalFunctionsTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    public function setUp()
+    public function setUp(): void
     {
         include_once(__DIR__ . '/../../src/functions.php');
 
@@ -47,7 +47,7 @@ class GlobalFunctionsTest extends TestCase
         $reflection = new \ReflectionClass(Helpers::class);
 
         return collect($reflection->getMethods(\ReflectionMethod::IS_STATIC))->map(function ($function) {
-            return [ $function->name ];
+            return [$function->name];
         })->toArray();
     }
 }

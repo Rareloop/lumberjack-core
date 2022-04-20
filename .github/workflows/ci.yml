@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [7.1, 7.2, 7.3, 7.4]
+        php_version: [7.3, 7.4, 8.0]
         composer_flags: ['', '--prefer-lowest']
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php_version }}
+        extensions: xdebug
 
     - name: Install dependencies
       uses: php-actions/composer@v5
@@ -21,12 +27,7 @@ jobs:
         command: update
 
     - name: Run tests
-      uses: php-actions/phpunit@v3
-      with:
-        version: 6
-        php_version: ${{ matrix.php_version }}
-        args: '--coverage-clover ./tests/logs/clover.xml'
-        php_extensions: xdebug
+      run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
       env:
           XDEBUG_MODE: coverage
 

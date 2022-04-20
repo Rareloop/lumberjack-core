@@ -12,9 +12,10 @@ use Rareloop\Lumberjack\ScopedQueryBuilder;
 
 class PostQueryBuilderTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
+        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->app = new Application;
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
@@ -44,16 +45,17 @@ class PostQueryBuilderTest extends TestCase
     /**
      * @test
      * @runInSeparateProcess
-     * @expectedException \PHPUnit\Framework\Error\Error
      */
     public function throw_error_on_missing_static_function()
     {
+        $this->expectError();
+
         Post::missingStaticFunction();
     }
 
     private function assertQueryBuilder($function, $params, $postType)
     {
-        $builder = Mockery::mock(ScopedQueryBuilder::class.'['.$function.']', [$postType]);
+        $builder = Mockery::mock(ScopedQueryBuilder::class . '[' . $function . ']', [$postType]);
         $builder->shouldReceive($function)->withArgs($params)->once();
 
         // Inject the mock builder
@@ -73,7 +75,7 @@ class QueryBuilderTestPost extends Post
         static::$injectedBuilder = $builder;
     }
 
-    public static function builder() : ScopedQueryBuilder
+    public static function builder(): ScopedQueryBuilder
     {
         return static::$injectedBuilder;
     }

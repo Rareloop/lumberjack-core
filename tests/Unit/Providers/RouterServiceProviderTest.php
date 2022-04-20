@@ -33,7 +33,7 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/sub-path/');
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
 
         $app->register(new RouterServiceProvider($app));
@@ -49,7 +49,7 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/sub-path/');
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
 
         $app->register(new RouterServiceProvider($app));
@@ -68,7 +68,7 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/');
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
 
         $app->register(new RouterServiceProvider($app));
@@ -79,7 +79,8 @@ class RouterServiceProviderTest extends TestCase
         $store->set('middleware-key', new RSPAddHeaderMiddleware('X-Key', 'abc'));
         $request = new ServerRequest([], [], '/test/123', 'GET');
 
-        $router->get('/test/123', function () {})->middleware('middleware-key');
+        $router->get('/test/123', function () {
+        })->middleware('middleware-key');
         $response = $router->match($request);
 
         $this->assertTrue($response->hasHeader('X-Key'));
@@ -94,7 +95,7 @@ class RouterServiceProviderTest extends TestCase
         $this->setSiteUrl('http://example.com/sub-path/');
         $request = new ServerRequest([], [], '/sub-path/test/123', 'GET');
 
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
 
         $app->register(new RouterServiceProvider($app));
@@ -116,7 +117,7 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/sub-path/');
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
         $provider = new RouterServiceProvider($app);
 
@@ -132,8 +133,8 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/sub-path/');
-        $request = new ServerRequest([], [], '/test/123', 'GET');
-        $app = new Application(__DIR__.'/../');
+        $request = new ServerRequest([], [], '/sub-path/test/123', 'GET');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
         $provider = new RouterServiceProvider($app);
 
@@ -152,7 +153,7 @@ class RouterServiceProviderTest extends TestCase
 
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 404);
-        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown')->times(0)->with($response);
 
         $lumberjack = new Lumberjack($app);
@@ -161,7 +162,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router = Mockery::mock(Router::class . '[match]', $app);
         $router->shouldReceive('match')->andReturn($response)->once();
 
         $app->bind('router', $router);
@@ -176,7 +177,7 @@ class RouterServiceProviderTest extends TestCase
 
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 200);
-        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown')->times(1)->with($response);
 
         $lumberjack = new Lumberjack($app);
@@ -185,7 +186,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router = Mockery::mock(Router::class . '[match]', $app);
         $router->shouldReceive('match')->andReturn($response)->once();
 
         $app->bind('router', $router);
@@ -202,7 +203,7 @@ class RouterServiceProviderTest extends TestCase
         $request = new ServerRequest([], [], '/test/123', 'GET');
         $response = new HtmlResponse('testing 123');
 
-        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown')->times(1)->with($response);
         $lumberjack = new Lumberjack($app);
         $provider = new RouterServiceProvider($app);
@@ -210,7 +211,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router = Mockery::mock(Router::class . '[match]', $app);
         $router->shouldReceive('match')->andReturn($response)->once();
 
         $app->bind('router', $router);
@@ -229,7 +230,7 @@ class RouterServiceProviderTest extends TestCase
 
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 200);
-        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown');
 
         $lumberjack = new Lumberjack($app);
@@ -238,7 +239,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router = Mockery::mock(Router::class . '[match]', $app);
         $router->shouldReceive('match')->andReturn($response)->once();
 
         $app->bind('router', $router);
@@ -255,7 +256,7 @@ class RouterServiceProviderTest extends TestCase
 
         $this->setSiteUrl('http://example.com/sub-path/');
         $response = new TextResponse('Testing 123', 404);
-        $app = Mockery::mock(Application::class.'[shutdown]', [__DIR__.'/..']);
+        $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown');
 
         $lumberjack = new Lumberjack($app);
@@ -264,7 +265,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $router = Mockery::mock(Router::class.'[match]', $app);
+        $router = Mockery::mock(Router::class . '[match]', $app);
         $router->shouldReceive('match')->andReturn($response)->once();
 
         $app->bind('router', $router);
@@ -274,7 +275,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertFalse($app->hasRequestBeenHandled());
     }
 
-    private function setSiteUrl($url) {
+    private function setSiteUrl($url)
+    {
         Functions\when('get_bloginfo')->alias(function ($key) use ($url) {
             if ($key === 'url') {
                 return $url;
@@ -294,7 +296,7 @@ class RSPAddHeaderMiddleware implements MiddlewareInterface
         $this->value = $value;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
 

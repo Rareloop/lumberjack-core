@@ -44,7 +44,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
 
     public function getControllerClassFromTemplate($template)
     {
-        $controllerName = Stringy::create(basename($template, '.php'))->upperCamelize().'Controller';
+        $controllerName = Stringy::create(basename($template, '.php'))->upperCamelize() . 'Controller';
 
         // Classes can't start with a number so we have to special case the behaviour here
         if ($controllerName === '404Controller') {
@@ -54,7 +54,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $controllerName = apply_filters('lumberjack_controller_name', $controllerName);
         $controllerNamespace = apply_filters('lumberjack_controller_namespace', 'App\\');
 
-        return $controllerNamespace.$controllerName;
+        return $controllerNamespace . $controllerName;
     }
 
     public function handleRequest(RequestInterface $request, $controllerName, $methodName)
@@ -85,14 +85,14 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $middlewares[] = function ($request) use ($controller, $methodName) {
             $invoker = new Invoker($this->app);
             $output = $invoker->setRequest($request)->call([$controller, $methodName]);
-            return ResponseFactory::create($output, $request);
+            return ResponseFactory::create($request, $output);
         };
 
         $dispatcher = $this->createDispatcher($middlewares);
         return $dispatcher->dispatch($request);
     }
 
-    private function createDispatcher(array $middlewares) : Dispatcher
+    private function createDispatcher(array $middlewares): Dispatcher
     {
         $resolver = null;
 
