@@ -1,5 +1,5 @@
 {
-    "name": "rareloop/lumberjack-core",
+    "name": "androlax2/lumberjack-core",
     "description": "A powerful MVC framework for the modern WordPress developer. Write better, more expressive and easier to maintain code",
     "license": "MIT",
     "require": {
@@ -16,7 +16,6 @@
         "symfony/debug": "^4.1",
         "tightenco/collect": "^5.6.0",
         "statamic/stringy": "~3.1.0",
-        "laminas/laminas-diactoros": "^2.4",
         "rareloop/psr7-server-request-extension": "^2.1.0",
         "mmeyer2k/dcrypt": "^8.0.1",
         "spatie/macroable": "^1.0",
