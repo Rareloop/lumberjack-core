@@ -82,6 +82,23 @@ class HandlerTest extends TestCase
     }
 
     /** @test */
+    public function render_should_return_an_html_response_for_throwables()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $config = new Config;
+        $config->set('app.debug', true);
+        $app->bind('config', $config);
+
+        $exception = new \TypeError('Test Type Error');
+        $handler = new Handler($app);
+
+        $response = $handler->render(new ServerRequest, $exception);
+
+        $this->assertInstanceOf(HtmlResponse::class, $response);
+    }
+
+    /** @test */
     public function render_should_return_an_html_response_when_debug_is_disabled()
     {
         $app = new Application;

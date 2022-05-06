@@ -35,9 +35,9 @@ class Handler implements HandlerInterface
         }
     }
 
-    public function render(ServerRequestInterface $request, Exception $e): ResponseInterface
+    public function render(ServerRequestInterface $request, Throwable $e): ResponseInterface
     {
-        $e = FlattenException::create($e);
+        $e = FlattenException::createFromThrowable($e);
 
         $handler = new SymfonyExceptionHandler(Config::get('app.debug', false));
 
