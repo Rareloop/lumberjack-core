@@ -33,6 +33,22 @@ class HandlerTest extends TestCase
     }
 
     /** @test */
+    public function report_should_log_typeerror()
+    {
+        $app = new Application;
+
+        $exception = new \TypeError('Test Type Error');
+
+        $logger = Mockery::mock(Logger::class);
+        $logger->shouldReceive('error')->with($exception)->once();
+        $app->bind('logger', $logger);
+
+        $handler = new Handler($app);
+
+        $handler->report($exception);
+    }
+
+    /** @test */
     public function blacklisted_exception_types_will_not_be_logged()
     {
         $app = new Application;
@@ -58,6 +74,23 @@ class HandlerTest extends TestCase
         $app->bind('config', $config);
 
         $exception = new \Exception('Test Exception');
+        $handler = new Handler($app);
+
+        $response = $handler->render(new ServerRequest, $exception);
+
+        $this->assertInstanceOf(HtmlResponse::class, $response);
+    }
+
+    /** @test */
+    public function render_should_return_an_html_response_for_throwables()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $config = new Config;
+        $config->set('app.debug', true);
+        $app->bind('config', $config);
+
+        $exception = new \TypeError('Test Type Error');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
