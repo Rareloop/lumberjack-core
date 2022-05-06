@@ -33,6 +33,22 @@ class HandlerTest extends TestCase
     }
 
     /** @test */
+    public function report_should_log_typeerror()
+    {
+        $app = new Application;
+
+        $exception = new \TypeError('Test Type Error');
+
+        $logger = Mockery::mock(Logger::class);
+        $logger->shouldReceive('error')->with($exception)->once();
+        $app->bind('logger', $logger);
+
+        $handler = new Handler($app);
+
+        $handler->report($exception);
+    }
+
+    /** @test */
     public function blacklisted_exception_types_will_not_be_logged()
     {
         $app = new Application;

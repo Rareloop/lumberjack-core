@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Exceptions;
 
 use Exception;
+use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
@@ -22,7 +23,7 @@ class Handler implements HandlerInterface
         $this->app = $app;
     }
 
-    public function report(Exception $e)
+    public function report(Throwable $e)
     {
         if ($this->shouldNotReport($e)) {
             return;
@@ -34,7 +35,7 @@ class Handler implements HandlerInterface
         }
     }
 
-    public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
+    public function render(ServerRequestInterface $request, Exception $e): ResponseInterface
     {
         $e = FlattenException::create($e);
 
@@ -43,7 +44,7 @@ class Handler implements HandlerInterface
         return new HtmlResponse($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
     }
 
-    protected function shouldNotReport(Exception $e)
+    protected function shouldNotReport(Throwable $e)
     {
         return in_array(get_class($e), $this->dontReport);
     }
