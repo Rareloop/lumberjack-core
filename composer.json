@@ -25,14 +25,14 @@
         "laminas/laminas-zendframework-bridge": "^1.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.5.21",
         "php-coveralls/php-coveralls": "^2.0",
-        "mockery/mockery": "^1.4.4",
-        "brain/monkey": "~2.4.0",
+        "mockery/mockery": "^1.5.0",
+        "brain/monkey": "~2.4.2",
         "squizlabs/php_codesniffer": "^3.6.0",
-        "php-mock/php-mock": "^2.0",
+        "php-mock/php-mock": "^2.3.1",
         "mikey179/vfsstream": "1.6.11",
-        "antecedent/patchwork": "^2.1.8",
+        "antecedent/patchwork": "^2.1.21",
         "dms/phpunit-arraysubset-asserts": "^0.3.0"
     },
     "autoload": {
