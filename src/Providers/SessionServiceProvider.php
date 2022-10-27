@@ -33,22 +33,19 @@ class SessionServiceProvider extends ServiceProvider
 
         add_action('send_headers', function () use (&$cookieSet) {
             if (!$cookieSet) {
-                $cookieOptions = [
-                    'lifetime' => Config::get('session.lifetime', 120),
-                    'path' => Config::get('session.path', '/'),
-                    'domain' => Config::get('session.domain', null),
-                    'secure' => Config::get('session.secure', false),
-                    'httpOnly' => Config::get('session.http_only', true),
-                ];
+                $lifetime = Config::get('session.lifetime', 120);
 
                 setcookie(
                     $this->session->getName(),
                     $this->session->getId(),
-                    time() + ($cookieOptions['lifetime'] * 60),
-                    $cookieOptions['path'],
-                    $cookieOptions['domain'],
-                    $cookieOptions['secure'],
-                    $cookieOptions['httpOnly']
+                    [
+                        'expires' => time() + ($lifetime * 60),
+                        'path' => Config::get('session.path', '/'),
+                        'domain' => Config::get('session.domain', null),
+                        'secure' => Config::get('session.secure', false),
+                        'httponly' => Config::get('session.http_only', true),
+                        'samesite' => Config::get('session.same_site', 'strict'),
+                    ]
                 );
 
                 $cookieSet = true;
