@@ -14,7 +14,7 @@
         "monolog/monolog": "^2.0",
         "http-interop/response-sender": "^1.0",
         "symfony/debug": "^4.1",
-        "illuminate/collections": "^8.0.0||^9.0.0",
+        "illuminate/collections": "^8.53.1||^9.0.0",
         "statamic/stringy": "^3.1.3",
         "laminas/laminas-diactoros": "^2.4",
         "rareloop/psr7-server-request-extension": "^2.1.0",
