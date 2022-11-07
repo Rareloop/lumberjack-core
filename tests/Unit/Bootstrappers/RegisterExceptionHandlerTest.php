@@ -34,6 +34,9 @@ class RegisterExceptionHandlerTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $app = new Application;
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);
@@ -50,6 +53,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app = new Application;
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
 
         $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
             return $e->getSeverity() === E_USER_NOTICE && $e->getMessage() === 'Test Error';
@@ -70,6 +76,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app = new Application;
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
 
         $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
             return $e->getSeverity() === E_USER_DEPRECATED && $e->getMessage() === 'Test Error';
@@ -77,6 +86,55 @@ class RegisterExceptionHandlerTest extends TestCase
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
+    }
+
+    /**
+     * @test
+     */
+    public function E_DEPRECATED_errors_are_not_converted_to_exceptions()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+        $handler = Mockery::mock(HandlerInterface::class);
+        $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
+
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_DEPRECATED && $e->getMessage() === 'Test Error';
+        }));
+
+        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_DEPRECATED, 'Test Error');
+    }
+
+    /**
+     * @test
+     */
+    public function custom_error_level_can_be_set_for_report_only()
+    {
+        $this->expectException(\ErrorException::class);
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+        $handler = Mockery::mock(HandlerInterface::class);
+        $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $config->set('app.errors.reportOnly', [E_USER_ERROR]);
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
+
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_USER_ERROR && $e->getMessage() === 'Test Error';
+        }));
+
+        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_USER_ERROR, 'Test Error');
         $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
     }
 
