@@ -36,7 +36,7 @@ class SessionServiceProvider extends ServiceProvider
                 $cookieOptions = [
                     'lifetime' => Config::get('session.lifetime', 120),
                     'path' => Config::get('session.path', '/'),
-                    'domain' => Config::get('session.domain', null),
+                    'domain' => Config::get('session.domain', null) ?: '',
                     'secure' => Config::get('session.secure', false),
                     'httpOnly' => Config::get('session.http_only', true),
                 ];
