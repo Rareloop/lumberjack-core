@@ -94,7 +94,13 @@ class RegisterExceptionHandler
     {
         $exception = new ErrorException($message, 0, $level, $file, $line);
 
-        if ($level === E_USER_NOTICE || $level === E_USER_DEPRECATED) {
+        $errorsToReportOnly = $this->app->get('config')->get('app.errors.reportOnly') ?: [
+            E_USER_NOTICE,
+            E_USER_DEPRECATED,
+            E_DEPRECATED
+        ];
+
+        if (in_array($level, $errorsToReportOnly)) {
             $this->getExceptionHandler()->report($exception);
             return;
         }
