@@ -39,10 +39,7 @@
     "autoload": {
         "psr-4": {
             "Rareloop\\Lumberjack\\": "src"
-        },
-        "files": [
-            "src/alias.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

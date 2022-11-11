@@ -2,14 +2,14 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Psr\Http\Message\RequestInterface;
-use Rareloop\Router\Invoker;
-use Rareloop\Router\ProvidesControllerMiddleware;
-use Rareloop\Router\ResponseFactory;
 use Stringy\Stringy;
-use Tightenco\Collect\Support\Collection;
-use Zend\Diactoros\ServerRequestFactory;
+use Rareloop\Router\Invoker;
+use Illuminate\Support\Collection;
 use mindplay\middleman\Dispatcher;
+use Rareloop\Router\ResponseFactory;
+use Psr\Http\Message\RequestInterface;
+use Zend\Diactoros\ServerRequestFactory;
+use Rareloop\Router\ProvidesControllerMiddleware;
 
 class WordPressControllersServiceProvider extends ServiceProvider
 {
