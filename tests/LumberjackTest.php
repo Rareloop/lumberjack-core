@@ -15,7 +15,6 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Bootstrappers\RegisterRequestHandler;
 use Rareloop\Lumberjack\Http\Lumberjack;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class LumberjackTest extends TestCase
 {

@@ -16,7 +16,7 @@ class GlobalFunctionsTest extends TestCase
 
     public function setUp(): void
     {
-        include_once(__DIR__ . '/../../src/functions.php');
+        include_once(__DIR__ . '/../src/functions.php');
 
         parent::setUp();
     }

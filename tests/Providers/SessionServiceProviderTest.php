@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\SessionServiceProvider;
 use Rareloop\Lumberjack\Session\SessionManager;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class SessionServiceProviderTest extends TestCase
 {

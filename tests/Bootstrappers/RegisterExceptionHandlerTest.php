@@ -12,7 +12,7 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Zend\Diactoros\Response;

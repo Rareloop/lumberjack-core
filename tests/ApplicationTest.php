@@ -7,7 +7,6 @@ use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 use Brain\Monkey;

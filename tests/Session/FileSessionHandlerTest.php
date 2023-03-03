@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Session;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

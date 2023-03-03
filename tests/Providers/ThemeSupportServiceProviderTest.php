@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey\Functions;
 use Mockery;
@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\ThemeSupportServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class ThemeSupportServiceProviderTest extends TestCase
 {

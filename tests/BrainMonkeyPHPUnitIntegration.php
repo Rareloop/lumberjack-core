@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test\Unit;
+namespace Rareloop\Lumberjack\Test;
 
 use Brain\Monkey;
 

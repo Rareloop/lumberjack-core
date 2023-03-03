@@ -16,7 +16,7 @@ use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\MiddlewareResolver;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response\HtmlResponse;

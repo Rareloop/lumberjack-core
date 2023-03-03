@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Timber\Timber;
 
 /**

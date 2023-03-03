@@ -4,7 +4,6 @@ namespace Rareloop\Lumberjack\Test;
 
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Page;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 class PageTest extends TestCase
 {

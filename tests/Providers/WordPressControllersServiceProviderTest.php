@@ -19,11 +19,11 @@ use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 use Rareloop\Lumberjack\Http\MiddlewareResolver;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
-use \Mockery;
+use Mockery;
 
 class WordPressControllersServiceProviderTest extends TestCase
 {
