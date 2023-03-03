@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Session;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -8,11 +8,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 use Rareloop\Lumberjack\Encrypter;
-use Rareloop\Lumberjack\Session\EncryptedStore;
-use Rareloop\Lumberjack\Session\FileSessionHandler;
-use Rareloop\Lumberjack\Session\SessionManager;
-use Rareloop\Lumberjack\Session\Store;
-use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use Rareloop\Lumberjack\Test\Session\NullSessionHandler;
 use org\bovigo\vfs\vfsStream;
 
 class SessionManagerTest extends TestCase

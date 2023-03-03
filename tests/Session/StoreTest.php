@@ -1,11 +1,10 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Session;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Session\Store;
-use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use Rareloop\Lumberjack\Test\Session\NullSessionHandler;
 
 class StoreTest extends TestCase
 {

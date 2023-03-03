@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test\Unit\Session;
+namespace Rareloop\Lumberjack\Test\Session;
 
 use SessionHandlerInterface;
 

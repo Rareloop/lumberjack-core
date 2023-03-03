@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\Test;
+namespace Rareloop\Lumberjack\Test\Session;
 
 use Dcrypt\AesCbc;
 use Mockery;
@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Session\EncryptedStore;
 use Rareloop\Lumberjack\Session\Store;
-use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
 class EncryptedStoreTest extends TestCase
 {
