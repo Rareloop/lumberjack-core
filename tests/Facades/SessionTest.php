@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Session\SessionManager;
-use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use Rareloop\Lumberjack\Test\Session\NullSessionHandler;
 
 class SessionTest extends TestCase
 {

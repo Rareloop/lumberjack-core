@@ -11,7 +11,7 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Providers\TimberServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 use Timber\Timber;
 
 class TimberServiceProviderTest extends TestCase

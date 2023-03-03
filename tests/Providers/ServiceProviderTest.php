@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class ServiceProviderTest extends TestCase
 {

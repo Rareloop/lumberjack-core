@@ -7,6 +7,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Providers\MenusServiceProvider;
 use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class MenusServiceProviderTest extends TestCase

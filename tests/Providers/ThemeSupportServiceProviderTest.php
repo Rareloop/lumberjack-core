@@ -7,6 +7,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Providers\ThemeSupportServiceProvider;
 use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class ThemeSupportServiceProviderTest extends TestCase

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Post;
+use Rareloop\Lumberjack\Providers\CustomPostTypesServiceProvider;
 use Rareloop\Lumberjack\Test\BrainMonkeyPHPUnitIntegration;
 
 class CustomPostTypesServiceProviderTest extends TestCase

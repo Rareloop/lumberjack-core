@@ -8,7 +8,10 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 use Rareloop\Lumberjack\Encrypter;
-use Rareloop\Lumberjack\Test\Session\NullSessionHandler;
+use Rareloop\Lumberjack\Session\EncryptedStore;
+use Rareloop\Lumberjack\Session\FileSessionHandler;
+use Rareloop\Lumberjack\Session\SessionManager;
+use Rareloop\Lumberjack\Session\Store;
 use org\bovigo\vfs\vfsStream;
 
 class SessionManagerTest extends TestCase

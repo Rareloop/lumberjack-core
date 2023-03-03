@@ -4,6 +4,8 @@ namespace Rareloop\Lumberjack\Test\Session;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Session\FileSessionHandler;
+use Rareloop\Lumberjack\Session\Store;
 use org\bovigo\vfs\vfsStream;
 
 class FileSessionHandlerTest extends TestCase
