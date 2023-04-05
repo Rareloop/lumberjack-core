@@ -141,7 +141,8 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/route', function () { })->name('test.route');
+        $router->get('test/route', function () {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route');
@@ -155,7 +156,8 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/{name}', function ($name) { })->name('test.route');
+        $router->get('test/{name}', function ($name) {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route', [
@@ -351,6 +353,18 @@ class HelpersTest extends TestCase
         Helpers::logger('Example message', [
             'test' => 123,
         ]);
+    }
+
+    /** @test */
+    public function dump_function_exists()
+    {
+        $this->assertTrue(function_exists('dump'));
+    }
+
+    /** @test */
+    public function dd_function_exists()
+    {
+        $this->assertTrue(function_exists('dd'));
     }
 }
 

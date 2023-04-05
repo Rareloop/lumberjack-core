@@ -17,18 +17,19 @@ class FileSessionHandler implements SessionHandlerInterface
         $this->prefix = $prefix;
     }
 
-
+    #[\ReturnTypeWillChange]
     public function open($savePath, $sessionName)
     {
         return true;
     }
 
-
+    #[\ReturnTypeWillChange]
     public function close()
     {
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function read($sessionId)
     {
         $filepath = $this->getFilepath($sessionId);
@@ -40,7 +41,7 @@ class FileSessionHandler implements SessionHandlerInterface
         return '';
     }
 
-
+    #[\ReturnTypeWillChange]
     public function write($sessionId, $data)
     {
         try {
@@ -52,7 +53,7 @@ class FileSessionHandler implements SessionHandlerInterface
         return true;
     }
 
-
+    #[\ReturnTypeWillChange]
     public function destroy($sessionId)
     {
         $filepath = $this->getFilepath($sessionId);
@@ -64,7 +65,7 @@ class FileSessionHandler implements SessionHandlerInterface
         return true;
     }
 
-
+    #[\ReturnTypeWillChange]
     public function gc($lifetime)
     {
         foreach (glob($this->path . '/' . $this->prefix . '*') as $file) {

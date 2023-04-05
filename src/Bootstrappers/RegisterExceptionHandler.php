@@ -42,7 +42,7 @@ class RegisterExceptionHandler
     public function handleException($e)
     {
         if ($e instanceof Error) {
-            $e = new ErrorException($e->getMessage(), 0, null, $e->getFile(), $e->getLine());
+            $e = new ErrorException($e->getMessage(), 0, E_ERROR, $e->getFile(), $e->getLine());
         }
 
         $handler = $this->getExceptionHandler();
@@ -73,7 +73,7 @@ class RegisterExceptionHandler
         @send($response);
     }
 
-    protected function getExceptionHandler() : HandlerInterface
+    protected function getExceptionHandler(): HandlerInterface
     {
         return $this->app->get(HandlerInterface::class);
     }
@@ -94,7 +94,13 @@ class RegisterExceptionHandler
     {
         $exception = new ErrorException($message, 0, $level, $file, $line);
 
-        if ($level === E_USER_NOTICE || $level === E_USER_DEPRECATED) {
+        $errorsToReportOnly = $this->app->get('config')->get('app.errors.reportOnly') ?: [
+            E_USER_NOTICE,
+            E_USER_DEPRECATED,
+            E_DEPRECATED
+        ];
+
+        if (in_array($level, $errorsToReportOnly)) {
             $this->getExceptionHandler()->report($exception);
             return;
         }
@@ -106,7 +112,7 @@ class RegisterExceptionHandler
 
     public function handleShutdown()
     {
-        if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+        if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
             $this->handleException($this->fatalExceptionFromError($error, 0));
         }
     }
