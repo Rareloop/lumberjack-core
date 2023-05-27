@@ -37,8 +37,8 @@ jobs:
     - name: Submit coverage to Coveralls
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_PARALLEL: true
-        COVERALLS_FLAG_NAME: ${{ github.job }}-PHP-${{ matrix.php_version }}-${{ matrix.composer_flags }}
+        COVERALLS_PARALLEL: "true"
+        COVERALLS_FLAG_NAME: ${{ github.job }}-PHP-${{ matrix.php_version }}
       if: ${{ env.COVERALLS_REPO_TOKEN && matrix.composer_flags == '' }}
       run: |
         wget --no-verbose "https://github.com/php-coveralls/php-coveralls/releases/download/v2.5.3/php-coveralls.phar"
