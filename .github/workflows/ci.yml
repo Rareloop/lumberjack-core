@@ -43,3 +43,13 @@ jobs:
       run: |
         wget --no-verbose "https://github.com/php-coveralls/php-coveralls/releases/download/v2.5.3/php-coveralls.phar"
         php ./php-coveralls.phar --verbose
+
+  finish:
+    needs: build-test
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
