@@ -35,7 +35,7 @@ class LumberjackTest extends TestCase
             RegisterRequestHandler::class,
         ])->once();
 
-        $kernal = new Lumberjack($app);
-        $kernal->bootstrap();
+        $kernel = new Lumberjack($app);
+        $kernel->bootstrap();
     }
 }
