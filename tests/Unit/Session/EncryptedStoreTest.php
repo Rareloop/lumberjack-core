@@ -73,7 +73,7 @@ class EncryptedStoreTest extends TestCase
         $this->assertSame(null, $store->get('foo'));
     }
 
-    private function unexpectedSessionData()
+    protected function unexpectedSessionData()
     {
         return [
             [@serialize(['foo' => 'bar'])],
