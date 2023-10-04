@@ -36,7 +36,7 @@ class EncryptedStore extends Store
             return $this->encrypter->decrypt($data);
         } catch (Exception $e) {
             $this->exceptionHandler->report($e);
-            return null;
+            return '';
         }
     }
 }
