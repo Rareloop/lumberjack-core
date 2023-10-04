@@ -12,8 +12,13 @@ class EncryptedStore extends Store
     protected $encrypter;
     protected $exceptionHandler;
 
-    public function __construct($name, SessionHandlerInterface $handler, Encrypter $encrypter, $id = null, HandlerInterface $exceptionHandler = null)
-    {
+    public function __construct(
+        $name,
+        SessionHandlerInterface $handler,
+        Encrypter $encrypter,
+        $id = null,
+        HandlerInterface $exceptionHandler = null
+    ) {
         $this->encrypter = $encrypter;
         $this->exceptionHandler = $exceptionHandler;
 
