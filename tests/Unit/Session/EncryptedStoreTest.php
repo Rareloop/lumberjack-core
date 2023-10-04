@@ -6,6 +6,7 @@ use Dcrypt\AesCbc;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Encrypter;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Session\EncryptedStore;
 use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
@@ -49,5 +50,34 @@ class EncryptedStoreTest extends TestCase
         $store->start();
 
         $this->assertSame('bar', $store->get('foo'));
+    }
+
+    /**
+     * @test
+     * @dataProvider unexpectedSessionData
+     */
+    public function unexpected_session_data_is_handled_gracefully($previousSessionValue)
+    {
+        $encryptionKey = 'encryption-key';
+
+        // Use a mock handler to fake a previously stored state
+        $handler = Mockery::mock(NullSessionHandler::class . '[read]');
+        $handler->shouldReceive('read')->andReturn($previousSessionValue);
+
+        $errorHandler = Mockery::mock(HandlerInterface::class);
+        $errorHandler->shouldReceive('report')->once();
+
+        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id', $errorHandler);
+        $store->start();
+
+        $this->assertSame(null, $store->get('foo'));
+    }
+
+    private function unexpectedSessionData()
+    {
+        return [
+            [@serialize(['foo' => 'bar'])],
+            [''],
+        ];
     }
 }
