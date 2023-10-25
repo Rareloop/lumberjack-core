@@ -8,6 +8,7 @@ use Spatie\Macroable\Macroable;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
+#[\AllowDynamicProperties]
 class Post extends TimberPost
 {
     use Macroable {
@@ -46,7 +47,7 @@ class Post extends TimberPost
             return call_user_func_array([$builder, $name], $arguments);
         }
 
-        trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+        trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
     }
 
     /**
@@ -54,7 +55,7 @@ class Post extends TimberPost
      *
      * @return ScopedQueryBuilder
      */
-    public static function builder() : ScopedQueryBuilder
+    public static function builder(): ScopedQueryBuilder
     {
         return new ScopedQueryBuilder(static::class);
     }

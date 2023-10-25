@@ -15,6 +15,8 @@ class PostQueryBuilderTest extends TestCase
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
         \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
+    private Application $app;
+
     public function setUp(): void
     {
         $this->app = new Application;
