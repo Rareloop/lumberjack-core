@@ -124,7 +124,7 @@ class RouterServiceProviderTest extends TestCase
         $app->register($provider);
         $lumberjack->bootstrap();
 
-        $this->assertTrue(has_action('wp_loaded', 'function ()'));
+        $this->assertNotFalse(has_action('wp_loaded', 'function ()'));
     }
 
     /** @test */

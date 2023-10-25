@@ -10,6 +10,7 @@ use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
+use Throwable;
 use Timber\Timber;
 
 class ScopedQueryBuilderTest extends TestCase
@@ -114,10 +115,16 @@ class ScopedQueryBuilderTest extends TestCase
      */
     public function missing_query_scope_throws_an_error()
     {
-        $this->expectError();
+        $errorThrown = false;
 
-        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
-        $builder->nonExistentScope();
+        try {
+            $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+            $builder->nonExistentScope();
+        } catch (Throwable $e) {
+            $errorThrown = true;
+        }
+
+        $this->assertTrue($errorThrown);
     }
 
     /** @test */
