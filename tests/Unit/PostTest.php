@@ -214,7 +214,7 @@ class PostTest extends TestCase
     public function macros_set_correct_this_context_on_instances()
     {
         Post::macro('testFunctionAddedByMacro', function () {
-            return $this->dummyData();
+            return $this->dummyData;
         });
 
         $post = new Post(false, true);
