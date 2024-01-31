@@ -10,7 +10,7 @@
         "psr/http-message": "^1.1",
         "psr/http-server-middleware": "^1.0.2",
         "blast/facades": "^1.0",
-        "timber/timber": "^1.23.0",
+        "timber/timber": "^1.24.0",
         "monolog/monolog": "^2.9.1",
         "http-interop/response-sender": "^1.0",
         "symfony/debug": "^4.4.44",
