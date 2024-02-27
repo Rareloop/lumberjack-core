@@ -552,6 +552,8 @@ class ApplicationTest extends TestCase
 
 class BootstrapperBootstrapTester
 {
+    public $callback;
+
     public function __construct($callback)
     {
         $this->callback = $callback;
@@ -560,6 +562,8 @@ class BootstrapperBootstrapTester
 
 abstract class TestBootstrapperBase
 {
+    private BootstrapperBootstrapTester $tester;
+
     public function __construct(BootstrapperBootstrapTester $tester)
     {
         $this->tester = $tester;

@@ -9,11 +9,14 @@ use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
+use Throwable;
 
 class PostQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
         \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+
+    private Application $app;
 
     public function setUp(): void
     {
@@ -48,9 +51,15 @@ class PostQueryBuilderTest extends TestCase
      */
     public function throw_error_on_missing_static_function()
     {
-        $this->expectError();
+        $errorThrown = false;
 
-        Post::missingStaticFunction();
+        try {
+            Post::missingStaticFunction();
+        } catch (Throwable $e) {
+            $errorThrown = true;
+        }
+
+        $this->assertTrue($errorThrown);
     }
 
     private function assertQueryBuilder($function, $params, $postType)
