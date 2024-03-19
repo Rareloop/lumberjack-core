@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -24,6 +25,7 @@ use Rareloop\Router\Responsable;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 use \Mockery;
+use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 
 class WordPressControllersServiceProviderTest extends TestCase
 {
@@ -156,6 +158,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_will_mark_request_handled_in_app_if_controller_does_exist()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
@@ -182,6 +188,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_returns_response_when_controller_does_exist()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
@@ -195,6 +205,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_returns_response_when_controller_returns_a_responsable()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
@@ -209,6 +223,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_resolves_constructor_params_from_container()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
@@ -222,6 +240,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_resolves_controller_method_params_from_container()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
@@ -235,6 +257,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_supports_middleware()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
         $controller = new TestControllerWithMiddleware;
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'));
@@ -250,8 +276,32 @@ class WordPressControllersServiceProviderTest extends TestCase
     }
 
     /** @test */
+    public function handle_request_adds_password_protect_middleware()
+    {
+        $mock = Mockery::mock(PasswordProtected::class);
+        $mock->shouldReceive('process')->once()->andReturn(new HtmlResponse('password-protected'));
+
+        $app = new Application(__DIR__ . '/../');
+        $app->bind(PasswordProtected::class, $mock);
+
+        $controller = new TestControllerWithMiddleware;
+        $app->bind(TestControllerWithMiddleware::class, $controller);
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot($app);
+
+        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+
+        $this->assertSame('password-protected', $response->getBody()->getContents());
+    }
+
+    /** @test */
     public function handle_request_supports_middleware_applied_to_a_specific_method_using_only()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
         $controller = new TestControllerWithMiddleware;
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->only('notHandle');
@@ -268,6 +318,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_supports_middleware_applied_to_a_specific_method_using_except()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         $app = new Application(__DIR__ . '/../');
         $controller = new TestControllerWithMiddleware;
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->except('handle');
@@ -284,6 +338,10 @@ class WordPressControllersServiceProviderTest extends TestCase
     /** @test */
     public function handle_request_supports_middleware_aliases()
     {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
         Functions\when('get_bloginfo')->alias(function ($key) {
             if ($key === 'url') {
                 return 'http://example.com';

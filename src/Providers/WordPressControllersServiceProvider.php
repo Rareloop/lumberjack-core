@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use mindplay\middleman\Dispatcher;
 use Rareloop\Router\ResponseFactory;
 use Psr\Http\Message\RequestInterface;
+use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 use Zend\Diactoros\ServerRequestFactory;
 use Rareloop\Router\ProvidesControllerMiddleware;
 
@@ -82,11 +83,11 @@ class WordPressControllersServiceProvider extends ServiceProvider
             })->all();
         }
 
-        $middlewares[] = function ($request) use ($controller, $methodName) {
+        $middlewares = [$this->app->get(PasswordProtected::class), ...$middlewares, function ($request) use ($controller, $methodName) {
             $invoker = new Invoker($this->app);
             $output = $invoker->setRequest($request)->call([$controller, $methodName]);
             return ResponseFactory::create($request, $output);
-        };
+        }];
 
         $dispatcher = $this->createDispatcher($middlewares);
         return $dispatcher->dispatch($request);
