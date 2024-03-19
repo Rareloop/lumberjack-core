@@ -83,11 +83,15 @@ class WordPressControllersServiceProvider extends ServiceProvider
             })->all();
         }
 
-        $middlewares = [$this->app->get(PasswordProtected::class), ...$middlewares, function ($request) use ($controller, $methodName) {
-            $invoker = new Invoker($this->app);
-            $output = $invoker->setRequest($request)->call([$controller, $methodName]);
-            return ResponseFactory::create($request, $output);
-        }];
+        $middlewares = [
+            $this->app->get(PasswordProtected::class),
+            ...$middlewares,
+            function ($request) use ($controller, $methodName) {
+                $invoker = new Invoker($this->app);
+                $output = $invoker->setRequest($request)->call([$controller, $methodName]);
+                return ResponseFactory::create($request, $output);
+            }
+        ];
 
         $dispatcher = $this->createDispatcher($middlewares);
         return $dispatcher->dispatch($request);
