@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyExceptionHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Zend\Diactoros\Response\HtmlResponse;
 
