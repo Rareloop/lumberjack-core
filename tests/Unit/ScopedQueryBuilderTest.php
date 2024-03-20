@@ -4,7 +4,6 @@ namespace Rareloop\Lumberjack\Test;
 
 use Illuminate\Support\Collection;
 use Mockery;
-use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
