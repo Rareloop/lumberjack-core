@@ -32,7 +32,10 @@ class PasswordProtected implements MiddlewareInterface
         $context = Timber::context();
         $context['post'] = new Post();
 
-        $html = Timber::compile('single-password.twig', $context);
+        $html = Timber::compile(
+            apply_filters('lumberjack/password_protect_template', 'single-password.twig'),
+            $context
+        );
 
         if (!$html) {
             return null;

@@ -5,7 +5,7 @@ namespace Rareloop\Lumberjack\Test\Http\Middleware;
 use Mockery;
 use Timber\Timber;
 use Brain\Monkey\Functions;
-use Laminas\Diactoros\Response\HtmlResponse;
+use Brain\Monkey\Filters;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -110,5 +110,6 @@ class PasswordProtectTest extends TestCase
         $middleware = new PasswordProtected;
 
         $this->assertSame('testing123', $middleware->process($request, $handler)->getBody()->getContents());
+        $this->assertTrue(Filters\applied('lumberjack/password_protect_template') > 0);
     }
 }
