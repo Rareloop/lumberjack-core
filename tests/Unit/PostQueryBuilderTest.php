@@ -53,7 +53,7 @@ class PostQueryBuilderTest extends TestCase
         $errorThrown = false;
         try {
             Post::missingStaticFunction();
-        } catch (Throwable $th) {
+        } catch (Throwable $e) {
             $errorThrown = true;
         }
 

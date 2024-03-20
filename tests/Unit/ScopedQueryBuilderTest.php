@@ -119,7 +119,7 @@ class ScopedQueryBuilderTest extends TestCase
         try {
             $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
             $builder->nonExistentScope();
-        } catch (Throwable $th) {
+        } catch (Throwable $e) {
             $errorThrown = true;
         }
 
