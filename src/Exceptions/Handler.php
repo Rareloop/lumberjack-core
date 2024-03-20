@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
 use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyExceptionHandler;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class Handler implements HandlerInterface
@@ -38,7 +38,7 @@ class Handler implements HandlerInterface
     {
         $e = FlattenException::create($e);
 
-        $handler = new SymfonyExceptionHandler(Config::get('app.debug', false));
+        $handler = new SymfonyExceptionHandler(null, Config::get('app.debug', false));
 
         return new HtmlResponse($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
     }
