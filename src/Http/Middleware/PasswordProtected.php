@@ -5,9 +5,10 @@ namespace Rareloop\Lumberjack\Http\Middleware;
 use Timber\Timber;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Rareloop\Lumberjack\Exceptions\TwigTemplateNotFoundException;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Post;
 
 class PasswordProtected implements MiddlewareInterface
@@ -32,15 +33,12 @@ class PasswordProtected implements MiddlewareInterface
         $context = Timber::context();
         $context['post'] = new Post();
 
-        $html = Timber::compile(
-            apply_filters('lumberjack/password_protect_template', 'single-password.twig'),
-            $context
-        );
+        $template = apply_filters('lumberjack/password_protect_template', 'single-password.twig');
 
-        if (!$html) {
+        try {
+            return new TimberResponse($template, $context);
+        } catch (TwigTemplateNotFoundException $e) {
             return null;
         }
-
-        return new HtmlResponse($html);
     }
 }
