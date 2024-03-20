@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack\Test;
 
 use Illuminate\Support\Collection;
 use Mockery;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
@@ -111,14 +112,18 @@ class ScopedQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @runInSeparateProcess
      */
     public function missing_query_scope_throws_an_error()
     {
-        $this->expectException(Throwable::class);
+        $errorThrown = false;
+        try {
+            $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+            $builder->nonExistentScope();
+        } catch (Throwable $th) {
+            $errorThrown = true;
+        }
 
-        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
-        $builder->nonExistentScope();
+        $this->assertTrue($errorThrown);
     }
 
     /** @test */
