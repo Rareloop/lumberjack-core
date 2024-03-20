@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
 /**
@@ -108,8 +109,10 @@ class PasswordProtectTest extends TestCase
         $handler->shouldReceive('handle')->never();
 
         $middleware = new PasswordProtected;
+        $response = $middleware->process($request, $handler);
 
-        $this->assertSame('testing123', $middleware->process($request, $handler)->getBody()->getContents());
+        $this->assertInstanceOf(TimberResponse::class, $response);
+        $this->assertSame('testing123', $response->getBody()->getContents());
         $this->assertTrue(Filters\applied('lumberjack/password_protect_template') > 0);
     }
 }
