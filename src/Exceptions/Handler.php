@@ -36,11 +36,11 @@ class Handler implements HandlerInterface
 
     public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
     {
-        $e = FlattenException::create($e);
-
         $htmlRenderer = new HtmlErrorRenderer(Config::get('app.debug', false));
 
-        return new HtmlResponse($htmlRenderer->getBody($e), $e->getStatusCode(), $e->getHeaders());
+        $exception = $htmlRenderer->render($e);
+
+        return new HtmlResponse($exception->getAsString(), $exception->getStatusCode(), $exception->getHeaders());
     }
 
     protected function shouldNotReport(Exception $e)
