@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Router\Responsable;
-use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\ErrorHandler\Error\FatalError;
 use Zend\Diactoros\ServerRequestFactory;
 use function Http\Response\send;
 
@@ -122,16 +122,14 @@ class RegisterExceptionHandler
      *
      * @param  array  $error
      * @param  int|null  $traceOffset
-     * @return \Symfony\Component\Debug\Exception\FatalErrorException
+     * @return \Symfony\Component\ErrorHandler\Error\FatalError
      */
     protected function fatalExceptionFromError(array $error, $traceOffset = null)
     {
-        return new FatalErrorException(
+        return new FatalError(
             $error['message'],
             $error['type'],
-            0,
-            $error['file'],
-            $error['line'],
+            $error,
             $traceOffset
         );
     }

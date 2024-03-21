@@ -7,8 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class Handler implements HandlerInterface
@@ -36,11 +35,11 @@ class Handler implements HandlerInterface
 
     public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
     {
-        $e = FlattenException::create($e);
+        $htmlRenderer = new HtmlErrorRenderer(Config::get('app.debug', false));
 
-        $handler = new SymfonyExceptionHandler(Config::get('app.debug', false));
+        $exception = $htmlRenderer->render($e);
 
-        return new HtmlResponse($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
+        return new HtmlResponse($exception->getAsString(), $exception->getStatusCode(), $exception->getHeaders());
     }
 
     protected function shouldNotReport(Exception $e)
