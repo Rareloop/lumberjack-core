@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
 use Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer;
-use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class Handler implements HandlerInterface
