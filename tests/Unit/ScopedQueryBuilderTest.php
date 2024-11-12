@@ -48,21 +48,12 @@ class ScopedQueryBuilderTest extends TestCase
         $builder->wherePostType('test_post_type');
     }
 
-    /** @test */
-    public function cannot_overwrite_post_class()
-    {
-        $this->expectException(\Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException::class);
-
-        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
-        $builder->as(Post::class);
-    }
-
     /**
      * @test
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function get_retrieves_list_of_posts_of_correct_type()
+    public function get_retrieves_list_of_posts()
     {
         $posts = [new PostWithQueryScope(1, true), new PostWithQueryScope(2, true)];
 
@@ -73,7 +64,6 @@ class ScopedQueryBuilderTest extends TestCase
                 'post_status' => 'publish',
                 'offset' => 10,
             ]),
-            PostWithQueryScope::class,
         ])->once()->andReturn($posts);
 
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);

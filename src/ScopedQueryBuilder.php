@@ -23,7 +23,6 @@ class ScopedQueryBuilder
         $this->queryBuilder = Helpers::app(QueryBuilderContract::class);
 
         $this->queryBuilder
-            ->as($postClass)
             ->wherePostType(call_user_func([$this->postClass, 'getPostType']));
     }
 
@@ -65,7 +64,7 @@ class ScopedQueryBuilder
      * @param  string  $name The method name
      * @return boolean
      */
-    protected function hasQueryBuilderMethod(string $name) : bool
+    protected function hasQueryBuilderMethod(string $name): bool
     {
         if (method_exists($this->queryBuilder, $name)) {
             return true;
@@ -81,10 +80,5 @@ class ScopedQueryBuilder
     public function wherePostType($postType)
     {
         throw new CannotRedeclarePostTypeOnQueryException;
-    }
-
-    public function as($postClass)
-    {
-        throw new CannotRedeclarePostClassOnQueryException;
     }
 }
