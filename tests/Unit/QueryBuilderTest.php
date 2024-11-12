@@ -334,7 +334,6 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'offset' => 10,
                 ]),
-                Post::class,
             ])
             ->once()
             ->andReturn($posts);
@@ -361,7 +360,6 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'offset' => 10,
                 ]),
-                Post::class,
             ])
             ->once()
             ->andReturn(false);
@@ -388,7 +386,6 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'offset' => 10,
                 ]),
-                Post::class,
             ])
             ->once()
             ->andReturn(null);
@@ -398,29 +395,6 @@ class QueryBuilderTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $returnedPosts);
         $this->assertSame(0, $returnedPosts->count());
-    }
-
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function can_specify_the_class_type_to_return()
-    {
-        $timber = Mockery::mock('alias:' . Timber::class);
-        $timber
-            ->shouldReceive('get_posts')
-            ->withArgs([
-                Mockery::subset([
-                    'post_status' => 'publish',
-                    'offset' => 10,
-                ]),
-                PostWithCustomPostType::class,
-            ])
-            ->once();
-
-        $builder = new QueryBuilder();
-        $builder->whereStatus('publish')->offset(10)->as(PostWithCustomPostType::class)->get();
     }
 
     /**
