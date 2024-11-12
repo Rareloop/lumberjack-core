@@ -8,7 +8,6 @@ use Spatie\Macroable\Macroable;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
-#[\AllowDynamicProperties]
 class Post extends TimberPost
 {
     use Macroable {
@@ -16,14 +15,14 @@ class Post extends TimberPost
         Macroable::__callStatic as __macroableCallStatic;
     }
 
-    public function __construct($id = false, $preventTimberInit = false)
+    public function __construct(mixed $wpPost = null, $preventTimberInit = false)
     {
         /**
          * There are occasions where we do not want the bootstrap the data. At the moment this is
          * designed to make Query Scopes possible
          */
         if (!$preventTimberInit) {
-            parent::__construct($id);
+            parent::__construct($wpPost);
         }
     }
 
@@ -102,7 +101,14 @@ class Post extends TimberPost
             throw new PostTypeRegistrationException('Config not set');
         }
 
+        add_filter('timber/post/classmap', [static::class, 'filterTimberPostClassMap']);
+
         register_post_type($postType, $config);
+    }
+
+    public static function filterTimberPostClassMap(array $classMap): array
+    {
+        return [...$classMap, static::getPostType() => static::class];
     }
 
     /**
