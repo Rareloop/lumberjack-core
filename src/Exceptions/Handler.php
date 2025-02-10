@@ -3,13 +3,12 @@
 namespace Rareloop\Lumberjack\Exceptions;
 
 use Exception;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Config;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
-use Symfony\Component\Debug\Exception\FlattenException;
-use Zend\Diactoros\Response\HtmlResponse;
+use Spatie\Ignition\Ignition;
 
 class Handler implements HandlerInterface
 {
@@ -36,11 +35,17 @@ class Handler implements HandlerInterface
 
     public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
     {
-        $e = FlattenException::create($e);
+        $isDebug = Config::get('app.debug', false) === true;
 
-        $handler = new SymfonyExceptionHandler(Config::get('app.debug', false));
+        $ignition = Ignition::make()->shouldDisplayException($isDebug)->register();
 
-        return new HtmlResponse($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
+        ob_start();
+
+        $ignition->handleException($e);
+
+        $html = ob_get_clean();
+
+        return new HtmlResponse($html);
     }
 
     protected function shouldNotReport(Exception $e)
