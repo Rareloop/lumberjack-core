@@ -37,7 +37,10 @@ class Handler implements HandlerInterface
     {
         $isDebug = Config::get('app.debug', false) === true;
 
-        $ignition = Ignition::make()->shouldDisplayException($isDebug)->register();
+        $ignition = Ignition::make()
+            ->shouldDisplayException($isDebug)
+            ->runningInProductionEnvironment(!$isDebug)
+            ->register();
 
         ob_start();
 
