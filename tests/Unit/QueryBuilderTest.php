@@ -384,6 +384,7 @@ class QueryBuilderTest extends TestCase
         $post = Mockery::mock(Post::class);
 
         $postQuery = Mockery::mock(PostQuery::class);
+        $postQuery->shouldReceive('count')->once()->andReturn(1);
         $postQuery->shouldReceive('to_array')->once()->andReturn([$post]);
 
         $timber = Mockery::mock('alias:' . Timber::class);

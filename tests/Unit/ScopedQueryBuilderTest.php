@@ -2,16 +2,17 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Illuminate\Support\Collection;
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
-use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\QueryBuilder;
-use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Throwable;
 use Timber\Timber;
+use Timber\PostQuery;
+use Rareloop\Lumberjack\Post;
+use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Collection;
+use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\QueryBuilder;
+use Rareloop\Lumberjack\ScopedQueryBuilder;
+use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 
 class ScopedQueryBuilderTest extends TestCase
 {
@@ -55,7 +56,10 @@ class ScopedQueryBuilderTest extends TestCase
      */
     public function get_retrieves_list_of_posts()
     {
-        $posts = [new PostWithQueryScope(1, true), new PostWithQueryScope(2, true)];
+        // $posts = [new PostWithQueryScope(1, true), new PostWithQueryScope(2, true)];
+
+        $postQuery = Mockery::mock(PostQuery::class);
+        $postQuery->shouldReceive('to_array')->once()->andReturn([123, 'abc']);
 
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('get_posts')->withArgs([
@@ -64,13 +68,13 @@ class ScopedQueryBuilderTest extends TestCase
                 'post_status' => 'publish',
                 'offset' => 10,
             ]),
-        ])->once()->andReturn($posts);
+        ])->once()->andReturn($postQuery);
 
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
 
         $this->assertInstanceOf(Collection::class, $returnedPosts);
-        $this->assertSame($posts, $returnedPosts->toArray());
+        $this->assertSame([123, 'abc'], $returnedPosts->toArray());
     }
 
     /** @test */
