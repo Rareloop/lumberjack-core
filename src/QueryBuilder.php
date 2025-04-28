@@ -159,22 +159,15 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function as($postClass): QueryBuilderContract
-    {
-        $this->postClass = $postClass;
-
-        return $this;
-    }
-
     public function get(): Collection
     {
-        $posts = Timber::get_posts($this->getParameters(), $this->postClass);
+        $posts = Timber::get_posts($this->getParameters());
 
-        if (!is_array($posts)) {
-            $posts = [];
+        if ($posts === null) {
+            return collect([]);
         }
 
-        return collect($posts);
+        return collect($posts->to_array());
     }
 
     /**
@@ -188,13 +181,13 @@ class QueryBuilder implements QueryBuilderContract
             'limit' => 1,
         ]);
 
-        $posts = Timber::get_posts($params, $this->postClass);
+        $posts = Timber::get_posts($params);
 
-        if (!is_array($posts)) {
+        if ($posts === null || count($posts) === 0) {
             return null;
         }
 
-        return collect($posts)->first();
+        return collect($posts->to_array())->first();
     }
 
     public function clone(): QueryBuilderContract

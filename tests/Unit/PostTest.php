@@ -8,6 +8,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Timber\Post as TimberPost;
 use Timber\Timber;
 
 /**
@@ -28,6 +29,8 @@ class PostTest extends TestCase
             ->with(RegisterablePostType::getPostType(), RegisterablePostType::getPrivateConfig());
 
         RegisterablePostType::register();
+
+        $this->assertNotFalse(has_filter('timber/post/classmap', [RegisterablePostType::class, 'filterTimberPostClassMap']));
     }
 
     /** @test */
@@ -43,6 +46,18 @@ class PostTest extends TestCase
         $this->expectException(\Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException::class);
 
         UnregisterablePostTypeWithoutConfig::register();
+    }
+
+    /** @test */
+    public function can_filter_timber_post_classmaps()
+    {
+        $output = Post::filterTimberPostClassMap(['another' => TimberPost::class]);
+
+        $this->assertEqualsCanonicalizing(['another' => TimberPost::class, 'post' => Post::class], $output);
+
+        $output = RegisterablePostType::filterTimberPostClassMap($output);
+
+        $this->assertEqualsCanonicalizing(['another' => TimberPost::class, 'post' => Post::class, 'registerable_post_type' => RegisterablePostType::class], $output);
     }
 
     /**
@@ -202,7 +217,7 @@ class PostTest extends TestCase
             return 'abc123';
         });
 
-        $post = new Post(false, true);
+        $post = new Post(null, true);
 
         $this->assertSame('abc123', $post->testFunctionAddedByMacro());
         $this->assertSame('abc123', Post::testFunctionAddedByMacro());
@@ -213,12 +228,11 @@ class PostTest extends TestCase
      */
     public function macros_set_correct_this_context_on_instances()
     {
-        Post::macro('testFunctionAddedByMacro', function () {
-            return $this->dummyData();
+        PostWithPrivateData::macro('testFunctionAddedByMacro', function () {
+            return $this->dummyData;
         });
 
-        $post = new Post(false, true);
-        $post->dummyData = 'abc123';
+        $post = new PostWithPrivateData(null, true);
 
         $this->assertSame('abc123', $post->testFunctionAddedByMacro());
     }
@@ -230,7 +244,7 @@ class PostTest extends TestCase
     {
         Post::mixin(new PostMixin);
 
-        $post = new Post(false, true);
+        $post = new Post(null, true);
 
         $this->assertSame('abc123', $post->testFunctionAddedByMixin());
     }
@@ -244,6 +258,11 @@ class PostMixin
             return 'abc123';
         };
     }
+}
+
+class PostWithPrivateData extends Post
+{
+    private string $dummyData = 'abc123';
 }
 
 class RegisterablePostType extends Post

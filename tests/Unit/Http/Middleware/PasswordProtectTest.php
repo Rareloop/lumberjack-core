@@ -49,14 +49,8 @@ class PasswordProtectTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        Functions\expect('get_the_ID')
-            ->once()
-            ->andReturn(123);
-
-        Functions\expect('get_post')
-            ->once();
-
         $timber = \Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_post')->once();
         $timber->shouldReceive('compile')
             ->withArgs(function ($template) {
                 return $template === 'single-password.twig';
@@ -84,17 +78,11 @@ class PasswordProtectTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        Functions\expect('get_the_ID')
-            ->once()
-            ->andReturn(123);
-
-        Functions\expect('get_post')
-            ->once();
-
         $request = Mockery::mock(ServerRequestInterface::class);
         $handler = Mockery::mock(RequestHandlerInterface::class);
 
         $timber = \Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_post')->once();
         $timber->shouldReceive('compile')
             ->withArgs(function ($template) {
                 return $template === 'single-password.twig';

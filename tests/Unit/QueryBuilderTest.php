@@ -8,6 +8,8 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\QueryBuilder;
+use Timber\Post as TimberPost;
+use Timber\PostQuery;
 use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
@@ -324,7 +326,8 @@ class QueryBuilderTest extends TestCase
      */
     public function get_retrieves_list_of_posts()
     {
-        $posts = [new Post(1, true), new Post(2, true)];
+        $postQuery = Mockery::mock(PostQuery::class);
+        $postQuery->shouldReceive('to_array')->once()->andReturn(['123', 'abc']);
 
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber
@@ -334,43 +337,15 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'offset' => 10,
                 ]),
-                Post::class,
             ])
             ->once()
-            ->andReturn($posts);
+            ->andReturn($postQuery);
 
         $builder = new QueryBuilder();
         $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
 
         $this->assertInstanceOf(Collection::class, $returnedPosts);
-        $this->assertSame($posts, $returnedPosts->toArray());
-    }
-
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function get_retrieves_empty_collection_when_timber_returns_false()
-    {
-        $timber = Mockery::mock('alias:' . Timber::class);
-        $timber
-            ->shouldReceive('get_posts')
-            ->withArgs([
-                Mockery::subset([
-                    'post_status' => 'publish',
-                    'offset' => 10,
-                ]),
-                Post::class,
-            ])
-            ->once()
-            ->andReturn(false);
-
-        $builder = new QueryBuilder();
-        $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
-
-        $this->assertInstanceOf(Collection::class, $returnedPosts);
-        $this->assertSame(0, $returnedPosts->count());
+        $this->assertSame(['123', 'abc'], $returnedPosts->toArray());
     }
 
     /**
@@ -388,7 +363,6 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'offset' => 10,
                 ]),
-                Post::class,
             ])
             ->once()
             ->andReturn(null);
@@ -405,32 +379,13 @@ class QueryBuilderTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function can_specify_the_class_type_to_return()
-    {
-        $timber = Mockery::mock('alias:' . Timber::class);
-        $timber
-            ->shouldReceive('get_posts')
-            ->withArgs([
-                Mockery::subset([
-                    'post_status' => 'publish',
-                    'offset' => 10,
-                ]),
-                PostWithCustomPostType::class,
-            ])
-            ->once();
-
-        $builder = new QueryBuilder();
-        $builder->whereStatus('publish')->offset(10)->as(PostWithCustomPostType::class)->get();
-    }
-
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function first_retrieves_first_relevant_match()
     {
-        $post = new Post(1, true);
+        $post = Mockery::mock(Post::class);
+
+        $postQuery = Mockery::mock(PostQuery::class);
+        $postQuery->shouldReceive('count')->once()->andReturn(1);
+        $postQuery->shouldReceive('to_array')->once()->andReturn([$post]);
 
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber
@@ -440,10 +395,9 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'limit' => 1,
                 ]),
-                Post::class,
             ])
             ->once()
-            ->andReturn([$post]);
+            ->andReturn($postQuery);
 
         $builder = new QueryBuilder();
         $returnedPost = $builder->whereStatus('publish')->first();
@@ -459,7 +413,8 @@ class QueryBuilderTest extends TestCase
      */
     public function first_returns_null_if_no_matching_post()
     {
-        $post = new Post(1, true);
+        $postQuery = Mockery::mock(PostQuery::class);
+        $postQuery->shouldReceive('count')->once()->andReturn(0);
 
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber
@@ -469,38 +424,9 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'limit' => 1,
                 ]),
-                Post::class,
             ])
             ->once()
-            ->andReturn([]);
-
-        $builder = new QueryBuilder();
-        $returnedPost = $builder->whereStatus('publish')->first();
-
-        $this->assertSame(null, $returnedPost);
-    }
-
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function first_returns_null_when_timber_returns_false()
-    {
-        $post = new Post(1, true);
-
-        $timber = Mockery::mock('alias:' . Timber::class);
-        $timber
-            ->shouldReceive('get_posts')
-            ->withArgs([
-                Mockery::subset([
-                    'post_status' => 'publish',
-                    'limit' => 1,
-                ]),
-                Post::class,
-            ])
-            ->once()
-            ->andReturn(false);
+            ->andReturn($postQuery);
 
         $builder = new QueryBuilder();
         $returnedPost = $builder->whereStatus('publish')->first();
@@ -515,8 +441,6 @@ class QueryBuilderTest extends TestCase
      */
     public function first_returns_null_when_timber_returns_null()
     {
-        $post = new Post(1, true);
-
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber
             ->shouldReceive('get_posts')
@@ -525,7 +449,6 @@ class QueryBuilderTest extends TestCase
                     'post_status' => 'publish',
                     'limit' => 1,
                 ]),
-                Post::class,
             ])
             ->once()
             ->andReturn(null);
