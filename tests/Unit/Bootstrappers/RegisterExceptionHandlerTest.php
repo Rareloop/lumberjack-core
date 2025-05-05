@@ -14,7 +14,6 @@ use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
-use Symfony\Component\Debug\Exception\FatalErrorException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
