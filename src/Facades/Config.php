@@ -2,11 +2,11 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-use Blast\Facades\AbstractFacade;
+use Illuminate\Support\Facades\Facade;
 
-class Config extends AbstractFacade
+class Config extends Facade
 {
-    protected static function accessor()
+    protected static function getFacadeAccessor()
     {
         return 'config';
     }

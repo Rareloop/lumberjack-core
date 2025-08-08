@@ -2,11 +2,11 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-use Blast\Facades\AbstractFacade;
+use Illuminate\Support\Facades\Facade;
 
-class MiddlewareAliases extends AbstractFacade
+class MiddlewareAliases extends Facade
 {
-    protected static function accessor()
+    protected static function getFacadeAccessor()
     {
         return 'middleware-alias-store';
     }

@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
+use Illuminate\Support\Facades\Facade;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
@@ -14,12 +14,12 @@ class LogTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeFactory::setContainer($app);
+        Facade::setFacadeApplication($app);
 
         $logger = new Logger('app');
         $app->bind('logger', $logger);
 
-        $this->assertInstanceOf(Logger::class, LogFacade::__instance());
-        $this->assertSame($logger, LogFacade::__instance());
+        $this->assertInstanceOf(Logger::class, LogFacade::getFacadeRoot());
+        $this->assertSame($logger, LogFacade::getFacadeRoot());
     }
 }

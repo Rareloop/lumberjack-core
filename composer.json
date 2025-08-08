@@ -3,13 +3,12 @@
     "description": "A powerful MVC framework for the modern WordPress developer. Write better, more expressive and easier to maintain code",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
-        "php-di/php-di": "^6.4.0",
+        "php": ">=8.2",
+        "php-di/php-di": "^7.0.11",
         "rareloop/router": "^6.0.2",
         "psr/container": "^1.1.2",
         "psr/http-message": "^1.1",
         "psr/http-server-middleware": "^1.0.2",
-        "blast/facades": "^1.0",
         "timber/timber": "^2.3.0",
         "monolog/monolog": "^2.9.1",
         "http-interop/response-sender": "^1.0",
@@ -23,7 +22,8 @@
         "mindplay/middleman": "^3.1.0",
         "psr/log": "^1.1.4",
         "laminas/laminas-zendframework-bridge": "^1.7",
-        "symfony/var-dumper": "^5.0||^6.3.6"
+        "symfony/var-dumper": "^5.0||^6.3.6",
+        "illuminate/support": "^9.52"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6.13",

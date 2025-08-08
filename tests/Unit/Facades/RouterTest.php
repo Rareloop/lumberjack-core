@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
+use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Facades\Router as RouterFacade;
@@ -14,12 +14,12 @@ class RouterTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeFactory::setContainer($app);
+        Facade::setFacadeApplication($app);
 
         $router = new Router();
         $app->bind('router', $router);
 
-        $this->assertInstanceOf(Router::class, RouterFacade::__instance());
-        $this->assertSame($router, RouterFacade::__instance());
+        $this->assertInstanceOf(Router::class, RouterFacade::getFacadeRoot());
+        $this->assertSame($router, RouterFacade::getFacadeRoot());
     }
 }

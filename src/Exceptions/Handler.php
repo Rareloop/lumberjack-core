@@ -34,7 +34,7 @@ class Handler implements HandlerInterface
         }
     }
 
-    public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface
+    public function render(ServerRequestInterface $request, Exception $e): ResponseInterface
     {
         $e = FlattenException::create($e);
 

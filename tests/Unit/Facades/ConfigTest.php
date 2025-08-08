@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
+use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
@@ -14,13 +14,14 @@ class ConfigTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeFactory::setContainer($app);
+        Facade::setFacadeApplication($app);
+        Facade::clearResolvedInstances();
 
         $config = new Config();
         $config->set('app.environment', 'production');
         $app->bind('config', $config);
 
-        $this->assertInstanceOf(Config::class, ConfigFacade::__instance());
+        $this->assertInstanceOf(Config::class, ConfigFacade::getFacadeRoot());
         $this->assertSame('production', ConfigFacade::get('app.environment'));
     }
 }
