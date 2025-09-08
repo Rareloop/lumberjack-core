@@ -2,11 +2,10 @@
 
 namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
-use Blast\Facades\FacadeFactory;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
+use Rareloop\Lumberjack\FacadeManager;
 
 class RegisterFacadesTest extends TestCase
 {
@@ -18,6 +17,6 @@ class RegisterFacadesTest extends TestCase
         $registerFacadesBootstrapper = new RegisterFacades;
         $registerFacadesBootstrapper->bootstrap($app);
 
-        $this->assertSame($app, FacadeFactory::getContainer());
+        $this->assertSame($app, FacadeManager::getContainer());
     }
 }

@@ -17,5 +17,5 @@ abstract class Facade
         return FacadeManager::getContainer()->get(static::accessor());
     }
 
-    abstract public static function accessor(): string;
+    abstract protected static function accessor();
 }

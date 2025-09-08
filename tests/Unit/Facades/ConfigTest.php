@@ -2,10 +2,10 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\FacadeManager;
 use Rareloop\Lumberjack\Facades\Config as ConfigFacade;
 
 class ConfigTest extends TestCase
@@ -14,7 +14,7 @@ class ConfigTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeFactory::setContainer($app);
+        FacadeManager::setContainer($app);
 
         $config = new Config();
         $config->set('app.environment', 'production');

@@ -20,6 +20,6 @@ class FacadeManager
 
     public static function create(string $accessor, $name, array $arguments = [])
     {
-        return call_user_func([static::$container->get($accessor), $name], $arguments);
+        return call_user_func([static::$container->get($accessor), $name], ...$arguments);
     }
 }

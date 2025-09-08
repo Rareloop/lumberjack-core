@@ -2,9 +2,9 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeManager;
 use Rareloop\Lumberjack\Facades\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 
@@ -14,7 +14,7 @@ class MiddlewareAliasesTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeFactory::setContainer($app);
+        FacadeManager::setContainer($app);
 
         $store = new MiddlewareAliasStore();
         $app->bind('middleware-alias-store', $store);
