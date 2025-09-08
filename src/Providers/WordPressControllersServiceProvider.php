@@ -9,7 +9,7 @@ use mindplay\middleman\Dispatcher;
 use Rareloop\Router\ResponseFactory;
 use Psr\Http\Message\RequestInterface;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 use Rareloop\Router\ProvidesControllerMiddleware;
 
 class WordPressControllersServiceProvider extends ServiceProvider

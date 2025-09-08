@@ -3,7 +3,7 @@
 namespace Rareloop\Lumberjack\Http\Responses;
 
 use Rareloop\Lumberjack\Helpers;
-use Zend\Diactoros\Response\RedirectResponse as DiactorosRedirectResponse;
+use Laminas\Diactoros\Response\RedirectResponse as DiactorosRedirectResponse;
 
 class RedirectResponse extends DiactorosRedirectResponse
 {

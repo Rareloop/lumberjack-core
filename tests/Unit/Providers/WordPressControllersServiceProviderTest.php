@@ -22,8 +22,8 @@ use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
-use Zend\Diactoros\Response\TextResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ServerRequest;
 use \Mockery;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 
@@ -399,27 +399,19 @@ class WordPressControllersServiceProviderTest extends TestCase
 
 class TestController
 {
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class TestControllerWithConstructorParams
 {
-    public function __construct(Application $app)
-    {
-    }
+    public function __construct(Application $app) {}
 
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class TestControllerWithHandleParams
 {
-    public function handle(Application $app)
-    {
-    }
+    public function handle(Application $app) {}
 }
 
 class MyResponsable implements Responsable
@@ -440,16 +432,12 @@ class TestControllerReturningAResponsable
 
 class TestControllerWithMiddleware extends Controller
 {
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class AddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value)
-    {
-    }
+    public function __construct(private $key, private $value) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

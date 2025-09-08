@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Router\Responsable;
 use Symfony\Component\Debug\Exception\FatalErrorException;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 use function Http\Response\send;
 
 /**
