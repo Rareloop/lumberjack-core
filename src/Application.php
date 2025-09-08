@@ -3,12 +3,11 @@
 namespace Rareloop\Lumberjack;
 
 use Closure;
-use DI\ContainerBuilder;
+use DI\Container;
 use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Rareloop\Router\Invoker;
 use function Http\Response\send;
 
 class Application implements ContainerInterface, InteropContainerInterface
@@ -24,7 +23,7 @@ class Application implements ContainerInterface, InteropContainerInterface
 
     public function __construct($basePath = false)
     {
-        $this->container = ContainerBuilder::buildDevContainer();
+        $this->container = new Container();
 
         $this->bind(Application::class, $this);
 
@@ -232,7 +231,7 @@ class Application implements ContainerInterface, InteropContainerInterface
      *
      * @return boolean
      */
-    public function hasRequestBeenHandled() : bool
+    public function hasRequestBeenHandled(): bool
     {
         return $this->requestHandled;
     }
@@ -263,10 +262,10 @@ class Application implements ContainerInterface, InteropContainerInterface
                 if ($this->has('__wp-controller-miss-template') && $this->has('__wp-controller-miss-controller')) {
                     wp_die(
                         'Loaded template <code>' .
-                        $this->get('__wp-controller-miss-template') .
-                        '</code> but couldn\'t find class <code>' .
-                        $this->get('__wp-controller-miss-controller') .
-                        '</code>'
+                            $this->get('__wp-controller-miss-template') .
+                            '</code> but couldn\'t find class <code>' .
+                            $this->get('__wp-controller-miss-controller') .
+                            '</code>'
                     );
                 }
             }
@@ -288,7 +287,7 @@ class Application implements ContainerInterface, InteropContainerInterface
         die();
     }
 
-    protected function removeSentHeadersAndMoveIntoResponse(ResponseInterface $response) : ResponseInterface
+    protected function removeSentHeadersAndMoveIntoResponse(ResponseInterface $response): ResponseInterface
     {
         // 1. Format the previously sent headers into an array of [key, value]
         // 2. Remove all headers from the output that we find
