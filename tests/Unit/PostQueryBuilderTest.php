@@ -55,7 +55,7 @@ class PostQueryBuilderTest extends TestCase
 
         try {
             Post::missingStaticFunction();
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $errorThrown = true;
         }
 
@@ -84,6 +84,7 @@ class QueryBuilderTestPost extends Post
         static::$injectedBuilder = $builder;
     }
 
+    #[\Override]
     public static function builder(): ScopedQueryBuilder
     {
         return static::$injectedBuilder;

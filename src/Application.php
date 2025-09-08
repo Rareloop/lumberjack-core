@@ -182,11 +182,9 @@ class Application implements ContainerInterface, InteropContainerInterface
 
     public function getProvider($provider)
     {
-        $providerClass = is_string($provider) ? $provider : get_class($provider);
+        $providerClass = is_string($provider) ? $provider : $provider::class;
 
-        return (new Collection($this->loadedProviders))->first(function ($provider) use ($providerClass) {
-            return get_class($provider) === $providerClass;
-        });
+        return new Collection($this->loadedProviders)->first(fn($provider) => $provider::class === $providerClass);
     }
 
     public function getLoadedProviders()
@@ -275,7 +273,7 @@ class Application implements ContainerInterface, InteropContainerInterface
         });
     }
 
-    public function shutdown(ResponseInterface $response = null)
+    public function shutdown(?ResponseInterface $response = null)
     {
         if ($response) {
             global $wp;
@@ -300,16 +298,12 @@ class Application implements ContainerInterface, InteropContainerInterface
             header_remove($parts[0]);
 
             return $parts;
-        })->filter(function ($header) {
-            return !in_array(strtolower($header[0]), ['content-type']);
-        });
+        })->filter(fn($header) => !in_array(strtolower((string) $header[0]), ['content-type']));
 
         // Add the previously sent headers into the response
         // Note: You can't mutate a response so we need to use the reduce to end up with a response
         // object with all the correct headers
-        $responseToSend = collect($headersToAdd)->reduce(function ($newResponse, $header) {
-            return $newResponse->withAddedHeader($header[0], $header[1]);
-        }, $response);
+        $responseToSend = collect($headersToAdd)->reduce(fn($newResponse, $header) => $newResponse->withAddedHeader($header[0], $header[1]), $response);
 
         return $responseToSend;
     }

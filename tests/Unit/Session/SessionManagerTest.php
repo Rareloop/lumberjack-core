@@ -74,9 +74,7 @@ class SessionManagerTest extends TestCase
         $app = new Application;
         $manager = new SessionManager($app);
 
-        $manager->extend('test', function () {
-            return new Store('name', new TestSessionHandler);
-        });
+        $manager->extend('test', fn() => new Store('name', new TestSessionHandler));
 
         $this->assertInstanceOf(TestSessionHandler::class, $manager->driver('test')->getHandler());
     }

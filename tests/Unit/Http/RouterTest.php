@@ -42,7 +42,7 @@ class RouterTest extends TestCase
         $router = new Router;
         $controller = new RouterTestController;
 
-        $route = $router->get('/test/123', [$controller, 'test']);
+        $route = $router->get('/test/123', $controller->test(...));
 
         $this->assertSame(RouterTestController::class . '@test', $route->getActionName());
     }
@@ -63,9 +63,7 @@ class RouterTest extends TestCase
      */
     public function can_extend_post_behaviour_with_macros()
     {
-        Router::macro('testFunctionAddedByMacro', function () {
-            return 'abc123';
-        });
+        Router::macro('testFunctionAddedByMacro', fn() => 'abc123');
 
         $queryBuilder = new Router();
 
@@ -90,9 +88,7 @@ class RouterMixin
 {
     function testFunctionAddedByMixin()
     {
-        return function() {
-            return 'abc123';
-        };
+        return fn() => 'abc123';
     }
 }
 

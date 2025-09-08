@@ -26,6 +26,7 @@ class Post extends TimberPost
         }
     }
 
+    #[\Override]
     public function __call($name, $arguments)
     {
         if (static::hasMacro($name)) {
@@ -46,7 +47,7 @@ class Post extends TimberPost
             return call_user_func_array([$builder, $name], $arguments);
         }
 
-        trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
+        trigger_error('Call to undefined method ' . self::class . '::' . $name . '()', E_USER_ERROR);
     }
 
     /**
@@ -101,7 +102,7 @@ class Post extends TimberPost
             throw new PostTypeRegistrationException('Config not set');
         }
 
-        add_filter('timber/post/classmap', [static::class, 'filterTimberPostClassMap']);
+        add_filter('timber/post/classmap', static::filterTimberPostClassMap(...));
 
         register_post_type($postType, $config);
     }
@@ -119,7 +120,7 @@ class Post extends TimberPost
      */
     public static function all($perPage = -1, $orderby = 'menu_order', $order = 'ASC')
     {
-        $order = strtoupper($order);
+        $order = strtoupper((string) $order);
 
         $args = [
             'posts_per_page' => $perPage,
@@ -161,6 +162,6 @@ class Post extends TimberPost
      */
     private static function posts($args = null)
     {
-        return collect(Timber::get_posts($args, get_called_class()));
+        return collect(Timber::get_posts($args, static::class));
     }
 }

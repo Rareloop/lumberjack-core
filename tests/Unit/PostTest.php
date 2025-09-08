@@ -30,7 +30,7 @@ class PostTest extends TestCase
 
         RegisterablePostType::register();
 
-        $this->assertNotFalse(has_filter('timber/post/classmap', [RegisterablePostType::class, 'filterTimberPostClassMap']));
+        $this->assertNotFalse(has_filter('timber/post/classmap', RegisterablePostType::filterTimberPostClassMap(...)));
     }
 
     /** @test */
@@ -213,9 +213,7 @@ class PostTest extends TestCase
      */
     public function can_extend_post_behaviour_with_macros()
     {
-        Post::macro('testFunctionAddedByMacro', function () {
-            return 'abc123';
-        });
+        Post::macro('testFunctionAddedByMacro', fn() => 'abc123');
 
         $post = new Post(null, true);
 
@@ -228,9 +226,7 @@ class PostTest extends TestCase
      */
     public function macros_set_correct_this_context_on_instances()
     {
-        PostWithPrivateData::macro('testFunctionAddedByMacro', function () {
-            return $this->dummyData;
-        });
+        PostWithPrivateData::macro('testFunctionAddedByMacro', fn() => $this->dummyData);
 
         $post = new PostWithPrivateData(null, true);
 
@@ -254,9 +250,7 @@ class PostMixin
 {
     function testFunctionAddedByMixin()
     {
-        return function () {
-            return 'abc123';
-        };
+        return fn() => 'abc123';
     }
 }
 
@@ -267,6 +261,7 @@ class PostWithPrivateData extends Post
 
 class RegisterablePostType extends Post
 {
+    #[\Override]
     public static function getPostType(): string
     {
         return 'registerable_post_type';
@@ -317,6 +312,7 @@ class UnregisterablePostTypeWithoutPostType extends Post
 
 class UnregisterablePostTypeWithoutConfig extends Post
 {
+    #[\Override]
     public static function getPostType(): string
     {
         return 'post_type';

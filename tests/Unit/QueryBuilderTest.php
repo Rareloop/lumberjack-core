@@ -526,6 +526,7 @@ class QueryBuilderMixin
 
 class PostWithCustomPostType extends Post
 {
+    #[\Override]
     public static function getPostType()
     {
         return 'post_with_query_scope';

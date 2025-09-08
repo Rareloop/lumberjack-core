@@ -46,8 +46,6 @@ class GlobalFunctionsTest extends TestCase
     {
         $reflection = new \ReflectionClass(Helpers::class);
 
-        return collect($reflection->getMethods(\ReflectionMethod::IS_STATIC))->map(function ($function) {
-            return [$function->name];
-        })->toArray();
+        return collect($reflection->getMethods(\ReflectionMethod::IS_STATIC))->map(fn($function) => [$function->name])->toArray();
     }
 }

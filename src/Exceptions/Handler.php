@@ -45,6 +45,6 @@ class Handler implements HandlerInterface
 
     protected function shouldNotReport(Exception $e)
     {
-        return in_array(get_class($e), $this->dontReport);
+        return in_array($e::class, $this->dontReport);
     }
 }

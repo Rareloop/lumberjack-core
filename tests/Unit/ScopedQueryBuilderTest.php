@@ -114,7 +114,7 @@ class ScopedQueryBuilderTest extends TestCase
         try {
             $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
             $builder->nonExistentScope();
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $errorThrown = true;
         }
 
@@ -161,6 +161,7 @@ class CustomQueryBuilder extends QueryBuilder
 
 class PostWithQueryScope extends Post
 {
+    #[\Override]
     public static function getPostType()
     {
         return 'post_with_query_scope';

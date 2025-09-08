@@ -3,26 +3,24 @@
     "description": "A powerful MVC framework for the modern WordPress developer. Write better, more expressive and easier to maintain code",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
-        "php-di/php-di": "^6.4.0",
-        "rareloop/router": "^6.0.2",
-        "psr/container": "^1.1.2",
-        "psr/http-message": "^1.1",
+        "php": ">=8.4",
+        "php-di/php-di": "^7",
+        "rareloop/router": "dev-feature/upgrade-dependencies as 6.0.2",
+        "psr/container": "^2",
+        "psr/http-message": "^2",
         "psr/http-server-middleware": "^1.0.2",
         "blast/facades": "^1.0",
         "timber/timber": "^2.3.0",
-        "monolog/monolog": "^2.9.1",
-        "http-interop/response-sender": "^1.0",
+        "monolog/monolog": "^3.9",
         "symfony/debug": "^4.4.44",
-        "illuminate/collections": "^8.53.1||^9.52.16",
+        "illuminate/collections": "^12",
         "statamic/stringy": "^3.1.3",
-        "laminas/laminas-diactoros": "^2.25.2",
-        "rareloop/psr7-server-request-extension": "^2.1.0",
+        "laminas/laminas-diactoros": "^3.6.0",
+        "rareloop/psr7-server-request-extension": "dev-master as 3.0",
         "mmeyer2k/dcrypt": "^8.3.1",
         "spatie/macroable": "^1.0.1",
-        "mindplay/middleman": "^3.1.0",
-        "psr/log": "^1.1.4",
-        "laminas/laminas-zendframework-bridge": "^1.7",
+        "mindplay/middleman": "^4.0.4",
+        "psr/log": "^2.0.0",
         "symfony/var-dumper": "^5.0||^6.3.6"
     },
     "require-dev": {
@@ -31,9 +29,10 @@
         "mockery/mockery": "^1.6.6",
         "brain/monkey": "^2.6.1",
         "squizlabs/php_codesniffer": "^3.7.2",
-        "php-mock/php-mock": "^2.4.1",
+        "php-mock/php-mock": "^2.6.2",
         "mikey179/vfsstream": "1.6.11",
-        "dms/phpunit-arraysubset-asserts": "^0.3.1"
+        "dms/phpunit-arraysubset-asserts": "^0.3.1",
+        "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -49,5 +48,15 @@
         "allow-plugins": {
             "composer/installers": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/rareloop/router"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/tommitchelmore/psr7-server-request-extension"
+        }
+    ]
 }

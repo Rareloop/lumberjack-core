@@ -32,7 +32,7 @@ class FileSessionHandlerTest extends TestCase
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
 
-        $this->assertTrue($handler->close('save-path', 'session-name'));
+        $this->assertTrue($handler->close());
     }
 
     /** @test */

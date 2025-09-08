@@ -52,9 +52,7 @@ class PasswordProtectTest extends TestCase
         $timber = \Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('get_post')->once();
         $timber->shouldReceive('compile')
-            ->withArgs(function ($template) {
-                return $template === 'single-password.twig';
-            })
+            ->withArgs(fn($template) => $template === 'single-password.twig')
             ->once()
             ->andReturn(false);
 
@@ -84,9 +82,7 @@ class PasswordProtectTest extends TestCase
         $timber = \Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('get_post')->once();
         $timber->shouldReceive('compile')
-            ->withArgs(function ($template) {
-                return $template === 'single-password.twig';
-            })
+            ->withArgs(fn($template) => $template === 'single-password.twig')
             ->once()
             ->andReturn('testing123');
 

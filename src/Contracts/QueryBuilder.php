@@ -16,7 +16,7 @@ interface QueryBuilder
 
     public function orderBy($orderBy, string $order = QueryBuilder::ASC): QueryBuilder;
 
-    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null): QueryBuilder;
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, ?string $type = null): QueryBuilder;
 
     public function whereIdIn(array $ids): QueryBuilder;
 

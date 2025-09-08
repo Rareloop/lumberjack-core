@@ -194,7 +194,7 @@ class Store
 
     public function setId($id = null)
     {
-        $id = $id ?? static::random(40);
+        $id ??= static::random(40);
 
         $this->id = $id;
     }

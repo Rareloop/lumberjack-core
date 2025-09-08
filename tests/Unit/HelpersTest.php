@@ -147,7 +147,7 @@ class HelpersTest extends TestCase
 
         $url = Helpers::route('test.route');
 
-        $this->assertSame('test/route', trim($url, '/'));
+        $this->assertSame('test/route', trim((string) $url, '/'));
     }
 
     /** @test */
@@ -164,7 +164,7 @@ class HelpersTest extends TestCase
             'name' => 'route',
         ]);
 
-        $this->assertSame('test/route', trim($url, '/'));
+        $this->assertSame('test/route', trim((string) $url, '/'));
     }
 
     /** @test */
@@ -207,9 +207,7 @@ class HelpersTest extends TestCase
         $handler = \Mockery::mock(TestExceptionHandler::class . '[report]', [$app]);
         $handler->shouldReceive('report')->with($exception)->once();
 
-        $app->bind(HandlerInterface::class, function () use ($handler) {
-            return $handler;
-        });
+        $app->bind(HandlerInterface::class, fn() => $handler);
 
         Helpers::report($exception);
     }
@@ -375,12 +373,7 @@ class TestExceptionHandler extends Handler
 
 class RequiresConstructorParams
 {
-    public $param1;
-    public $param2;
-
-    public function __construct($param1, $param2)
+    public function __construct(public $param1, public $param2)
     {
-        $this->param1 = $param1;
-        $this->param2 = $param2;
     }
 }

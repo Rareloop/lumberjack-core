@@ -7,11 +7,8 @@ use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 
 class Encrypter implements EncrypterContract
 {
-    protected $key;
-
-    public function __construct($key)
+    public function __construct(protected $key)
     {
-        $this->key = $key;
     }
 
     public function encrypt($data)
