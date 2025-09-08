@@ -5,12 +5,11 @@ namespace Rareloop\Lumberjack;
 use Closure;
 use DI\Container;
 use Illuminate\Support\Collection;
-use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use function Http\Response\send;
 
-class Application implements ContainerInterface, InteropContainerInterface
+class Application implements ContainerInterface
 {
     private $container;
     private $loadedProviders = [];
@@ -151,7 +150,7 @@ class Application implements ContainerInterface, InteropContainerInterface
      *
      * @return bool
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return $this->container->has($id);
     }
