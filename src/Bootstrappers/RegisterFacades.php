@@ -2,13 +2,13 @@
 
 namespace Rareloop\Lumberjack\Bootstrappers;
 
-use Blast\Facades\FacadeFactory;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeManager;
 
 class RegisterFacades
 {
     public function bootstrap(Application $app)
     {
-        FacadeFactory::setContainer($app);
+        FacadeManager::setContainer($app);
     }
 }

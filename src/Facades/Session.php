@@ -4,9 +4,8 @@ namespace Rareloop\Lumberjack\Facades;
 
 use Blast\Facades\AbstractFacade;
 
-class Session extends AbstractFacade
+class Session extends Facade
 {
-    #[\Override]
     protected static function accessor()
     {
         return 'session';

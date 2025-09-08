@@ -2,11 +2,8 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-use Blast\Facades\AbstractFacade;
-
-class Log extends AbstractFacade
+class Log extends Facade
 {
-    #[\Override]
     protected static function accessor()
     {
         return 'logger';

@@ -2,11 +2,8 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-use Blast\Facades\AbstractFacade;
-
-class Router extends AbstractFacade
+class Router extends Facade
 {
-    #[\Override]
     protected static function accessor()
     {
         return 'router';
