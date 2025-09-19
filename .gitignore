@@ -1,3 +1,4 @@
 vendor
 composer.lock
 /tests/Unit/logs
+.phpunit.result.cache

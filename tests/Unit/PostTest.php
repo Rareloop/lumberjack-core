@@ -75,7 +75,6 @@ class PostTest extends TestCase
                 'post_type' => Post::getPostType(),
                 'post_status' => 'publish',
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::query($args);
@@ -99,32 +98,9 @@ class PostTest extends TestCase
                 'post_type' => Post::getPostType(),
                 'post_status' => 'publish',
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::query($args);
-
-        $this->assertInstanceOf(Collection::class, $posts);
-    }
-
-    /**
-     * @test
-     */
-    public function post_subclass_query_has_correct_post_type()
-    {
-        $args = [
-            'posts_per_page' => 10,
-        ];
-
-        $timber = Mockery::mock('alias:' . Timber::class);
-        $timber->shouldReceive('get_posts')->withArgs([
-            Mockery::subset([
-                'post_type' => RegisterablePostType::getPostType(),
-            ]),
-            RegisterablePostType::class,
-        ])->once();
-
-        $posts = RegisterablePostType::query($args);
 
         $this->assertInstanceOf(Collection::class, $posts);
     }
@@ -143,7 +119,6 @@ class PostTest extends TestCase
             Mockery::subset([
                 'post_status' => ['draft', 'publish'],
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::query($args);
@@ -163,7 +138,6 @@ class PostTest extends TestCase
                 'orderby' => 'menu_order',
                 'order' => 'ASC',
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::all();
@@ -181,7 +155,6 @@ class PostTest extends TestCase
             Mockery::subset([
                 'posts_per_page' => 10,
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::all(10);
@@ -200,7 +173,6 @@ class PostTest extends TestCase
                 'orderby' => 'date',
                 'order' => 'DESC',
             ]),
-            Post::class,
         ])->once();
 
         $posts = Post::all(-1, 'date', 'DESC');
