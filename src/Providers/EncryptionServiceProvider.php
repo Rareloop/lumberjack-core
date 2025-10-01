@@ -2,11 +2,8 @@
 
 namespace Rareloop\Lumberjack\Providers;
 
-use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
-use Rareloop\Lumberjack\Encrypter;
-use Rareloop\Lumberjack\Facades\Config;
-use Rareloop\Lumberjack\Session\SessionManager;
+use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
+use Illuminate\Encryption\Encrypter;
 
 class EncryptionServiceProvider extends ServiceProvider
 {

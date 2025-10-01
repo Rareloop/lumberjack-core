@@ -3,8 +3,8 @@
 namespace Rareloop\Lumberjack\Session;
 
 use Exception;
+use Illuminate\Contracts\Encryption\Encrypter;
 use SessionHandlerInterface;
-use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 
 class EncryptedStore extends Store
