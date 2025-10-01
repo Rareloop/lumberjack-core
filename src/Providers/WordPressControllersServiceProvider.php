@@ -90,7 +90,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         ];
 
         $dispatcher = $this->createDispatcher($middlewares);
-        return $dispatcher->dispatch($request);
+        return $dispatcher->handle($request);
     }
 
     private function createDispatcher(array $middlewares): Dispatcher
