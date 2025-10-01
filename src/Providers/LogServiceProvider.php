@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Level;
 
 class LogServiceProvider extends ServiceProvider
 {
@@ -44,9 +45,9 @@ class LogServiceProvider extends ServiceProvider
         return $config && $config->get('app.logs.path') === false && $config->get('app.logs.enabled') === true;
     }
 
-    private function getLogLevel()
+    private function getLogLevel(): Level
     {
-        $logLevel = Logger::DEBUG;
+        $logLevel = Level::Debug;
 
         if ($this->app->has('config')) {
             $logLevel = $this->app->get('config')->get('app.logs.level', $logLevel);
