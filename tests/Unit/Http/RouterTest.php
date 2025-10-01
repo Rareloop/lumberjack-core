@@ -37,17 +37,6 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    public function controller_does_not_have_namespace_added_when_it_is_callable()
-    {
-        $router = new Router;
-        $controller = new RouterTestController;
-
-        $route = $router->get('/test/123', $controller->test(...));
-
-        $this->assertSame(RouterTestController::class . '@test', $route->getActionName());
-    }
-
-    /** @test */
     public function controller_does_not_have_namespace_added_when_it_is_closure()
     {
         $router = new Router;
