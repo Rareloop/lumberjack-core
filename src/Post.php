@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack;
 
+use Error;
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Spatie\Macroable\Macroable;
@@ -47,7 +48,7 @@ class Post extends TimberPost
             return call_user_func_array([$builder, $name], $arguments);
         }
 
-        trigger_error('Call to undefined method ' . self::class . '::' . $name . '()', E_USER_ERROR);
+        throw new Error('Call to undefined method ' . self::class . '::' . $name . '()');
     }
 
     /**

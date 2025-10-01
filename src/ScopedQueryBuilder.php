@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack;
 
+use Error;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException;
 use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException;
@@ -40,10 +41,7 @@ class ScopedQueryBuilder
         $publicMethods = collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))->map(fn($method) => $method->getName())->toArray();
 
         if (!in_array($scopeFunctionName, $publicMethods)) {
-            trigger_error(
-                'Call to undefined method ' . $this->postClass . '::' . $scopeFunctionName . '()',
-                E_USER_ERROR
-            );
+            throw new Error('Call to undefined method ' . $this->postClass . '::' . $scopeFunctionName . '()');
         }
 
         array_unshift($arguments, $this);
