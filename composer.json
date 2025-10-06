@@ -3,7 +3,7 @@
     "description": "A powerful MVC framework for the modern WordPress developer. Write better, more expressive and easier to maintain code",
     "license": "MIT",
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.1",
         "php-di/php-di": "^7",
         "rareloop/router": "dev-feature/upgrade-dependencies as 6.0.2",
         "psr/container": "^2",
