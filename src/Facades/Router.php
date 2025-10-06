@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-class Router extends Facade
+class Router extends AbstractFacade
 {
     protected static function accessor()
     {

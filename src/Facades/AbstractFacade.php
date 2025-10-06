@@ -2,10 +2,9 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-use Mockery;
 use Rareloop\Lumberjack\FacadeManager;
 
-abstract class Facade
+abstract class AbstractFacade
 {
     public static function __callStatic($name, array $arguments = [])
     {

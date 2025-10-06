@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-class Session extends Facade
+class Session extends AbstractFacade
 {
     protected static function accessor()
     {

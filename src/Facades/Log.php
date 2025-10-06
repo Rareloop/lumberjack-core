@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Facades;
 
-class Log extends Facade
+class Log extends AbstractFacade
 {
     protected static function accessor()
     {

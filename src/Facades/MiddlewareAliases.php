@@ -3,7 +3,7 @@
 namespace Rareloop\Lumberjack\Facades;
 
 
-class MiddlewareAliases extends Facade
+class MiddlewareAliases extends AbstractFacade
 {
     protected static function accessor()
     {

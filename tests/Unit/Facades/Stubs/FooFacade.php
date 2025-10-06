@@ -2,9 +2,9 @@
 
 namespace Rareloop\Lumberjack\Test\Unit\Facades\Stubs;
 
-use Rareloop\Lumberjack\Facades\Facade;
+use Rareloop\Lumberjack\Facades\AbstractFacade;
 
-class FooFacade extends Facade
+class FooFacade extends AbstractFacade
 {
     public static function accessor(): string
     {
