@@ -182,7 +182,7 @@ class Application implements ContainerInterface
     {
         $providerClass = is_string($provider) ? $provider : $provider::class;
 
-        return new Collection($this->loadedProviders)->first(fn($provider) => $provider::class === $providerClass);
+        return (new Collection($this->loadedProviders))->first(fn($provider) => $provider::class === $providerClass);
     }
 
     public function getLoadedProviders()
