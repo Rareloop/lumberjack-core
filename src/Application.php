@@ -5,6 +5,7 @@ namespace Rareloop\Lumberjack;
 use Closure;
 use DI\Container;
 use Illuminate\Support\Collection;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use function Http\Response\send;
@@ -280,7 +281,7 @@ class Application implements ContainerInterface
             // If we're handling a WordPressController response at this point then WordPress will already have
             // sent headers as it happens earlier in the lifecycle. For this scenario we need to do a bit more
             // work to make sure that duplicate headers are not sent back.
-            send($this->removeSentHeadersAndMoveIntoResponse($response));
+            (new SapiEmitter())->emit($this->removeSentHeadersAndMoveIntoResponse($response));
         }
 
         die();

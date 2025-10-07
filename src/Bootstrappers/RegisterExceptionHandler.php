@@ -2,16 +2,18 @@
 
 namespace Rareloop\Lumberjack\Bootstrappers;
 
-use DI\NotFoundException;
 use Error;
 use ErrorException;
-use Psr\Http\Message\ResponseInterface;
-use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Exceptions\HandlerInterface;
-use Rareloop\Router\Responsable;
-use Symfony\Component\Debug\Exception\FatalErrorException;
-use Laminas\Diactoros\ServerRequestFactory;
+use DI\NotFoundException;
 use function Http\Response\send;
+use Rareloop\Router\Responsable;
+use Rareloop\Lumberjack\Application;
+use Psr\Http\Message\ResponseInterface;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\ErrorHandler\Error\FatalError;
 
 /**
  * Determine whether or not we should be in debug mode or not
@@ -70,7 +72,7 @@ class RegisterExceptionHandler
 
     public function send(ResponseInterface $response)
     {
-        @send($response);
+        @(new SapiEmitter())->emit($response);
     }
 
     protected function getExceptionHandler(): HandlerInterface
@@ -122,16 +124,14 @@ class RegisterExceptionHandler
      *
      * @param  array  $error
      * @param  int|null  $traceOffset
-     * @return \Symfony\Component\Debug\Exception\FatalErrorException
+     * @return \Symfony\Component\ErrorHandler\Error\FatalError
      */
     protected function fatalExceptionFromError(array $error, $traceOffset = null)
     {
-        return new FatalErrorException(
+        return new FatalError(
             $error['message'],
-            $error['type'],
             0,
-            $error['file'],
-            $error['line'],
+            $error,
             $traceOffset
         );
     }
