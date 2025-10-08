@@ -19,7 +19,7 @@
         "mindplay/middleman": "^4.0.4",
         "psr/log": "^2.0.0",
         "symfony/var-dumper": "^5.0||^6.3.6",
-        "illuminate/encryption": "^12.32",
+        "illuminate/encryption": "^10",
         "spatie/ignition": "^1.15",
         "laminas/laminas-httphandlerrunner": "^2.12",
         "symfony/error-handler": "^7.3"
