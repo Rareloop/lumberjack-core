@@ -15,22 +15,11 @@ class EncryptionServiceProvider extends ServiceProvider
             $encrypter = function () {
                 $encryptionKey = $this->app->get('config')->get('app.key');
 
-                return new Encrypter($this->parseKey($encryptionKey), 'aes-256-cbc');
+                return new Encrypter($encryptionKey);
             };
 
             $this->app->bind(EncrypterContract::class, $encrypter);
             $this->app->bind('encrypter', $encrypter);
         }
-    }
-
-    protected function parseKey(string $key): string
-    {
-        $prefix = 'base64:';
-
-        if (str_starts_with($key, $prefix)) {
-            $key = base64_decode(str_replace($prefix, '', $key));
-        }
-
-        return $key;
     }
 }

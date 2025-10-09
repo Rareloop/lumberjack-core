@@ -2,14 +2,13 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Dcrypt\AesCbc;
 use Mockery;
+use ReflectionProperty;
 use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Encrypter;
+use Illuminate\Encryption\Encrypter as IlluminateEncrypter;
 
 /**
- * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
 class EncrypterTest extends TestCase
@@ -19,21 +18,21 @@ class EncrypterTest extends TestCase
     /** @test */
     public function can_encrypt_data()
     {
-        $key = 'secret-key';
-        $dcrypt = Mockery::mock('alias:' . AesCbc::class);
-        $dcrypt->shouldReceive('encrypt')->withArgs(function ($data, $key) {
-            if ($key !== 'secret-key') {
-                return false;
-            }
+        $key = 'YurEU4attIXDGJWTL5VNvEXkMTosdBah';
 
-            if ($data !== @serialize('test-string')) {
-                return false;
-            }
-
-            return true;
-        })->once();
+        $illuminateMock = Mockery::mock(IlluminateEncrypter::class);
+        $illuminateMock
+            ->shouldReceive('encrypt')
+            ->with('test-string')
+            ->once();
 
         $encrypter = new Encrypter($key);
+
+        // Replace the internal Illuminate encrypter
+        $ref = new ReflectionProperty($encrypter, 'encrypter');
+        $ref->setAccessible(true);
+        $ref->setValue($encrypter, $illuminateMock);
+
         $encrypter->encrypt('test-string');
     }
 
