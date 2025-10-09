@@ -16,7 +16,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        add_filter('template_include', $this->handleTemplateInclude(...));
+        add_filter('template_include', [$this, 'handleTemplateInclude']);
     }
 
     public function handleTemplateInclude($template)
@@ -38,14 +38,14 @@ class WordPressControllersServiceProvider extends ServiceProvider
         if ($response) {
             $this->app->shutdown($response);
         } else {
-            $this->app->bind('__wp-controller-miss-template', basename((string) $template));
+            $this->app->bind('__wp-controller-miss-template', basename($template));
             $this->app->bind('__wp-controller-miss-controller', $controller);
         }
     }
 
     public function getControllerClassFromTemplate($template)
     {
-        $controllerName = Stringy::create(basename((string) $template, '.php'))->upperCamelize() . 'Controller';
+        $controllerName = Stringy::create(basename($template, '.php'))->upperCamelize() . 'Controller';
 
         // Classes can't start with a number so we have to special case the behaviour here
         if ($controllerName === '404Controller') {
@@ -76,7 +76,11 @@ class WordPressControllersServiceProvider extends ServiceProvider
         if ($controller instanceof ProvidesControllerMiddleware) {
             $controllerMiddleware = new Collection($controller->getControllerMiddleware());
 
-            $middlewares = $controllerMiddleware->reject(fn($cm) => $cm->excludedForMethod($methodName))->map(fn($cm) => $cm->middleware())->all();
+            $middlewares = $controllerMiddleware->reject(function ($cm) use ($methodName) {
+                return $cm->excludedForMethod($methodName);
+            })->map(function ($cm) {
+                return $cm->middleware();
+            })->all();
         }
 
         $middlewares = [
@@ -90,7 +94,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
         ];
 
         $dispatcher = $this->createDispatcher($middlewares);
-        return $dispatcher->handle($request);
+        return $dispatcher->dispatch($request);
     }
 
     private function createDispatcher(array $middlewares): Dispatcher
@@ -98,7 +102,9 @@ class WordPressControllersServiceProvider extends ServiceProvider
         $resolver = null;
 
         if ($this->app->has('middleware-resolver')) {
-            $resolver = (fn($name) => $this->app->get('middleware-resolver')->resolve($name));
+            $resolver = function ($name) {
+                return $this->app->get('middleware-resolver')->resolve($name);
+            };
         }
 
         return new Dispatcher($middlewares, $resolver);

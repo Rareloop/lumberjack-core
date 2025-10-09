@@ -14,9 +14,10 @@ use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\Response\TextResponse;
-use Laminas\Diactoros\ServerRequest;
+use Symfony\Component\Debug\Exception\FatalErrorException;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\TextResponse;
+use Zend\Diactoros\ServerRequest;
 
 /**
  * @runTestsInSeparateProcesses
@@ -56,7 +57,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
 
-        $handler->shouldReceive('report')->once()->with(Mockery::on(fn($e) => $e->getSeverity() === E_USER_NOTICE && $e->getMessage() === 'Test Error'));
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_USER_NOTICE && $e->getMessage() === 'Test Error';
+        }));
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);
@@ -77,7 +80,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
 
-        $handler->shouldReceive('report')->once()->with(Mockery::on(fn($e) => $e->getSeverity() === E_USER_DEPRECATED && $e->getMessage() === 'Test Error'));
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_USER_DEPRECATED && $e->getMessage() === 'Test Error';
+        }));
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);
@@ -98,7 +103,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
 
-        $handler->shouldReceive('report')->once()->with(Mockery::on(fn($e) => $e->getSeverity() === E_DEPRECATED && $e->getMessage() === 'Test Error'));
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_DEPRECATED && $e->getMessage() === 'Test Error';
+        }));
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);
@@ -121,7 +128,9 @@ class RegisterExceptionHandlerTest extends TestCase
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
 
-        $handler->shouldReceive('report')->once()->with(Mockery::on(fn($e) => $e->getSeverity() === E_USER_ERROR && $e->getMessage() === 'Test Error'));
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_USER_ERROR && $e->getMessage() === 'Test Error';
+        }));
 
         $bootstrapper = new RegisterExceptionHandler();
         $bootstrapper->bootstrap($app);

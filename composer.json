@@ -5,7 +5,7 @@
     "require": {
         "php": ">=8.1",
         "php-di/php-di": "^7",
-        "rareloop/router": "dev-feature/upgrade-dependencies as 6.0.2",
+        "rareloop/router": "dev-feature/upgrade-dependencies as 6.0.3",
         "psr/container": "^2",
         "psr/http-message": "^2",
         "psr/http-server-middleware": "^1.0.2",
@@ -22,7 +22,7 @@
         "illuminate/encryption": "^10",
         "spatie/ignition": "^1.15",
         "laminas/laminas-httphandlerrunner": "^2.12",
-        "symfony/error-handler": "^7.3"
+        "symfony/error-handler": "^6.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6.13",
@@ -32,8 +32,7 @@
         "squizlabs/php_codesniffer": "^3.7.2",
         "php-mock/php-mock": "^2.6.2",
         "mikey179/vfsstream": "^1.6.12",
-        "dms/phpunit-arraysubset-asserts": "^0.3.1",
-        "rector/rector": "^2.1"
+        "dms/phpunit-arraysubset-asserts": "^0.3.1"
     },
     "autoload": {
         "psr-4": {

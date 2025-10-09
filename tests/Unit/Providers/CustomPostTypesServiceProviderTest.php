@@ -37,7 +37,6 @@ class CustomPostTypesServiceProviderTest extends TestCase
 
 class CustomPost1 extends Post
 {
-    #[\Override]
     public static function getPostType()
     {
         return 'custom_post_1';
@@ -53,7 +52,6 @@ class CustomPost1 extends Post
 
 class CustomPost2 extends Post
 {
-    #[\Override]
     public static function getPostType()
     {
         return 'custom_post_1';

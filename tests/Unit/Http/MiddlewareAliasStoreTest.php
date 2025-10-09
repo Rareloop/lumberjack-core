@@ -29,7 +29,9 @@ class MiddlewareAliasStoreTest extends TestCase
         $store = new MiddlewareAliasStore;
         $middleware = Mockery::mock(MiddlewareInterface::class);
 
-        $store->set('middlewarekey', fn() => $middleware);
+        $store->set('middlewarekey', function () use ($middleware) {
+            return $middleware;
+        });
 
         $this->assertSame($middleware, $store->get('middlewarekey'));
     }
@@ -106,7 +108,12 @@ class MASTestClass
 
 class MASTestClassWithConstructorParams
 {
-    public function __construct(public $param1, public $param2)
+    public $param1;
+    public $param2;
+
+    public function __construct($param1, $param2)
     {
+        $this->param1 = $param1;
+        $this->param2 = $param2;
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
-use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
-use Illuminate\Encryption\Encrypter;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
+use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Providers\EncryptionServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 
@@ -18,7 +18,7 @@ class EncryptionServiceProviderTest extends TestCase
     public function encryptor_is_registered_in_container_when_a_config_key_is_present()
     {
         $config = new Config;
-        $config->set('app.key', Encrypter::generateKey('aes-128-cbc'));
+        $config->set('app.key', 'encryption-key');
 
         $app = new Application();
         $app->bind('config', $config);

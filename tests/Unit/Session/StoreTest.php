@@ -205,7 +205,7 @@ class StoreTest extends TestCase
     public function starting_a_session_loads_data_from_handler()
     {
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');
-        $handler->shouldReceive('read')->once()->with('session-id')->andReturn(['foo' => 'bar']);
+        $handler->shouldReceive('read')->once()->with('session-id')->andReturn(serialize(['foo' => 'bar']));
 
         $store = new Store('session-name', $handler, 'session-id');
 
@@ -219,7 +219,9 @@ class StoreTest extends TestCase
     {
         $handler = Mockery::mock(NullSessionHandler::class . '[write]');
         $handler->shouldReceive('write')->once()->with('session-id', Mockery::on(function ($argument) {
-            return isset($argument['foo']) && $argument['foo'] === 'bar';
+            $array = @unserialize($argument);
+
+            return isset($array['foo']) && $array['foo'] === 'bar';
         }));
 
         $store = new Store('session-name', $handler, 'session-id');

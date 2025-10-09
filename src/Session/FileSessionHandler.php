@@ -8,8 +8,13 @@ use SessionHandlerInterface;
 
 class FileSessionHandler implements SessionHandlerInterface
 {
-    public function __construct(protected $path, protected $prefix = 'lumberjack_session_')
+    protected $path;
+    protected $prefix;
+
+    public function __construct($path, $prefix = 'lumberjack_session_')
     {
+        $this->path = $path;
+        $this->prefix = $prefix;
     }
 
     #[\ReturnTypeWillChange]
@@ -41,7 +46,7 @@ class FileSessionHandler implements SessionHandlerInterface
     {
         try {
             file_put_contents($this->getFilepath($sessionId), $data);
-        } catch (Exception) {
+        } catch (Exception $e) {
             Log::error('Failed to create session on disk');
         }
 

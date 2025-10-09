@@ -2,7 +2,6 @@
 
 namespace Rareloop\Lumberjack;
 
-use Error;
 use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Spatie\Macroable\Macroable;
@@ -27,7 +26,6 @@ class Post extends TimberPost
         }
     }
 
-    #[\Override]
     public function __call($name, $arguments)
     {
         if (static::hasMacro($name)) {
@@ -48,7 +46,7 @@ class Post extends TimberPost
             return call_user_func_array([$builder, $name], $arguments);
         }
 
-        throw new Error('Call to undefined method ' . self::class . '::' . $name . '()');
+        trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
     }
 
     /**
@@ -103,7 +101,7 @@ class Post extends TimberPost
             throw new PostTypeRegistrationException('Config not set');
         }
 
-        add_filter('timber/post/classmap', static::filterTimberPostClassMap(...));
+        add_filter('timber/post/classmap', [static::class, 'filterTimberPostClassMap']);
 
         register_post_type($postType, $config);
     }
@@ -121,7 +119,7 @@ class Post extends TimberPost
      */
     public static function all($perPage = -1, $orderby = 'menu_order', $order = 'ASC')
     {
-        $order = strtoupper((string) $order);
+        $order = strtoupper($order);
 
         $args = [
             'posts_per_page' => $perPage,
@@ -163,6 +161,6 @@ class Post extends TimberPost
      */
     private static function posts($args = null)
     {
-        return collect(Timber::get_posts($args, static::class));
+        return collect(Timber::get_posts($args, get_called_class()));
     }
 }

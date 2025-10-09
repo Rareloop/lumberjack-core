@@ -3,8 +3,8 @@
 namespace Rareloop\Lumberjack\Session;
 
 use Exception;
-use Illuminate\Contracts\Encryption\Encrypter;
 use SessionHandlerInterface;
+use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 
 class EncryptedStore extends Store
@@ -17,7 +17,7 @@ class EncryptedStore extends Store
         SessionHandlerInterface $handler,
         Encrypter $encrypter,
         $id = null,
-        ?HandlerInterface $exceptionHandler = null
+        HandlerInterface $exceptionHandler = null
     ) {
         $this->encrypter = $encrypter;
         $this->exceptionHandler = $exceptionHandler;
@@ -25,13 +25,11 @@ class EncryptedStore extends Store
         parent::__construct($name, $handler, $id);
     }
 
-    #[\Override]
     protected function prepareForStorage($data)
     {
         return $this->encrypter->encrypt($data);
     }
 
-    #[\Override]
     protected function prepareForUnserialize($data)
     {
         try {

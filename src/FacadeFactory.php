@@ -4,7 +4,7 @@ namespace Rareloop\Lumberjack;
 
 use Psr\Container\ContainerInterface;
 
-class FacadeManager
+class FacadeFactory
 {
     protected static ?ContainerInterface $container = null;
 

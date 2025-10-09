@@ -50,9 +50,15 @@ class PostQueryBuilderTest extends TestCase
      */
     public function throw_error_on_missing_static_function()
     {
-        $this->expectException(Throwable::class);
+        $errorThrown = false;
 
-        Post::missingStaticFunction();
+        try {
+            Post::missingStaticFunction();
+        } catch (Throwable $e) {
+            $errorThrown = true;
+        }
+
+        $this->assertTrue($errorThrown);
     }
 
     private function assertQueryBuilder($function, $params, $postType)
@@ -77,7 +83,6 @@ class QueryBuilderTestPost extends Post
         static::$injectedBuilder = $builder;
     }
 
-    #[\Override]
     public static function builder(): ScopedQueryBuilder
     {
         return static::$injectedBuilder;

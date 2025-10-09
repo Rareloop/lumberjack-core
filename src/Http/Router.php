@@ -17,7 +17,6 @@ class Router extends RareRouter
      * @param  callable|string $callback
      * @return \Rareloop\Router\Route
      */
-    #[\Override]
     public function map(array $verbs, string $uri, $callback): Route
     {
         if ($this->isControllerString($callback)) {
@@ -35,7 +34,7 @@ class Router extends RareRouter
      */
     private function isControllerString($callback) : bool
     {
-        return is_string($callback) && str_contains($callback, '@');
+        return is_string($callback) && strpos($callback, '@') !== false;
     }
 
     /**
@@ -46,7 +45,7 @@ class Router extends RareRouter
      */
     private function normaliseCallbackString(string $callback) : string
     {
-        @[$controller, $method] = explode('@', $callback);
+        @list($controller, $method) = explode('@', $callback);
 
         if (class_exists($this->defaultControllerNamespace . $controller)) {
             return $this->defaultControllerNamespace . $callback;

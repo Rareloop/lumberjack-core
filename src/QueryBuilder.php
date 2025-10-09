@@ -82,7 +82,7 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, ?string $type = null): QueryBuilderContract
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null): QueryBuilderContract
     {
         $order = strtoupper($order);
 
@@ -122,7 +122,7 @@ class QueryBuilder implements QueryBuilderContract
 
     protected function initialiseMetaQuery()
     {
-        $this->params['meta_query'] ??= [];
+        $this->params['meta_query'] = $this->params['meta_query'] ?? [];
     }
 
     public function whereMeta($key, $value, $compare = '=', $type = null): QueryBuilderContract

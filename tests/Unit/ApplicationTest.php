@@ -498,7 +498,9 @@ class ApplicationTest extends TestCase
         $builder->setNamespace($namespace)
             ->setName('php_sapi_name')
             ->setFunction(
-                fn() => $value
+                function () use ($value) {
+                    return $value;
+                }
             );
 
         return $builder->build();
@@ -550,15 +552,21 @@ class ApplicationTest extends TestCase
 
 class BootstrapperBootstrapTester
 {
-    public function __construct(public $callback)
+    public $callback;
+
+    public function __construct($callback)
     {
+        $this->callback = $callback;
     }
 }
 
 abstract class TestBootstrapperBase
 {
-    public function __construct(private readonly BootstrapperBootstrapTester $tester)
+    private BootstrapperBootstrapTester $tester;
+
+    public function __construct(BootstrapperBootstrapTester $tester)
     {
+        $this->tester = $tester;
     }
 
     public function bootstrap(Application $app)
@@ -567,58 +575,36 @@ abstract class TestBootstrapperBase
     }
 }
 
-class TestBootstrapper1 extends TestBootstrapperBase
-{
-}
+class TestBootstrapper1 extends TestBootstrapperBase {}
 
-class TestBootstrapper2 extends TestBootstrapperBase
-{
-}
+class TestBootstrapper2 extends TestBootstrapperBase {}
 
-interface TestInterface
-{
-}
+interface TestInterface {}
 
-class TestInterfaceImplementation implements TestInterface
-{
-}
+class TestInterfaceImplementation implements TestInterface {}
 
 class TestInterfaceImplementationWithConstructorParams implements TestInterface
 {
-    public function __construct(TestServiceProvider $provider)
-    {
-    }
+    public function __construct(TestServiceProvider $provider) {}
 }
 
-interface TestSubInterface
-{
-}
+interface TestSubInterface {}
 
-class TestSubInterfaceImplementation implements TestSubInterface
-{
-}
+class TestSubInterfaceImplementation implements TestSubInterface {}
 
 class TestServiceProvider extends ServiceProvider
 {
-    public function register()
-    {
-    }
-    public function boot()
-    {
-    }
+    public function register() {}
+    public function boot() {}
 }
 
-class EmptyServiceProvider extends ServiceProvider
-{
-}
+class EmptyServiceProvider extends ServiceProvider {}
 
 class TestBootServiceProvider extends ServiceProvider
 {
     private $bootCallback;
 
-    public function register()
-    {
-    }
+    public function register() {}
 
     public function boot(Application $app, TestInterface $test)
     {
@@ -646,9 +632,13 @@ class NotRegisteredInContainer
 class RequiresAdditionalConstructorParams
 {
     public $param;
+    public $param1;
+    public $param2;
 
-    public function __construct(TestInterface $test, public $param1, public $param2)
+    public function __construct(TestInterface $test, $param1, $param2)
     {
         $this->param = $test;
+        $this->param1 = $param1;
+        $this->param2 = $param2;
     }
 }

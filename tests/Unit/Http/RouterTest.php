@@ -37,6 +37,17 @@ class RouterTest extends TestCase
     }
 
     /** @test */
+    public function controller_does_not_have_namespace_added_when_it_is_callable()
+    {
+        $router = new Router;
+        $controller = new RouterTestController;
+
+        $route = $router->get('/test/123', [$controller, 'test']);
+
+        $this->assertSame(RouterTestController::class . '@test', $route->getActionName());
+    }
+
+    /** @test */
     public function controller_does_not_have_namespace_added_when_it_is_closure()
     {
         $router = new Router;
@@ -52,7 +63,9 @@ class RouterTest extends TestCase
      */
     public function can_extend_post_behaviour_with_macros()
     {
-        Router::macro('testFunctionAddedByMacro', fn() => 'abc123');
+        Router::macro('testFunctionAddedByMacro', function () {
+            return 'abc123';
+        });
 
         $queryBuilder = new Router();
 
@@ -77,7 +90,9 @@ class RouterMixin
 {
     function testFunctionAddedByMixin()
     {
-        return fn() => 'abc123';
+        return function() {
+            return 'abc123';
+        };
     }
 }
 

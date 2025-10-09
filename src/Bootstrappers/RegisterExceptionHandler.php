@@ -36,8 +36,8 @@ class RegisterExceptionHandler
         }
 
         error_reporting(-1);
-        set_error_handler($this->handleError(...));
-        set_exception_handler($this->handleException(...));
+        set_error_handler([$this, 'handleError']);
+        set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);
     }
 
@@ -52,7 +52,7 @@ class RegisterExceptionHandler
 
         try {
             $request = $this->app->get('request');
-        } catch (NotFoundException) {
+        } catch (NotFoundException $notFoundException) {
             $request = ServerRequestFactory::fromGlobals(
                 $_SERVER,
                 $_GET,

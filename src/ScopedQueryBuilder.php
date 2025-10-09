@@ -2,7 +2,6 @@
 
 namespace Rareloop\Lumberjack;
 
-use Error;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostClassOnQueryException;
 use Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException;
@@ -13,10 +12,14 @@ use ReflectionMethod;
 
 class ScopedQueryBuilder
 {
+    protected $postClass;
+
     protected $queryBuilder;
 
-    public function __construct(protected $postClass)
+    public function __construct($postClass)
     {
+        $this->postClass = $postClass;
+
         $this->queryBuilder = Helpers::app(QueryBuilderContract::class);
 
         $this->queryBuilder
@@ -35,18 +38,23 @@ class ScopedQueryBuilder
         }
 
         // See if this is a scope function that needs calling
-        $scopeFunctionName = 'scope' . ucfirst((string) $name);
+        $scopeFunctionName = 'scope' . ucfirst($name);
 
         $reflection = new ReflectionClass($this->postClass);
-        $publicMethods = collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))->map(fn($method) => $method->getName())->toArray();
+        $publicMethods = collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))->map(function ($method) {
+            return $method->getName();
+        })->toArray();
 
         if (!in_array($scopeFunctionName, $publicMethods)) {
-            throw new Error('Call to undefined method ' . $this->postClass . '::' . $scopeFunctionName . '()');
+            trigger_error(
+                'Call to undefined method ' . $this->postClass . '::' . $scopeFunctionName . '()',
+                E_USER_ERROR
+            );
         }
 
         array_unshift($arguments, $this);
 
-        return new $this->postClass(false, true)->{$scopeFunctionName}(...$arguments);
+        return (new $this->postClass(false, true))->{$scopeFunctionName}(...$arguments);
     }
 
     /**
@@ -69,7 +77,7 @@ class ScopedQueryBuilder
         return false;
     }
 
-    public function wherePostType($postType): never
+    public function wherePostType($postType)
     {
         throw new CannotRedeclarePostTypeOnQueryException;
     }

@@ -17,7 +17,7 @@ use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 use Monolog\Logger;
-use Rareloop\Lumberjack\FacadeManager;
+use Rareloop\Lumberjack\FacadeFactory;
 
 /**
  * @runTestsInSeparateProcesses
@@ -48,7 +48,7 @@ class HelpersTest extends TestCase
     public function can_retrieve_a_config_value()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $config = new Config();
         $config->set('app.environment', 'production');
@@ -61,7 +61,7 @@ class HelpersTest extends TestCase
     public function can_retrieve_a_default_when_no_config_value_is_set()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $config = new Config();
         $app->bind('config', $config);
@@ -73,7 +73,7 @@ class HelpersTest extends TestCase
     public function can_set_a_config_value_when_array_passed_to_config_helper()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $config = new Config();
         $app->bind('config', $config);
 
@@ -139,7 +139,7 @@ class HelpersTest extends TestCase
     public function can_get_a_url_for_a_named_route()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $router = new Router;
         $router->get('test/route', function () {})->name('test.route');
         $app->bind('router', $router);
@@ -153,7 +153,7 @@ class HelpersTest extends TestCase
     public function can_get_a_url_for_a_named_route_with_params()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $router = new Router;
         $router->get('test/{name}', function ($name) {})->name('test.route');
         $app->bind('router', $router);
@@ -205,7 +205,9 @@ class HelpersTest extends TestCase
         $handler = \Mockery::mock(TestExceptionHandler::class . '[report]', [$app]);
         $handler->shouldReceive('report')->with($exception)->once();
 
-        $app->bind(HandlerInterface::class, fn() => $handler);
+        $app->bind(HandlerInterface::class, function () use ($handler) {
+            return $handler;
+        });
 
         Helpers::report($exception);
     }
@@ -214,7 +216,7 @@ class HelpersTest extends TestCase
     public function can_access_an_item_in_the_session_by_key()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);
@@ -228,7 +230,7 @@ class HelpersTest extends TestCase
     public function can_access_an_item_in_the_session_by_key_with_default()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);
@@ -240,7 +242,7 @@ class HelpersTest extends TestCase
     public function can_add_an_item_in_the_session()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);
@@ -254,7 +256,7 @@ class HelpersTest extends TestCase
     public function can_add_multiple_items_to_the_session()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);
@@ -269,7 +271,7 @@ class HelpersTest extends TestCase
     public function can_resolve_the_session_manager()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);
@@ -281,7 +283,7 @@ class HelpersTest extends TestCase
     public function can_redirect_back()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $store = new SessionManager($app);
         $app->bind('session', $store);
         $store->setPreviousUrl('http://domain.com/previous/url');
@@ -296,7 +298,7 @@ class HelpersTest extends TestCase
     public function can_get_server_request()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $request = new ServerRequest([], [], '/test/123', 'GET');
         $app->bind('request', $request);
@@ -308,7 +310,7 @@ class HelpersTest extends TestCase
     public function can_get_logger()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $logger = new Logger('app');
         $app->bind('logger', $logger);
@@ -323,7 +325,7 @@ class HelpersTest extends TestCase
     public function can_write_debug_log()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $logger = \Mockery::mock(Logger::class)->makePartial();
         $logger->shouldReceive('debug')->with('Example message', [])->once();
@@ -337,7 +339,7 @@ class HelpersTest extends TestCase
     public function can_write_debug_log_with_context()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $logger = \Mockery::mock(Logger::class)->makePartial();
         $logger->shouldReceive('debug')->with('Example message', [
@@ -371,5 +373,12 @@ class TestExceptionHandler extends Handler
 
 class RequiresConstructorParams
 {
-    public function __construct(public $param1, public $param2) {}
+    public $param1;
+    public $param2;
+
+    public function __construct($param1, $param2)
+    {
+        $this->param1 = $param1;
+        $this->param2 = $param2;
+    }
 }

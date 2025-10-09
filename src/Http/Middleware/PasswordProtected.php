@@ -37,7 +37,7 @@ class PasswordProtected implements MiddlewareInterface
 
         try {
             return new TimberResponse($template, $context);
-        } catch (TwigTemplateNotFoundException) {
+        } catch (TwigTemplateNotFoundException $e) {
             return null;
         }
     }

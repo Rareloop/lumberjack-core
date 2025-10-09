@@ -3,11 +3,12 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Dcrypt\AesCbc;
-use Illuminate\Encryption\Encrypter;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Session\EncryptedStore;
+use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
 class EncryptedStoreTest extends TestCase
@@ -18,8 +19,10 @@ class EncryptedStoreTest extends TestCase
     public function data_is_encrypted_before_it_is_saved()
     {
         $serializedString = @serialize(['foo' => 'bar']);
-        $encrypter = Mockery::mock(Encrypter::class);
-        $encrypter->shouldReceive('encrypt')->withArgs(function ($array) {
+        $encrypter = Mockery::mock(Encrypter::class . '[encrypt]', ['encryption-key']);
+        $encrypter->shouldReceive('encrypt')->withArgs(function ($string) {
+            $array = @unserialize($string);
+
             return $array['foo'] === 'bar';
         })->once();
 
@@ -33,16 +36,17 @@ class EncryptedStoreTest extends TestCase
     /** @test */
     public function data_is_decrypted_before_it_is_loaded()
     {
-        $encrypter = new Encrypter(Encrypter::generateKey('aes-128-cbc'));
+        $encryptionKey = 'encryption-key';
+
         // Create the string that would have been stored by an encrypted store
         // Serialize once for the Encrypter and once for the Encrypted store
-        $encryptedString = $encrypter->encrypt(['foo' => 'bar']);
+        $encryptedString = AesCbc::encrypt(@serialize(@serialize(['foo' => 'bar'])), $encryptionKey);
 
         // Use a mock handler to fake a previously stored state
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');
         $handler->shouldReceive('read')->andReturn($encryptedString);
 
-        $store = new EncryptedStore('session-name', $handler, $encrypter, 'session-id');
+        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id');
         $store->start();
 
         $this->assertSame('bar', $store->get('foo'));
@@ -54,7 +58,7 @@ class EncryptedStoreTest extends TestCase
      */
     public function unexpected_session_data_is_handled_gracefully($previousSessionValue)
     {
-        $encryptionKey = Encrypter::generateKey('aes-128-cbc');
+        $encryptionKey = 'encryption-key';
 
         // Use a mock handler to fake a previously stored state
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');

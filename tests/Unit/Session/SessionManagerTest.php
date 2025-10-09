@@ -3,17 +3,17 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
-use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Config;
-use Illuminate\Encryption\Encrypter;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Session\Store;
+use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
+use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Session\EncryptedStore;
-use Rareloop\Lumberjack\Session\SessionManager;
 use Rareloop\Lumberjack\Session\FileSessionHandler;
+use Rareloop\Lumberjack\Session\SessionManager;
+use Rareloop\Lumberjack\Session\Store;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
-use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
+use org\bovigo\vfs\vfsStream;
 
 class SessionManagerTest extends TestCase
 {
@@ -74,7 +74,9 @@ class SessionManagerTest extends TestCase
         $app = new Application;
         $manager = new SessionManager($app);
 
-        $manager->extend('test', fn() => new Store('name', new TestSessionHandler));
+        $manager->extend('test', function () {
+            return new Store('name', new TestSessionHandler);
+        });
 
         $this->assertInstanceOf(TestSessionHandler::class, $manager->driver('test')->getHandler());
     }
@@ -92,7 +94,7 @@ class SessionManagerTest extends TestCase
     public function can_create_an_encrypted_store()
     {
         $app = $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = true);
-        $app->bind(EncrypterContract::class, new Encrypter(Encrypter::generateKey('aes-128-cbc')));
+        $app->bind(EncrypterContract::class, new Encrypter('encryption-key'));
 
         $manager = new SessionManager($app);
 

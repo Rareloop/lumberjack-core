@@ -9,44 +9,56 @@ use ReflectionProperty;
 
 abstract class ViewModel implements Arrayable
 {
-    public function toArray() : array
+    public function toArray(): array
     {
         $propertyKeyValues = collect($this->validPropertyNames())
-            ->mapWithKeys(fn($method) => [
-                $method => $this->{$method},
-            ])
+            ->mapWithKeys(function ($method) {
+                return [
+                    $method => $this->{$method},
+                ];
+            })
             ->toArray();
 
         $methodKeyValues = collect($this->validMethodNames())
             ->whereNotIn(null, $this->ignoredMethods())
-            ->mapWithKeys(fn($method) => [
-                $method => call_user_func([$this, $method]),
-            ])
+            ->mapWithKeys(function ($method) {
+                return [
+                    $method => call_user_func([$this, $method]),
+                ];
+            })
             ->toArray();
 
         return array_merge($propertyKeyValues, $methodKeyValues);
     }
 
-    protected function validMethodNames() : array
+    protected function validMethodNames(): array
     {
         $class = new ReflectionClass(static::class);
         return collect($class->getMethods(ReflectionMethod::IS_PUBLIC))
-            ->reject(fn($method) => $method->isStatic() || $method->getNumberOfParameters() > 0)
-            ->map(fn($method) => $method->getName())
+            ->reject(function ($method) {
+                return $method->isStatic() || $method->getNumberOfParameters() > 0;
+            })
+            ->map(function ($method) {
+                return $method->getName();
+            })
             ->all();
     }
 
-    protected function validPropertyNames() : array
+    protected function validPropertyNames(): array
     {
         $class = new ReflectionClass(static::class);
 
         return collect($class->getProperties(ReflectionProperty::IS_PUBLIC))
-            ->reject(fn($property) => $property->isStatic())
-            ->map(fn($property) => $property->getName())
+            ->reject(function ($property) {
+                return $property->isStatic();
+            })
+            ->map(function ($property) {
+                return $property->getName();
+            })
             ->all();
     }
 
-    protected function ignoredMethods() : array
+    protected function ignoredMethods(): array
     {
         return [
             'toArray',

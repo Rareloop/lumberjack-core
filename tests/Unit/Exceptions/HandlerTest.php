@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
-use Rareloop\Lumberjack\FacadeManager;
+use Rareloop\Lumberjack\FacadeFactory;
 
 class HandlerTest extends TestCase
 {
@@ -52,7 +52,7 @@ class HandlerTest extends TestCase
     public function render_should_return_an_html_response_when_debug_is_enabled()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $config = new Config;
         $config->set('app.debug', true);
         $app->bind('config', $config);
@@ -69,7 +69,7 @@ class HandlerTest extends TestCase
     public function render_should_return_an_html_response_when_debug_is_disabled()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $config = new Config;
         $config->set('app.debug', false);
         $app->bind('config', $config);
@@ -86,7 +86,7 @@ class HandlerTest extends TestCase
     public function render_should_include_stack_trace_when_debug_is_enabled()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $config = new Config;
         $config->set('app.debug', true);
         $app->bind('config', $config);
@@ -103,7 +103,7 @@ class HandlerTest extends TestCase
     public function render_should_not_include_stack_trace_when_debug_is_disabled()
     {
         $app = new Application;
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
         $config = new Config;
         $config->set('app.debug', false);
         $app->bind('config', $config);

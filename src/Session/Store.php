@@ -36,7 +36,7 @@ class Store
     protected function readFromHandler()
     {
         $data = $this->handler->read($this->id);
-        $data = $this->prepareForUnserialize($data);
+        $data = @unserialize($this->prepareForUnserialize($data));
 
         if ($data !== false && !is_null($data) && is_array($data)) {
             return $data;
@@ -49,7 +49,7 @@ class Store
     {
         $this->ageFlashData();
 
-        $this->handler->write($this->id, $this->prepareForStorage($this->attributes));
+        $this->handler->write($this->id, $this->prepareForStorage(@serialize($this->attributes)));
 
         return $this;
     }
@@ -194,7 +194,7 @@ class Store
 
     public function setId($id = null)
     {
-        $id ??= static::random(40);
+        $id = $id ?? static::random(40);
 
         $this->id = $id;
     }

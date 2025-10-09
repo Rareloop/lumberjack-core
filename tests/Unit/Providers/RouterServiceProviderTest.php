@@ -101,7 +101,9 @@ class RouterServiceProviderTest extends TestCase
         $lumberjack->bootstrap();
 
         $router = $app->get('router');
-        $router->get('/test/123', fn() => 'abc123');
+        $router->get('/test/123', function () {
+            return 'abc123';
+        });
 
         $response = $router->match($request);
         $this->assertSame(200, $response->getStatusCode());
@@ -284,7 +286,14 @@ class RouterServiceProviderTest extends TestCase
 
 class RSPAddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value) {}
+    private $key;
+    private $value;
+
+    public function __construct($key, $value)
+    {
+        $this->key = $key;
+        $this->value = $value;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

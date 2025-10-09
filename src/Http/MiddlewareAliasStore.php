@@ -17,7 +17,7 @@ class MiddlewareAliasStore implements MiddlewareAliases
 
     public function get(string $name)
     {
-        [$name, $params] = $this->parseName($name);
+        list($name, $params) = $this->parseName($name);
 
         $middleware = $this->aliases[$name];
 
@@ -32,18 +32,18 @@ class MiddlewareAliasStore implements MiddlewareAliases
         return $middleware;
     }
 
-    protected function parseName($name) : array
+    protected function parseName($name): array
     {
-        [$name, $params] = array_pad(explode(':', (string) $name), 2, '');
+        list($name, $params) = array_pad(explode(':', $name), 2, '');
 
         $params = explode(',', $params);
 
         return [$name, $params];
     }
 
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
-        [$name, $params] = $this->parseName($name);
+        list($name, $params) = $this->parseName($name);
 
         return isset($this->aliases[$name]);
     }

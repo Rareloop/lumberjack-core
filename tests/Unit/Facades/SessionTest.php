@@ -4,7 +4,7 @@ namespace Rareloop\Lumberjack\Test\Facades;
 
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\FacadeManager;
+use Rareloop\Lumberjack\FacadeFactory;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Session\SessionManager;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
@@ -15,7 +15,7 @@ class SessionTest extends TestCase
     public function test_facade()
     {
         $app = new Application();
-        FacadeManager::setContainer($app);
+        FacadeFactory::setContainer($app);
 
         $store = new SessionManager($app);
         $app->bind('session', $store);

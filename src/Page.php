@@ -11,7 +11,6 @@ class Page extends Post
      *
      * @return string
      */
-    #[\Override]
     public static function getPostType()
     {
         return 'page';

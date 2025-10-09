@@ -40,7 +40,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->register($provider);
         $app->boot();
 
-        $this->assertNotFalse(has_filter('template_include', $provider->handleTemplateInclude(...)));
+        $this->assertNotFalse(has_filter('template_include', [$provider, 'handleTemplateInclude']));
     }
 
     /** @test */
@@ -195,7 +195,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
 
@@ -212,7 +212,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerReturningAResponsable::class, 'handle');
 
@@ -230,7 +230,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithConstructorParams::class, 'handle');
 
@@ -247,7 +247,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithHandleParams::class, 'handle');
 
@@ -267,7 +267,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -288,7 +288,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -308,7 +308,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -328,7 +328,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot();
+        $provider->boot($app);
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -358,7 +358,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $routerProvider->register();
         $routerProvider->boot();
-        $provider->boot();
+        $provider->boot($app);
 
         $store = $app->get(MiddlewareAliases::class);
         $store->set('middleware-key', new AddHeaderMiddleware('X-Header', 'testing123'));
@@ -399,19 +399,27 @@ class WordPressControllersServiceProviderTest extends TestCase
 
 class TestController
 {
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class TestControllerWithConstructorParams
 {
-    public function __construct(Application $app) {}
+    public function __construct(Application $app)
+    {
+    }
 
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class TestControllerWithHandleParams
 {
-    public function handle(Application $app) {}
+    public function handle(Application $app)
+    {
+    }
 }
 
 class MyResponsable implements Responsable
@@ -432,12 +440,21 @@ class TestControllerReturningAResponsable
 
 class TestControllerWithMiddleware extends Controller
 {
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class AddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value) {}
+    private $key;
+    private $value;
+
+    public function __construct($key, $value)
+    {
+        $this->key = $key;
+        $this->value = $value;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
