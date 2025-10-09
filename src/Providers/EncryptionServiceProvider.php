@@ -12,17 +12,10 @@ class EncryptionServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->app->has('config')) {
-            $encryptionKey = $this->app->get('config')->get('app.key');
+            $encrypter = function () {
+                $encryptionKey = $this->app->get('config')->get('app.key');
 
-            $encrypter = function () use ($config) {
-                $key = $config->get('app.key');
-                $cipher = $config->get('app.cipher', 'aes-256-cbc');
-
-                // Throw own exception
-                // Add unit test for legacy decryption
-                // test base64 and nonbase64
-
-                return new Encrypter($this->parseKey($key), $cipher);
+                return new Encrypter($this->parseKey($encryptionKey), 'aes-256-cbc');
             };
 
             $this->app->bind(EncrypterContract::class, $encrypter);
