@@ -82,7 +82,7 @@ class QueryBuilder implements QueryBuilderContract
         return $this;
     }
 
-    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null): QueryBuilderContract
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, ?string $type = null): QueryBuilderContract
     {
         $order = strtoupper($order);
 

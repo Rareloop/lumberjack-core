@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use function Http\Response\send;
 
 class Application implements ContainerInterface
 {
@@ -151,7 +150,7 @@ class Application implements ContainerInterface
      *
      * @return bool
      */
-    public function has($id)
+    public function has($id): bool
     {
         return $this->container->has($id);
     }
