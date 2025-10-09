@@ -575,36 +575,58 @@ abstract class TestBootstrapperBase
     }
 }
 
-class TestBootstrapper1 extends TestBootstrapperBase {}
+class TestBootstrapper1 extends TestBootstrapperBase
+{
+}
 
-class TestBootstrapper2 extends TestBootstrapperBase {}
+class TestBootstrapper2 extends TestBootstrapperBase
+{
+}
 
-interface TestInterface {}
+interface TestInterface
+{
+}
 
-class TestInterfaceImplementation implements TestInterface {}
+class TestInterfaceImplementation implements TestInterface
+{
+}
 
 class TestInterfaceImplementationWithConstructorParams implements TestInterface
 {
-    public function __construct(TestServiceProvider $provider) {}
+    public function __construct(TestServiceProvider $provider)
+    {
+    }
 }
 
-interface TestSubInterface {}
+interface TestSubInterface
+{
+}
 
-class TestSubInterfaceImplementation implements TestSubInterface {}
+class TestSubInterfaceImplementation implements TestSubInterface
+{
+}
 
 class TestServiceProvider extends ServiceProvider
 {
-    public function register() {}
-    public function boot() {}
+    public function register()
+    {
+    }
+    public function boot()
+    {
+    }
 }
 
-class EmptyServiceProvider extends ServiceProvider {}
+class EmptyServiceProvider extends ServiceProvider
+{
+}
 
 class TestBootServiceProvider extends ServiceProvider
 {
     private $bootCallback;
 
-    public function register() {}
+    public function register()
+    {
+    }
 
     public function boot(Application $app, TestInterface $test)
     {

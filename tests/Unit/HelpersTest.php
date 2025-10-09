@@ -3,11 +3,13 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Timber\Timber;
+use Monolog\Logger;
 use Rareloop\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeFactory;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Http\ServerRequest;
@@ -16,8 +18,6 @@ use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
-use Monolog\Logger;
-use Rareloop\Lumberjack\FacadeFactory;
 
 /**
  * @runTestsInSeparateProcesses
@@ -141,12 +141,13 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/route', function () {})->name('test.route');
+        $router->get('test/route', function () {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route');
 
-        $this->assertSame('test/route', trim((string) $url, '/'));
+        $this->assertSame('test/route', trim($url, '/'));
     }
 
     /** @test */
@@ -155,14 +156,15 @@ class HelpersTest extends TestCase
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/{name}', function ($name) {})->name('test.route');
+        $router->get('test/{name}', function ($name) {
+        })->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route', [
             'name' => 'route',
         ]);
 
-        $this->assertSame('test/route', trim((string) $url, '/'));
+        $this->assertSame('test/route', trim($url, '/'));
     }
 
     /** @test */
