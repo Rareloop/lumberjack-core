@@ -3,8 +3,10 @@
 namespace Rareloop\Lumberjack;
 
 use Illuminate\Encryption\Encrypter as IlluminateEncrypter;
-use Illuminate\Contracts\Encryption\Encrypter as IlluminateEncrypterContract;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
+use Rareloop\Lumberjack\Exceptions\DecryptException;
+use Rareloop\Lumberjack\Exceptions\EncryptException;
+use Rareloop\Lumberjack\Exceptions\InvalidEncryptionKeyException;
 
 class Encrypter implements EncrypterContract
 {
@@ -14,17 +16,34 @@ class Encrypter implements EncrypterContract
 
     public function __construct($key)
     {
-        $this->encrypter = new IlluminateEncrypter($this->parseKey($key), static::$cipher);
+        try {
+            $this->encrypter = new IlluminateEncrypter($this->parseKey($key), static::$cipher);
+        } catch (\Throwable $th) {
+            throw new InvalidEncryptionKeyException;
+        }
     }
 
     public function encrypt($data)
     {
-        return $this->encrypter->encrypt($data);
+        try {
+            return $this->encrypter->encrypt($data);
+        } catch (\Throwable $th) {
+            throw new EncryptException('Unable to encrypt the data.');
+        }
     }
 
     public function decrypt($data)
     {
-        return $this->encrypter->decrypt($data);
+        try {
+            return $this->encrypter->decrypt($data);
+        } catch (\Throwable $th) {
+            throw new DecryptException('Unable to decrypt the data: ' . $th->getMessage());
+        }
+    }
+
+    public static function generateKey()
+    {
+        return IlluminateEncrypter::generateKey(static::$cipher);
     }
 
     protected function parseKey(string $key): string

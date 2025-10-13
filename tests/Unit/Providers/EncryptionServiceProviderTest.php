@@ -18,7 +18,7 @@ class EncryptionServiceProviderTest extends TestCase
     public function encryptor_is_registered_in_container_when_a_config_key_is_present()
     {
         $config = new Config;
-        $config->set('app.key', 'encryption-key');
+        $config->set('app.key', 'base64:ydjOTEkQq2WsMwzhSgq4xuv392AdyjENcO8/VrNl37w=');
 
         $app = new Application();
         $app->bind('config', $config);

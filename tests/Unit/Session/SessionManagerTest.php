@@ -94,7 +94,7 @@ class SessionManagerTest extends TestCase
     public function can_create_an_encrypted_store()
     {
         $app = $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = true);
-        $app->bind(EncrypterContract::class, new Encrypter('encryption-key'));
+        $app->bind(EncrypterContract::class, new Encrypter('base64:ydjOTEkQq2WsMwzhSgq4xuv392AdyjENcO8/VrNl37w='));
 
         $manager = new SessionManager($app);
 
