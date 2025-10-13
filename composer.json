@@ -49,10 +49,5 @@
             "composer/installers": true
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Rareloop/dcrypt"
-        }
-    ]
+    "repositories": []
 }
