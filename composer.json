@@ -19,7 +19,7 @@
         "mindplay/middleman": "^4.0.4",
         "psr/log": "^2.0.0",
         "symfony/var-dumper": "^5.0||^6.3.6",
-        "mmeyer2k/dcrypt": "^8.3.1",
+        "mmeyer2k/dcrypt": "^8.3.2",
         "spatie/ignition": "^1.15",
         "laminas/laminas-httphandlerrunner": "^2.12",
         "symfony/error-handler": "^6.0"
@@ -49,5 +49,10 @@
             "composer/installers": true
         }
     },
-    "repositories": []
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:Rareloop/dcrypt.git"
+        }
+    ]
 }
