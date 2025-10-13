@@ -18,14 +18,13 @@ class EncryptedStoreTest extends TestCase
     /** @test */
     public function data_is_encrypted_before_it_is_saved()
     {
-        $encrypter = Mockery::mock(Encrypter::class);
-        $encrypter->shouldReceive('encrypt')
-            ->withArgs(function ($string) {
-                $array = @unserialize($string);
+        $serializedString = @serialize(['foo' => 'bar']);
+        $encrypter = Mockery::mock(Encrypter::class . '[encrypt]', ['encryption-key']);
+        $encrypter->shouldReceive('encrypt')->withArgs(function ($string) {
+            $array = @unserialize($string);
 
-                return $array['foo'] === 'bar';
-            })
-            ->once();
+            return $array['foo'] === 'bar';
+        })->once();
 
         $store = new EncryptedStore('session-name', new NullSessionHandler, $encrypter, 'session-id');
 
@@ -37,12 +36,11 @@ class EncryptedStoreTest extends TestCase
     /** @test */
     public function data_is_decrypted_before_it_is_loaded()
     {
-        $encryptionKey = 'base64:ydjOTEkQq2WsMwzhSgq4xuv392AdyjENcO8/VrNl37w=';
+        $encryptionKey = 'encryption-key';
 
-        // Use a string that has been previously been encrypted by the store with the key above. It was encrypted using the following code:
-        // $encrypter = new Encrypter($encryptionKey);
-        // $value = $encrypter->encrypt(@serialize(['foo' => 'bar']));
-        $encryptedString = 'eyJpdiI6IlAvOURGM3FPck1PU2hQTG9ScFVaMEE9PSIsInZhbHVlIjoiRmFmdmt6ZnVrNWo5c0JaQkNnSHBMTG42czhEWVlXWGZFTnBBWTdCdzBwNUxYZkFQdU9jd21CSCtocFhSMXZ5ayIsIm1hYyI6IjY4NzhkZjFiMDAyM2Y4ODI3MzQ1MTA5YmU3MDQ5ODljYTY5ZDFjNGFiNzdkYjRjNTBlMTgxZTE0MWY2ODIxYjUiLCJ0YWciOiIifQ==';
+        // Create the string that would have been stored by an encrypted store
+        // Serialize once for the Encrypter and once for the Encrypted store
+        $encryptedString = AesCbc::encrypt(@serialize(@serialize(['foo' => 'bar'])), $encryptionKey);
 
         // Use a mock handler to fake a previously stored state
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');
@@ -60,7 +58,7 @@ class EncryptedStoreTest extends TestCase
      */
     public function unexpected_session_data_is_handled_gracefully($previousSessionValue)
     {
-        $encryptionKey = 'base64:ydjOTEkQq2WsMwzhSgq4xuv392AdyjENcO8/VrNl37w=';
+        $encryptionKey = 'encryption-key';
 
         // Use a mock handler to fake a previously stored state
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');

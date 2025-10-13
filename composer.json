@@ -19,7 +19,7 @@
         "mindplay/middleman": "^4.0.4",
         "psr/log": "^2.0.0",
         "symfony/var-dumper": "^5.0||^6.3.6",
-        "illuminate/encryption": "^10",
+        "mmeyer2k/dcrypt": "dev-master as 8.3.2",
         "spatie/ignition": "^1.15",
         "laminas/laminas-httphandlerrunner": "^2.12",
         "symfony/error-handler": "^6.0"
@@ -52,11 +52,15 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/rareloop/router"
+            "url": "https://github.com/Rareloop/router"
         },
         {
             "type": "vcs",
             "url": "https://github.com/tommitchelmore/psr7-server-request-extension"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Rareloop/dcrypt"
         }
     ]
 }
