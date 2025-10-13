@@ -20,7 +20,7 @@ jobs:
         extensions: xdebug
 
     - name: Install dependencies
-      uses: php-actions/composer@v5
+      uses: php-actions/composer@v6
       with:
         php_version: ${{ matrix.php_version }}
         args: ${{ matrix.composer_flags }}
