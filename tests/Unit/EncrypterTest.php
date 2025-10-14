@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Dcrypt\AesCbc;
+use Rareloop\Lumberjack\Dcrypt\AesCbc;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Config;

@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack;
 
-use Dcrypt\AesCbc;
+use Rareloop\Lumberjack\Dcrypt\AesCbc;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 
 class Encrypter implements EncrypterContract

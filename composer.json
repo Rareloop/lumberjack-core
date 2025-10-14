@@ -2,12 +2,6 @@
     "name": "rareloop/lumberjack-core",
     "description": "A powerful MVC framework for the modern WordPress developer. Write better, more expressive and easier to maintain code",
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Rareloop/dcrypt"
-        }
-    ],
     "require": {
         "php": ">=8.1",
         "php-di/php-di": "^7",
@@ -25,7 +19,6 @@
         "mindplay/middleman": "^4.0.4",
         "psr/log": "^2.0.0",
         "symfony/var-dumper": "^5.0||^6.3.6",
-        "mmeyer2k/dcrypt": "^8.3.2",
         "spatie/ignition": "^1.15",
         "laminas/laminas-httphandlerrunner": "^2.12",
         "symfony/error-handler": "^6.0"
