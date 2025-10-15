@@ -154,13 +154,12 @@ class Post extends TimberPost
 
     /**
      * Raw query function that uses the arguments provided to make a call to Timber::get_posts
-     * and casts the returning data in instances of ourself.
      *
      * @param  array $args standard WP_Query array
      * @return \Illuminate\Support\Collection
      */
     private static function posts($args = null)
     {
-        return collect(Timber::get_posts($args, get_called_class()));
+        return collect(Timber::get_posts($args));
     }
 }
