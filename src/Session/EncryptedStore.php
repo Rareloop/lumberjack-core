@@ -32,10 +32,14 @@ class EncryptedStore extends Store
 
     protected function prepareForUnserialize($data)
     {
+        if ($data === '') {
+            return '';
+        }
+
         try {
             return $this->encrypter->decrypt($data);
         } catch (Exception $e) {
-            $this->exceptionHandler->report($e);
+            $this->exceptionHandler?->report($e);
             return '';
         }
     }

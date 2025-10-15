@@ -124,6 +124,6 @@ class HandlerWithBlacklist extends Handler
     ];
 }
 
-class BlacklistedException extends \Exception 
+class BlacklistedException extends \Exception
 {
 }
