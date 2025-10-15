@@ -3,17 +3,20 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use Rareloop\Lumberjack\Application;
-use Rareloop\Lumberjack\Config;
-use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
-use Rareloop\Lumberjack\Encrypter;
-use Rareloop\Lumberjack\Session\EncryptedStore;
-use Rareloop\Lumberjack\Session\FileSessionHandler;
-use Rareloop\Lumberjack\Session\SessionManager;
-use Rareloop\Lumberjack\Session\Store;
-use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use ReflectionClass;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Encrypter;
+use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Session\Store;
+use Rareloop\Lumberjack\Exceptions\Handler;
+use Rareloop\Lumberjack\Session\EncryptedStore;
+use Rareloop\Lumberjack\Session\SessionManager;
+use Rareloop\Lumberjack\Session\FileSessionHandler;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
+use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 
 class SessionManagerTest extends TestCase
 {
@@ -93,12 +96,22 @@ class SessionManagerTest extends TestCase
     /** @test */
     public function can_create_an_encrypted_store()
     {
-        $app = $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = true);
+        $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = true);
         $app->bind(EncrypterContract::class, new Encrypter('encryption-key'));
+
+        $handler = Mockery::mock(Handler::class);
+        $app->bind(HandlerInterface::class, $handler);
 
         $manager = new SessionManager($app);
 
-        $this->assertInstanceOf(EncryptedStore::class, $manager->driver());
+        $driver = $manager->driver();
+        $this->assertInstanceOf(EncryptedStore::class, $driver);
+
+        $reflection = new ReflectionClass($driver);
+        $property = $reflection->getProperty('exceptionHandler');
+        $property->setAccessible(true);
+
+        $this->assertInstanceOf(HandlerInterface::class, $property->getValue($driver));
     }
 }
 

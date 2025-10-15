@@ -105,7 +105,6 @@ class ScopedQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @runInSeparateProcess
      */
     public function missing_query_scope_throws_an_error()
     {

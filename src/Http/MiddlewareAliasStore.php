@@ -32,7 +32,7 @@ class MiddlewareAliasStore implements MiddlewareAliases
         return $middleware;
     }
 
-    protected function parseName($name) : array
+    protected function parseName($name): array
     {
         list($name, $params) = array_pad(explode(':', $name), 2, '');
 
@@ -41,7 +41,7 @@ class MiddlewareAliasStore implements MiddlewareAliases
         return [$name, $params];
     }
 
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
         list($name, $params) = $this->parseName($name);
 

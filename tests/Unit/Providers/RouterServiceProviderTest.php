@@ -18,10 +18,10 @@ use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\MiddlewareResolver;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\TextResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Request;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ServerRequest;
 
 class RouterServiceProviderTest extends TestCase
 {
@@ -79,8 +79,7 @@ class RouterServiceProviderTest extends TestCase
         $store->set('middleware-key', new RSPAddHeaderMiddleware('X-Key', 'abc'));
         $request = new ServerRequest([], [], '/test/123', 'GET');
 
-        $router->get('/test/123', function () {
-        })->middleware('middleware-key');
+        $router->get('/test/123', function () {})->middleware('middleware-key');
         $response = $router->match($request);
 
         $this->assertTrue($response->hasHeader('X-Key'));

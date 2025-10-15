@@ -2,11 +2,10 @@
 
 namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
-use Blast\Facades\FacadeFactory;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
+use Rareloop\Lumberjack\FacadeFactory;
 
 class RegisterFacadesTest extends TestCase
 {

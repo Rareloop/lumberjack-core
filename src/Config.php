@@ -9,7 +9,7 @@ class Config
 {
     private $data = [];
 
-    public function __construct(string $path = null)
+    public function __construct(?string $path = null)
     {
         if ($path) {
             $this->load($path);

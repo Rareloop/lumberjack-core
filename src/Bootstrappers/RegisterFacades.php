@@ -2,8 +2,8 @@
 
 namespace Rareloop\Lumberjack\Bootstrappers;
 
-use Blast\Facades\FacadeFactory;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeFactory;
 
 class RegisterFacades
 {

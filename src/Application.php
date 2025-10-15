@@ -3,15 +3,13 @@
 namespace Rareloop\Lumberjack;
 
 use Closure;
-use DI\ContainerBuilder;
+use DI\Container;
 use Illuminate\Support\Collection;
-use Interop\Container\ContainerInterface as InteropContainerInterface;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Rareloop\Router\Invoker;
-use function Http\Response\send;
 
-class Application implements ContainerInterface, InteropContainerInterface
+class Application implements ContainerInterface
 {
     private $container;
     private $loadedProviders = [];
@@ -24,7 +22,7 @@ class Application implements ContainerInterface, InteropContainerInterface
 
     public function __construct($basePath = false)
     {
-        $this->container = ContainerBuilder::buildDevContainer();
+        $this->container = new Container();
 
         $this->bind(Application::class, $this);
 
@@ -152,7 +150,7 @@ class Application implements ContainerInterface, InteropContainerInterface
      *
      * @return bool
      */
-    public function has($id)
+    public function has($id): bool
     {
         return $this->container->has($id);
     }
@@ -234,7 +232,7 @@ class Application implements ContainerInterface, InteropContainerInterface
      *
      * @return boolean
      */
-    public function hasRequestBeenHandled() : bool
+    public function hasRequestBeenHandled(): bool
     {
         return $this->requestHandled;
     }
@@ -265,17 +263,17 @@ class Application implements ContainerInterface, InteropContainerInterface
                 if ($this->has('__wp-controller-miss-template') && $this->has('__wp-controller-miss-controller')) {
                     wp_die(
                         'Loaded template <code>' .
-                        $this->get('__wp-controller-miss-template') .
-                        '</code> but couldn\'t find class <code>' .
-                        $this->get('__wp-controller-miss-controller') .
-                        '</code>'
+                            $this->get('__wp-controller-miss-template') .
+                            '</code> but couldn\'t find class <code>' .
+                            $this->get('__wp-controller-miss-controller') .
+                            '</code>'
                     );
                 }
             }
         });
     }
 
-    public function shutdown(ResponseInterface $response = null)
+    public function shutdown(?ResponseInterface $response = null)
     {
         if ($response) {
             global $wp;
@@ -284,13 +282,13 @@ class Application implements ContainerInterface, InteropContainerInterface
             // If we're handling a WordPressController response at this point then WordPress will already have
             // sent headers as it happens earlier in the lifecycle. For this scenario we need to do a bit more
             // work to make sure that duplicate headers are not sent back.
-            send($this->removeSentHeadersAndMoveIntoResponse($response));
+            (new SapiEmitter())->emit($this->removeSentHeadersAndMoveIntoResponse($response));
         }
 
         die();
     }
 
-    protected function removeSentHeadersAndMoveIntoResponse(ResponseInterface $response) : ResponseInterface
+    protected function removeSentHeadersAndMoveIntoResponse(ResponseInterface $response): ResponseInterface
     {
         // 1. Format the previously sent headers into an array of [key, value]
         // 2. Remove all headers from the output that we find

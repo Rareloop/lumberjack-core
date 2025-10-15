@@ -5,7 +5,7 @@ namespace Rareloop\Lumberjack\Http;
 use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithInput;
 use Rareloop\Psr7ServerRequestExtension\InteractsWithUri;
-use Zend\Diactoros\ServerRequest as DiactorosServerRequest;
+use Laminas\Diactoros\ServerRequest as DiactorosServerRequest;
 
 class ServerRequest extends DiactorosServerRequest
 {
@@ -34,7 +34,7 @@ class ServerRequest extends DiactorosServerRequest
         );
     }
 
-    public function ajax() : bool
+    public function ajax(): bool
     {
         if (!$this->hasHeader('X-Requested-With')) {
             return false;
@@ -43,7 +43,7 @@ class ServerRequest extends DiactorosServerRequest
         return 'XMLHttpRequest' === $this->getHeader('X-Requested-With')[0];
     }
 
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return strtoupper(parent::getMethod());
     }

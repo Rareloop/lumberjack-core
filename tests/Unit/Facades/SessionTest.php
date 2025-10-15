@@ -2,9 +2,9 @@
 
 namespace Rareloop\Lumberjack\Test\Facades;
 
-use Blast\Facades\FacadeFactory;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeFactory;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Session\SessionManager;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;

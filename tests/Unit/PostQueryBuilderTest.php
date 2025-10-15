@@ -47,7 +47,6 @@ class PostQueryBuilderTest extends TestCase
 
     /**
      * @test
-     * @runInSeparateProcess
      */
     public function throw_error_on_missing_static_function()
     {

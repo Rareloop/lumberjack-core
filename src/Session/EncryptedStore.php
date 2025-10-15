@@ -17,7 +17,7 @@ class EncryptedStore extends Store
         SessionHandlerInterface $handler,
         Encrypter $encrypter,
         $id = null,
-        HandlerInterface $exceptionHandler = null
+        ?HandlerInterface $exceptionHandler = null
     ) {
         $this->encrypter = $encrypter;
         $this->exceptionHandler = $exceptionHandler;
@@ -32,10 +32,14 @@ class EncryptedStore extends Store
 
     protected function prepareForUnserialize($data)
     {
+        if ($data === '') {
+            return '';
+        }
+
         try {
             return $this->encrypter->decrypt($data);
         } catch (Exception $e) {
-            $this->exceptionHandler->report($e);
+            $this->exceptionHandler?->report($e);
             return '';
         }
     }

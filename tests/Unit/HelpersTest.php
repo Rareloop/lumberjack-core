@@ -3,12 +3,13 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Timber\Timber;
+use Monolog\Logger;
 use Rareloop\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Config;
-use Blast\Facades\FacadeFactory;
 use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\FacadeFactory;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Http\ServerRequest;
@@ -17,7 +18,6 @@ use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
-use Monolog\Logger;
 
 /**
  * @runTestsInSeparateProcesses

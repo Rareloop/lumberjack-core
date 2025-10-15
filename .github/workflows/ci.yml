@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [8.1, 8.2, 8.3]
+        php_version: [8.1, 8.2, 8.3, 8.4]
         composer_flags: ['', '--prefer-lowest']
 
     steps:
@@ -20,7 +20,7 @@ jobs:
         extensions: xdebug
 
     - name: Install dependencies
-      uses: php-actions/composer@v5
+      uses: php-actions/composer@v6
       with:
         php_version: ${{ matrix.php_version }}
         args: ${{ matrix.composer_flags }}
@@ -44,4 +44,3 @@ jobs:
     #   run: |
     #     composer global require php-coveralls/php-coveralls
     #     ~/.composer/vendor/bin/php-coveralls -v
-

@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack\Test\Providers;
 
 use Brain\Monkey\Functions;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,7 @@ class LogServiceProviderTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
 
         $lumberjack->bootstrap();
@@ -37,7 +38,7 @@ class LogServiceProviderTest extends TestCase
      * @codingStandardsIgnoreLine */
     function default_handler_is_in_memory_stream()
     {
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
 
         $config = new Config;
         $app->bind('config', $config);
@@ -52,7 +53,7 @@ class LogServiceProviderTest extends TestCase
     /** @test */
     public function default_log_warning_level_is_debug()
     {
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
 
         $config = new Config;
         $app->bind('config', $config);
@@ -61,13 +62,13 @@ class LogServiceProviderTest extends TestCase
             RegisterProviders::class,
         ]);
 
-        $this->assertSame(Logger::DEBUG, $app->get('logger')->getHandlers()[0]->getLevel());
+        $this->assertSame(Level::Debug, $app->get('logger')->getHandlers()[0]->getLevel());
     }
 
     /** @test */
     public function stream_is_used_when_path_is_set_but_logging_is_disabled()
     {
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
 
         $config = new Config;
         $config->set('app.logs.enabled', false);
@@ -84,17 +85,17 @@ class LogServiceProviderTest extends TestCase
     /** @test */
     public function log_warning_level_can_be_set_in_config()
     {
-        $app = new Application(__DIR__.'/../');
+        $app = new Application(__DIR__ . '/../');
 
         $config = new Config;
-        $config->set('app.logs.level', Logger::ERROR);
+        $config->set('app.logs.level', Level::Error);
         $app->bind('config', $config);
 
         $app->bootstrapWith([
             RegisterProviders::class,
         ]);
 
-        $this->assertSame(Logger::ERROR, $app->get('logger')->getHandlers()[0]->getLevel());
+        $this->assertSame(Level::Error, $app->get('logger')->getHandlers()[0]->getLevel());
     }
 
     /** @test */

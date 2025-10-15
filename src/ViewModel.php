@@ -9,7 +9,7 @@ use ReflectionProperty;
 
 abstract class ViewModel implements Arrayable
 {
-    public function toArray() : array
+    public function toArray(): array
     {
         $propertyKeyValues = collect($this->validPropertyNames())
             ->mapWithKeys(function ($method) {
@@ -31,7 +31,7 @@ abstract class ViewModel implements Arrayable
         return array_merge($propertyKeyValues, $methodKeyValues);
     }
 
-    protected function validMethodNames() : array
+    protected function validMethodNames(): array
     {
         $class = new ReflectionClass(static::class);
         return collect($class->getMethods(ReflectionMethod::IS_PUBLIC))
@@ -44,7 +44,7 @@ abstract class ViewModel implements Arrayable
             ->all();
     }
 
-    protected function validPropertyNames() : array
+    protected function validPropertyNames(): array
     {
         $class = new ReflectionClass(static::class);
 
@@ -58,7 +58,7 @@ abstract class ViewModel implements Arrayable
             ->all();
     }
 
-    protected function ignoredMethods() : array
+    protected function ignoredMethods(): array
     {
         return [
             'toArray',

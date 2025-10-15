@@ -46,7 +46,7 @@ class FileSessionHandler implements SessionHandlerInterface
     {
         try {
             file_put_contents($this->getFilepath($sessionId), $data);
-        } catch (Exception $e) {
+        } catch (Exception) {
             Log::error('Failed to create session on disk');
         }
 

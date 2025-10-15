@@ -2,7 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use Dcrypt\AesCbc;
+use Rareloop\Lumberjack\Dcrypt\AesCbc;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Encrypter;
@@ -54,15 +54,14 @@ class EncryptedStoreTest extends TestCase
 
     /**
      * @test
-     * @dataProvider unexpectedSessionData
      */
-    public function unexpected_session_data_is_handled_gracefully($previousSessionValue)
+    public function unexpected_session_data_is_handled_gracefully()
     {
         $encryptionKey = 'encryption-key';
 
         // Use a mock handler to fake a previously stored state
         $handler = Mockery::mock(NullSessionHandler::class . '[read]');
-        $handler->shouldReceive('read')->andReturn($previousSessionValue);
+        $handler->shouldReceive('read')->andReturn(@serialize(['foo' => 'bar']));
 
         $errorHandler = Mockery::mock(HandlerInterface::class);
         $errorHandler->shouldReceive('report')->once();
@@ -73,11 +72,40 @@ class EncryptedStoreTest extends TestCase
         $this->assertSame(null, $store->get('foo'));
     }
 
-    public function unexpectedSessionData()
+    /**
+     * @test
+     */
+    public function gracefully_handle_case_with_no_exception_handler()
     {
-        return [
-            [@serialize(['foo' => 'bar'])],
-            [''],
-        ];
+        $encryptionKey = 'encryption-key';
+
+        // Use a mock handler to fake a previously stored state
+        $handler = Mockery::mock(NullSessionHandler::class . '[read]');
+        $handler->shouldReceive('read')->andReturn(@serialize(['foo' => 'bar']));
+
+        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id');
+        $store->start();
+
+        $this->assertSame(null, $store->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function empty_session_data_is_ignored()
+    {
+        $encryptionKey = 'encryption-key';
+
+        // Use a mock handler to fake a previously stored state
+        $handler = Mockery::mock(NullSessionHandler::class . '[read]');
+        $handler->shouldReceive('read')->andReturn('');
+
+        $errorHandler = Mockery::mock(HandlerInterface::class);
+        $errorHandler->shouldNotHaveReceived('report');
+
+        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id', $errorHandler);
+        $store->start();
+
+        $this->assertSame(null, $store->get('foo'));
     }
 }

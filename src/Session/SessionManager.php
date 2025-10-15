@@ -5,6 +5,7 @@ namespace Rareloop\Lumberjack\Session;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
+use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Manager;
 
 class SessionManager extends Manager
@@ -54,8 +55,9 @@ class SessionManager extends Manager
 
         if ($this->config->get('session.encrypt')) {
             $encrypter = $this->app->get(EncrypterContract::class);
+            $exceptionHandler = $this->app->get(HandlerInterface::class);
 
-            return new EncryptedStore($this->name, $handler, $encrypter, $sessionId);
+            return new EncryptedStore($this->name, $handler, $encrypter, $sessionId, $exceptionHandler);
         }
 
         return new Store($this->name, $handler, $sessionId);
