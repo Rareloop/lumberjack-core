@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Facades\Config;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
+use Spatie\Ignition\Config\IgnitionConfig;
 
 class Handler implements HandlerInterface
 {
@@ -38,6 +39,7 @@ class Handler implements HandlerInterface
         $isDebug = Config::get('app.debug', false) === true;
 
         $ignition = Ignition::make()
+            ->setConfig(new IgnitionConfig(config('ignition', [])))
             ->shouldDisplayException($isDebug)
             ->runningInProductionEnvironment(!$isDebug)
             ->register();
