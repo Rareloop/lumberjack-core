@@ -44,7 +44,13 @@ class SessionServiceProvider extends ServiceProvider
                 setcookie(
                     $this->session->getName(),
                     $this->session->getId(),
-                    ['expires' => time() + ($cookieOptions['lifetime'] * 60), 'path' => $cookieOptions['path'], 'domain' => $cookieOptions['domain'], 'secure' => $cookieOptions['secure'], 'httponly' => $cookieOptions['httpOnly']]
+                    [
+                        'expires' => time() + ($cookieOptions['lifetime'] * 60),
+                        'path' => $cookieOptions['path'],
+                        'domain' => $cookieOptions['domain'],
+                        'secure' => $cookieOptions['secure'],
+                        'httponly' => $cookieOptions['httpOnly']
+                    ]
                 );
 
                 $cookieSet = true;
