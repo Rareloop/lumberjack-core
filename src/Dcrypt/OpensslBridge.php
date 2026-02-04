@@ -162,11 +162,7 @@ class OpensslBridge
 
         $cipher = \strtolower(static::CIPHER);
 
-        if (isset($legacy[$cipher])) {
-            return $legacy[$cipher];
-        }
-
-        return $cipher;
+        return $legacy[$cipher] ?? $cipher;
     }
 
     /**

@@ -36,6 +36,7 @@ class Spritz extends Rc4
      * @param string $key Key to use for encryption
      * @return string
      */
+    #[\Override]
     public static function crypt(string $str, string $key): string
     {
         $s = self::initializeState($key);

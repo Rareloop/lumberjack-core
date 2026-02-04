@@ -16,6 +16,10 @@ use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 
 class ScopedQueryBuilderTest extends TestCase
 {
+    /**
+     * @var array<string, string>
+     */
+    public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
         \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -160,6 +164,7 @@ class CustomQueryBuilder extends QueryBuilder
 
 class PostWithQueryScope extends Post
 {
+    #[\Override]
     public static function getPostType()
     {
         return 'post_with_query_scope';

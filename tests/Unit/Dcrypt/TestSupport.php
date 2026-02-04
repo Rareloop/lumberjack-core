@@ -16,7 +16,7 @@ class TestSupport extends \PHPUnit\Framework\TestCase
         // @codeCoverageIgnoreStart
         $len = strlen($inp);
         $inp = str_split($inp);
-        $off = rand(0, $len - 1);
+        $off = random_int(0, $len - 1);
         $byte = $inp[$off];
         $rbyte = \random_bytes(1);
         if ($byte === $rbyte) {

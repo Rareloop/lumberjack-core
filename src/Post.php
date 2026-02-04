@@ -26,6 +26,7 @@ class Post extends TimberPost
         }
     }
 
+    #[\Override]
     public function __call($name, $arguments)
     {
         if (static::hasMacro($name)) {
@@ -46,7 +47,7 @@ class Post extends TimberPost
             return call_user_func_array([$builder, $name], $arguments);
         }
 
-        trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
+        trigger_error('Call to undefined method ' . self::class . '::' . $name . '()', E_USER_ERROR);
     }
 
     /**

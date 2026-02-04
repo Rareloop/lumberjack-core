@@ -13,8 +13,6 @@ use Rareloop\Lumberjack\Bootstrappers\RegisterRequestHandler;
 
 class Lumberjack
 {
-    private $app;
-
     protected $bootstrappers = [
         LoadConfiguration::class,
         RegisterExceptionHandler::class,
@@ -25,9 +23,8 @@ class Lumberjack
         RegisterRequestHandler::class,
     ];
 
-    public function __construct(Application $app)
+    public function __construct(private Application $app)
     {
-        $this->app = $app;
     }
 
     public function bootstrap()

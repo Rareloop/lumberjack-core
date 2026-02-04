@@ -25,11 +25,13 @@ class EncryptedStore extends Store
         parent::__construct($name, $handler, $id);
     }
 
+    #[\Override]
     protected function prepareForStorage($data)
     {
         return $this->encrypter->encrypt($data);
     }
 
+    #[\Override]
     protected function prepareForUnserialize($data)
     {
         if ($data === '') {

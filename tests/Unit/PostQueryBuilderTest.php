@@ -83,6 +83,7 @@ class QueryBuilderTestPost extends Post
         static::$injectedBuilder = $builder;
     }
 
+    #[\Override]
     public static function builder(): ScopedQueryBuilder
     {
         return static::$injectedBuilder;

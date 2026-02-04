@@ -552,21 +552,15 @@ class ApplicationTest extends TestCase
 
 class BootstrapperBootstrapTester
 {
-    public $callback;
-
-    public function __construct($callback)
+    public function __construct(public $callback)
     {
-        $this->callback = $callback;
     }
 }
 
 abstract class TestBootstrapperBase
 {
-    private BootstrapperBootstrapTester $tester;
-
-    public function __construct(BootstrapperBootstrapTester $tester)
+    public function __construct(private BootstrapperBootstrapTester $tester)
     {
-        $this->tester = $tester;
     }
 
     public function bootstrap(Application $app)
@@ -654,13 +648,9 @@ class NotRegisteredInContainer
 class RequiresAdditionalConstructorParams
 {
     public $param;
-    public $param1;
-    public $param2;
 
-    public function __construct(TestInterface $test, $param1, $param2)
+    public function __construct(TestInterface $test, public $param1, public $param2)
     {
         $this->param = $test;
-        $this->param1 = $param1;
-        $this->param2 = $param2;
     }
 }

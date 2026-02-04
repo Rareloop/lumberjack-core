@@ -19,6 +19,7 @@ use Timber\Timber;
  */
 class PostTest extends TestCase
 {
+    public $dummyData;
     use BrainMonkeyPHPUnitIntegration;
 
     /** @test */
@@ -239,6 +240,7 @@ class PostWithPrivateData extends Post
 
 class RegisterablePostType extends Post
 {
+    #[\Override]
     public static function getPostType(): string
     {
         return 'registerable_post_type';
@@ -289,6 +291,7 @@ class UnregisterablePostTypeWithoutPostType extends Post
 
 class UnregisterablePostTypeWithoutConfig extends Post
 {
+    #[\Override]
     public static function getPostType(): string
     {
         return 'post_type';
