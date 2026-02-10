@@ -43,9 +43,7 @@ class Handler implements HandlerInterface
             ->runningInProductionEnvironment(!$isDebug)
             ->register();
 
-        if (function_exists('config')) {
-            $ignition->setConfig(new IgnitionConfig(config('ignition', [])));
-        }
+        $ignition->setConfig(new IgnitionConfig(Config::get('ignition', [])));
 
         ob_start();
 
