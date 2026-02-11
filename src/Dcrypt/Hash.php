@@ -70,7 +70,7 @@ class Hash
      */
     private static function cost(int $cost): int
     {
-        return $cost % \pow(2, 32);
+        return $cost % 2 ** 32;
     }
 
     /**

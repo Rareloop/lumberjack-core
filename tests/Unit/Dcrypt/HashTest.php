@@ -41,8 +41,8 @@ class HashTest extends TestSupport
 
     public function testFail()
     {
-        $input = str_repeat('A', rand(0, 10000));
-        $key = str_repeat('A', rand(10, 100));
+        $input = str_repeat('A', random_int(0, 10000));
+        $key = str_repeat('A', random_int(10, 100));
         $cost = 1;
 
         $output = Hash::make($input, $key, $cost);

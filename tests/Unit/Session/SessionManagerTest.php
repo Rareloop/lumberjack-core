@@ -18,6 +18,10 @@ use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class SessionManagerTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -109,7 +113,6 @@ class SessionManagerTest extends TestCase
 
         $reflection = new ReflectionClass($driver);
         $property = $reflection->getProperty('exceptionHandler');
-        $property->setAccessible(true);
 
         $this->assertInstanceOf(HandlerInterface::class, $property->getValue($driver));
     }

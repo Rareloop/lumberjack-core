@@ -195,7 +195,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
 
@@ -212,7 +212,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerReturningAResponsable::class, 'handle');
 
@@ -230,7 +230,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithConstructorParams::class, 'handle');
 
@@ -247,7 +247,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithHandleParams::class, 'handle');
 
@@ -267,7 +267,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -288,7 +288,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -308,7 +308,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -328,7 +328,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
-        $provider->boot($app);
+        $provider->boot();
 
         $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
 
@@ -358,7 +358,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $routerProvider->register();
         $routerProvider->boot();
-        $provider->boot($app);
+        $provider->boot();
 
         $store = $app->get(MiddlewareAliases::class);
         $store->set('middleware-key', new AddHeaderMiddleware('X-Header', 'testing123'));
@@ -447,13 +447,8 @@ class TestControllerWithMiddleware extends Controller
 
 class AddHeaderMiddleware implements MiddlewareInterface
 {
-    private $key;
-    private $value;
-
-    public function __construct($key, $value)
+    public function __construct(private $key, private $value)
     {
-        $this->key = $key;
-        $this->value = $value;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

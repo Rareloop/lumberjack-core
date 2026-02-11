@@ -12,14 +12,10 @@ use ReflectionMethod;
 
 class ScopedQueryBuilder
 {
-    protected $postClass;
-
     protected $queryBuilder;
 
-    public function __construct($postClass)
+    public function __construct(protected $postClass)
     {
-        $this->postClass = $postClass;
-
         $this->queryBuilder = Helpers::app(QueryBuilderContract::class);
 
         $this->queryBuilder

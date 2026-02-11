@@ -180,10 +180,10 @@ class Application implements ContainerInterface
 
     public function getProvider($provider)
     {
-        $providerClass = is_string($provider) ? $provider : get_class($provider);
+        $providerClass = is_string($provider) ? $provider : $provider::class;
 
         return (new Collection($this->loadedProviders))->first(function ($provider) use ($providerClass) {
-            return get_class($provider) === $providerClass;
+            return $provider::class === $providerClass;
         });
     }
 

@@ -14,6 +14,10 @@ use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
 {
+    /**
+     * @var array<string, string>
+     */
+    public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
         \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -514,6 +518,10 @@ class QueryBuilderTest extends TestCase
 
 class QueryBuilderMixin
 {
+    /**
+     * @var array<string, string>
+     */
+    public $params;
     function testFunctionAddedByMixin()
     {
         return function () {
@@ -526,6 +534,7 @@ class QueryBuilderMixin
 
 class PostWithCustomPostType extends Post
 {
+    #[\Override]
     public static function getPostType()
     {
         return 'post_with_query_scope';
