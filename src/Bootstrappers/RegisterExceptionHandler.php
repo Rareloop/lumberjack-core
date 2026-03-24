@@ -24,7 +24,10 @@ use Symfony\Component\ErrorHandler\Error\FatalError;
 
 class RegisterExceptionHandler
 {
-    public function __construct(private Application $app, private ResponseEmitter $emitter) {}
+    public function __construct(private Application $app, private ResponseEmitter $emitter)
+    {
+        //
+    }
 
     public function bootstrap(Application $app)
     {
