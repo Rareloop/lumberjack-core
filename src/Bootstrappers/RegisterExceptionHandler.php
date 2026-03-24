@@ -5,12 +5,11 @@ namespace Rareloop\Lumberjack\Bootstrappers;
 use Error;
 use ErrorException;
 use DI\NotFoundException;
-use function Http\Response\send;
 use Rareloop\Router\Responsable;
 use Rareloop\Lumberjack\Application;
 use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\ServerRequestFactory;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\ErrorHandler\Error\FatalError;
@@ -25,12 +24,10 @@ use Symfony\Component\ErrorHandler\Error\FatalError;
 
 class RegisterExceptionHandler
 {
-    private $app;
+    public function __construct(private Application $app, private ResponseEmitter $emitter) {}
 
     public function bootstrap(Application $app)
     {
-        $this->app = $app;
-
         if (is_admin()) {
             return;
         }
@@ -72,7 +69,7 @@ class RegisterExceptionHandler
 
     public function send(ResponseInterface $response)
     {
-        @(new SapiEmitter())->emit($response);
+        $this->emitter->emit($response);
     }
 
     protected function getExceptionHandler(): HandlerInterface

@@ -5,9 +5,9 @@ namespace Rareloop\Lumberjack;
 use Closure;
 use DI\Container;
 use Illuminate\Support\Collection;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Rareloop\Lumberjack\Http\ResponseEmitter;
 
 class Application implements ContainerInterface
 {
@@ -282,9 +282,23 @@ class Application implements ContainerInterface
             // If we're handling a WordPressController response at this point then WordPress will already have
             // sent headers as it happens earlier in the lifecycle. For this scenario we need to do a bit more
             // work to make sure that duplicate headers are not sent back.
-            (new SapiEmitter())->emit($this->removeSentHeadersAndMoveIntoResponse($response));
+            $responseToSend = $this->removeSentHeadersAndMoveIntoResponse($response);
+
+            $this->get(ResponseEmitter::class)->emit($responseToSend);
         }
 
+        $this->terminate();
+    }
+
+    /**
+     * Terminate the application execution.
+     *
+     * This method is a wrapper around die() to allow for easier unit testing by mocking.
+     *
+     * @return void
+     */
+    protected function terminate()
+    {
         die();
     }
 

@@ -8,9 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
-use phpmock\Mock;
-use phpmock\MockBuilder;
 use Brain\Monkey;
+use Laminas\Diactoros\Response\TextResponse;
+use Psr\Http\Message\ResponseInterface;
+use Rareloop\Lumberjack\Http\ResponseEmitter;
 
 class ApplicationTest extends TestCase
 {
@@ -547,6 +548,28 @@ class ApplicationTest extends TestCase
 
         $this->assertTrue(has_action('wp_footer'));
         $this->assertTrue(has_action('shutdown'));
+    }
+
+    /** 
+     * @test
+     */
+    public function shutdown_should_use_emitter_to_output_response()
+    {
+        $wp = Mockery::mock('WP');
+        $wp->shouldReceive('send_headers')->once();
+        $GLOBALS['wp'] = $wp;
+
+        $response = new TextResponse('Hello World');
+        
+        $emitter = Mockery::mock(ResponseEmitter::class);
+        $emitter->shouldReceive('emit')->once()->with(Mockery::type(\Psr\Http\Message\ResponseInterface::class));
+
+        $app = Mockery::mock(Application::class . '[terminate]');
+        $app->shouldAllowMockingProtectedMethods();
+        $app->shouldReceive('terminate')->once();
+        $app->bind(ResponseEmitter::class, $emitter);
+
+        $app->shutdown($response);
     }
 }
 
