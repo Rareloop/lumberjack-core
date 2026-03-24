@@ -32,7 +32,7 @@ class SessionServiceProvider extends ServiceProvider
         $cookieSet = false;
 
         add_action('send_headers', function () use (&$cookieSet) {
-            if (!$cookieSet) {
+            if (!$cookieSet && !headers_sent()) {
                 $cookieOptions = [
                     'lifetime' => Config::get('session.lifetime', 120),
                     'path' => Config::get('session.path', '/'),

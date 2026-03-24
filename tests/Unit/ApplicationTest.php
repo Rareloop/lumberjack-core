@@ -7,10 +7,11 @@ use Mockery\Matcher\Closure;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 use Brain\Monkey;
+use Laminas\Diactoros\Response\TextResponse;
+use Rareloop\Lumberjack\Http\ResponseEmitter;
 
 class ApplicationTest extends TestCase
 {
@@ -548,20 +549,38 @@ class ApplicationTest extends TestCase
         $this->assertTrue(has_action('wp_footer'));
         $this->assertTrue(has_action('shutdown'));
     }
+
+    /**
+     * @test
+     */
+    public function shutdown_should_use_emitter_to_output_response()
+    {
+        $wp = Mockery::mock('WP');
+        $wp->shouldReceive('send_headers')->once();
+        $GLOBALS['wp'] = $wp;
+
+        $response = new TextResponse('Hello World');
+
+        $emitter = Mockery::mock(ResponseEmitter::class);
+        $emitter->shouldReceive('emit')->once()->with(Mockery::type(\Psr\Http\Message\ResponseInterface::class));
+
+        $app = Mockery::mock(Application::class . '[terminate]');
+        $app->shouldAllowMockingProtectedMethods();
+        $app->shouldReceive('terminate')->once();
+        $app->bind(ResponseEmitter::class, $emitter);
+
+        $app->shutdown($response);
+    }
 }
 
 class BootstrapperBootstrapTester
 {
-    public function __construct(public $callback)
-    {
-    }
+    public function __construct(public $callback) {}
 }
 
 abstract class TestBootstrapperBase
 {
-    public function __construct(private BootstrapperBootstrapTester $tester)
-    {
-    }
+    public function __construct(private BootstrapperBootstrapTester $tester) {}
 
     public function bootstrap(Application $app)
     {
@@ -569,58 +588,36 @@ abstract class TestBootstrapperBase
     }
 }
 
-class TestBootstrapper1 extends TestBootstrapperBase
-{
-}
+class TestBootstrapper1 extends TestBootstrapperBase {}
 
-class TestBootstrapper2 extends TestBootstrapperBase
-{
-}
+class TestBootstrapper2 extends TestBootstrapperBase {}
 
-interface TestInterface
-{
-}
+interface TestInterface {}
 
-class TestInterfaceImplementation implements TestInterface
-{
-}
+class TestInterfaceImplementation implements TestInterface {}
 
 class TestInterfaceImplementationWithConstructorParams implements TestInterface
 {
-    public function __construct(TestServiceProvider $provider)
-    {
-    }
+    public function __construct(TestServiceProvider $provider) {}
 }
 
-interface TestSubInterface
-{
-}
+interface TestSubInterface {}
 
-class TestSubInterfaceImplementation implements TestSubInterface
-{
-}
+class TestSubInterfaceImplementation implements TestSubInterface {}
 
 class TestServiceProvider extends ServiceProvider
 {
-    public function register()
-    {
-    }
-    public function boot()
-    {
-    }
+    public function register() {}
+    public function boot() {}
 }
 
-class EmptyServiceProvider extends ServiceProvider
-{
-}
+class EmptyServiceProvider extends ServiceProvider {}
 
 class TestBootServiceProvider extends ServiceProvider
 {
     private $bootCallback;
 
-    public function register()
-    {
-    }
+    public function register() {}
 
     public function boot(Application $app, TestInterface $test)
     {

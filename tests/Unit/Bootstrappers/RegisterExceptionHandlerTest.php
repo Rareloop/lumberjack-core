@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterExceptionHandler;
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
@@ -37,7 +38,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_USER_ERROR, 'Test Error');
     }
@@ -60,7 +61,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_USER_NOTICE && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_USER_NOTICE, 'Test Error');
     }
@@ -83,7 +84,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_USER_DEPRECATED && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
     }
@@ -106,7 +107,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_DEPRECATED && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_DEPRECATED, 'Test Error');
     }
@@ -131,7 +132,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_USER_ERROR && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_USER_ERROR, 'Test Error');
         $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
@@ -153,7 +154,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with($request, $exception)->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -176,7 +177,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with($request, Mockery::type(\ErrorException::class))->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -197,7 +198,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldReceive('render')->with(Mockery::type(ServerRequest::class), $exception)->once()->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
@@ -222,11 +223,24 @@ class RegisterExceptionHandlerTest extends TestCase
         $handler->shouldNotReceive('render');
         $app->bind(HandlerInterface::class, $handler);
 
-        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]');
+        $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
         $bootstrapper->shouldReceive('send')->once();
         $bootstrapper->bootstrap($app);
 
         $bootstrapper->handleException($exception);
+    }
+
+    /** @test */
+    public function send_should_use_the_emitter()
+    {
+        $app = new Application;
+        $response = new TextResponse('Hello World');
+        $emitter = Mockery::mock(ResponseEmitter::class);
+        $emitter->shouldReceive('emit')->once()->with($response);
+
+        $bootstrapper = new RegisterExceptionHandler($app, $emitter);
+
+        $bootstrapper->send($response);
     }
 }
 
