@@ -304,6 +304,9 @@ class Application implements ContainerInterface
 
     protected function removeSentHeadersAndMoveIntoResponse(ResponseInterface $response): ResponseInterface
     {
+        if (headers_sent()) {
+            return $response;
+        }
         // 1. Format the previously sent headers into an array of [key, value]
         // 2. Remove all headers from the output that we find
         // 3. Filter out any headers that would clash with those already in the response
