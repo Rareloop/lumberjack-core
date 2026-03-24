@@ -97,6 +97,8 @@ class RegisterExceptionHandler
         $exception = new ErrorException($message, 0, $level, $file, $line);
 
         $errorsToReportOnly = $this->app->get('config')->get('app.errors.reportOnly') ?: [
+            E_NOTICE,
+            E_WARNING,
             E_USER_NOTICE,
             E_USER_DEPRECATED,
             E_DEPRECATED

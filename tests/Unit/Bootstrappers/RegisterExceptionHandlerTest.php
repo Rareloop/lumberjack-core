@@ -46,6 +46,52 @@ class RegisterExceptionHandlerTest extends TestCase
     /**
      * @test
      */
+    public function E_NOTICE_errors_are_not_converted_to_exceptions()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+        $handler = Mockery::mock(HandlerInterface::class);
+        $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
+
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_NOTICE && $e->getMessage() === 'Test Error';
+        }));
+
+        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_NOTICE, 'Test Error');
+    }
+
+    /**
+     * @test
+     */
+    public function E_WARNING_errors_are_not_converted_to_exceptions()
+    {
+        Functions\expect('is_admin')->once()->andReturn(false);
+
+        $app = new Application;
+        $handler = Mockery::mock(HandlerInterface::class);
+        $app->bind(HandlerInterface::class, $handler);
+        $config = new Config();
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
+
+        $handler->shouldReceive('report')->once()->with(Mockery::on(function ($e) {
+            return $e->getSeverity() === E_WARNING && $e->getMessage() === 'Test Error';
+        }));
+
+        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper->bootstrap($app);
+        $bootstrapper->handleError(E_WARNING, 'Test Error');
+    }
+
+    /**
+     * @test
+     */
     public function E_USER_NOTICE_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
