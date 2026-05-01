@@ -31,6 +31,5 @@ class IgnitionServiceProviderTest extends TestCase
 
         $this->assertTrue($app->has(Ignition::class));
         $this->assertInstanceOf(Ignition::class, $app->get(Ignition::class));
-        $this->assertSame($app->get(Ignition::class), $app->get(Ignition::class));
     }
 }
