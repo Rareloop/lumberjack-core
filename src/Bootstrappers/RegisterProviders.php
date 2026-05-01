@@ -4,6 +4,7 @@ namespace Rareloop\Lumberjack\Bootstrappers;
 
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\LogServiceProvider;
+use Rareloop\Lumberjack\Providers\IgnitionServiceProvider;
 
 class RegisterProviders
 {
@@ -23,5 +24,6 @@ class RegisterProviders
     protected function registerBaseProviders(Application $app)
     {
         $app->register(LogServiceProvider::class);
+        $app->register(IgnitionServiceProvider::class);
     }
 }

@@ -61,7 +61,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_NOTICE && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_NOTICE, 'Test Error');
     }
@@ -84,7 +84,7 @@ class RegisterExceptionHandlerTest extends TestCase
             return $e->getSeverity() === E_WARNING && $e->getMessage() === 'Test Error';
         }));
 
-        $bootstrapper = new RegisterExceptionHandler();
+        $bootstrapper = new RegisterExceptionHandler($app, new ResponseEmitter());
         $bootstrapper->bootstrap($app);
         $bootstrapper->handleError(E_WARNING, 'Test Error');
     }
