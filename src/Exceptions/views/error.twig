@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ status_code }} | Server Error</title>
+        <style>
+            :root {
+                --colour-background: oklch(96% 0.003 325.6);
+                --colour-text: oklch(43.5% 0.029 321.78);
+                --colour-text-muted: oklch(54.2% 0.034 322.5);
+                --colour-border: oklch(86.5% 0.012 325.68);
+                --font-sans: system-ui, sans-serif;
+            }
+
+            .error-page {
+                background-color: var(--colour-background);
+                color: var(--colour-text);
+                font-family: var(--font-sans);
+                height: 100vh;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .error-page__content {
+                display: flex;
+                align-items: center;
+                line-height: 1.2;
+            }
+
+            .error-page__code {
+                font-size: 2.25rem;
+                font-weight: 600;
+                letter-spacing: -0.05em;
+                padding-right: 2rem;
+                margin-right: 2rem;
+                border-right: 1px solid var(--colour-border);
+            }
+
+            .error-page__brand {
+                color: var(--colour-text-muted);
+                font-size: 1rem;
+                font-weight: 400;
+                text-transform: uppercase;
+                letter-spacing: 0.4em;
+                margin-right: -0.4em;
+            }
+        </style>
+    </head>
+    <body class="error-page">
+        <div class="error-page__content">
+            <div class="error-page__code">
+                {{ status_code }}
+            </div>
+
+            <div class="error-page__brand">
+                Lumberjack
+            </div>
+        </div>
+    </body>
+</html>

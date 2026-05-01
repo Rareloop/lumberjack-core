@@ -12,6 +12,10 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 use Rareloop\Lumberjack\FacadeFactory;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class HandlerTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -74,12 +78,16 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
+        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
+        $this->assertSame('Lumberjack | 500', $response->getBody()->getContents());
     }
 
     /** @test */
@@ -108,12 +116,55 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
+        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
 
         $this->assertStringNotContainsString('Test Exception', $response->getBody()->getContents());
+    }
+
+    /** @test */
+    public function render_uses_get_status_code_if_method_exists()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $config = new Config;
+        $config->set('app.debug', false);
+        $app->bind('config', $config);
+
+        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber->shouldReceive('compile')
+            ->with(Mockery::any(), Mockery::subset(['status_code' => 404]))
+            ->once()
+            ->andReturn('Lumberjack | 404');
+
+        $exception = new ExceptionWithStatusCode('Test Exception', 404);
+        $handler = new Handler($app);
+
+        $response = $handler->render(new ServerRequest, $exception);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Lumberjack | 404', $response->getBody()->getContents());
+    }
+}
+
+class ExceptionWithStatusCode extends \Exception
+{
+    protected $statusCode;
+
+    public function __construct($message, $statusCode)
+    {
+        parent::__construct($message);
+        $this->statusCode = $statusCode;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->statusCode;
     }
 }
 
