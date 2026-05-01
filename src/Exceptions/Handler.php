@@ -10,7 +10,6 @@ use Rareloop\Lumberjack\Facades\Config;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
 class Handler implements HandlerInterface
@@ -61,7 +60,7 @@ class Handler implements HandlerInterface
 
         try {
             return new TimberResponse(__DIR__ . '/views/error.twig', [
-                'status_code' => $status,
+                'statusCode' => $status,
             ], $status);
         } catch (Throwable) {
             return new HtmlResponse("Lumberjack | {$status}", $status);

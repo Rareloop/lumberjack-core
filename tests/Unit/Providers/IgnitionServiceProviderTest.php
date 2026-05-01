@@ -20,7 +20,7 @@ class IgnitionServiceProviderTest extends TestCase
     use BrainMonkeyPHPUnitIntegration;
 
     /** @test */
-    public function ignition_is_bound_in_the_container()
+    public function ignition_is_bound_as_a_singleton_in_the_container()
     {
         $app = new Application;
         $config = new Config();
@@ -32,21 +32,5 @@ class IgnitionServiceProviderTest extends TestCase
         $this->assertTrue($app->has(Ignition::class));
         $this->assertInstanceOf(Ignition::class, $app->get(Ignition::class));
         $this->assertSame($app->get(Ignition::class), $app->get(Ignition::class));
-    }
-
-    /** @test */
-    public function ignition_is_configured_correctly()
-    {
-        $app = new Application;
-        $config = new Config();
-        $config->set('app.debug', true);
-        $config->set('app.env', 'development');
-        $app->bind('config', $config);
-
-        $provider = new IgnitionServiceProvider($app);
-        $provider->register();
-
-        $ignition = $app->get(Ignition::class);
-        $this->assertInstanceOf(Ignition::class, $ignition);
     }
 }

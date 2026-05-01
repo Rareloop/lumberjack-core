@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Exceptions;
 
 use Mockery;
+use Timber\Timber;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
@@ -56,7 +57,7 @@ class HandlerTest extends TestCase
     }
 
     /** @test */
-    public function render_should_return_an_html_response_when_debug_is_enabled()
+    public function render_should_use_ignition_when_debug_is_enabled()
     {
         $app = new Application;
         FacadeFactory::setContainer($app);
@@ -74,7 +75,9 @@ class HandlerTest extends TestCase
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $request = new ServerRequest;
+
+        $response = $handler->render($request, $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
         $this->assertSame('Ignition Output', $response->getBody()->getContents());
@@ -89,7 +92,7 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
-        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
 
         $exception = new \Exception('Test Exception');
@@ -134,7 +137,7 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
-        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
 
         $exception = new \Exception('Test Exception');
@@ -154,9 +157,9 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
-        $timber = Mockery::mock('alias:' . \Timber\Timber::class);
+        $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')
-            ->with(Mockery::any(), Mockery::subset(['status_code' => 404]))
+            ->with(Mockery::any(), Mockery::subset(['statusCode' => 404]))
             ->once()
             ->andReturn('Lumberjack | 404');
 
