@@ -13,9 +13,11 @@ class IgnitionServiceProvider extends ServiceProvider
             $config = $this->app->get('config');
             $ignitionConfigArray = $config->get('ignition') ?: [];
 
+            $debug = $config->get('app.debug', false);
+
             $ignition = Ignition::make()
-                ->shouldDisplayException($config->get('app.debug', false) === true)
-                ->runningInProductionEnvironment($config->get('app.debug', false) !== true);
+                ->shouldDisplayException($debug === true)
+                ->runningInProductionEnvironment($debug !== true);
 
             $ignition->setConfig(new IgnitionConfig($ignitionConfigArray));
             $ignition->register();
