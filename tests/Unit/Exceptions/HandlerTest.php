@@ -12,6 +12,9 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 use Rareloop\Lumberjack\FacadeFactory;
 
+use Spatie\Ignition\Ignition;
+use Spatie\FlareClient\Report;
+
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
@@ -61,12 +64,20 @@ class HandlerTest extends TestCase
         $config->set('app.debug', true);
         $app->bind('config', $config);
 
+        $ignition = Mockery::mock(Ignition::class);
+        $ignition->shouldReceive('handleException')->once()->andReturnUsing(function () {
+            echo 'Ignition Output';
+            return Mockery::mock(Report::class);
+        });
+        $app->singleton(Ignition::class, $ignition);
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
+        $this->assertSame('Ignition Output', $response->getBody()->getContents());
     }
 
     /** @test */
@@ -98,6 +109,13 @@ class HandlerTest extends TestCase
         $config = new Config;
         $config->set('app.debug', true);
         $app->bind('config', $config);
+
+        $ignition = Mockery::mock(Ignition::class);
+        $ignition->shouldReceive('handleException')->once()->andReturnUsing(function () {
+            echo 'Test Exception';
+            return Mockery::mock(Report::class);
+        });
+        $app->singleton(Ignition::class, $ignition);
 
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);

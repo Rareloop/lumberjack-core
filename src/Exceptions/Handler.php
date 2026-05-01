@@ -10,7 +10,6 @@ use Rareloop\Lumberjack\Facades\Config;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use Spatie\Ignition\Config\IgnitionConfig;
 
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
@@ -48,12 +47,7 @@ class Handler implements HandlerInterface
 
     protected function renderExceptionWithIgnition(Exception $e): ResponseInterface
     {
-        $ignition = Ignition::make()
-            ->shouldDisplayException(true)
-            ->runningInProductionEnvironment(Config::get('app.env') === 'production')
-            ->register();
-
-        $ignition->setConfig(new IgnitionConfig(Config::get('ignition', [])));
+        $ignition = $this->app->get(Ignition::class);
 
         ob_start();
         $ignition->handleException($e);
