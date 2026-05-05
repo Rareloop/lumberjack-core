@@ -2,14 +2,15 @@
 
 namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterFacades;
 use Rareloop\Lumberjack\FacadeFactory;
+use PHPUnit\Framework\Attributes\Test;
 
 class RegisterFacadesTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function boots_all_registered_providers()
     {
         $app = new Application;

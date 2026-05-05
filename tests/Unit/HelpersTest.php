@@ -5,7 +5,8 @@ namespace Rareloop\Lumberjack\Test;
 use Timber\Timber;
 use Monolog\Logger;
 use Rareloop\Router\Router;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Application;
@@ -27,7 +28,7 @@ class HelpersTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function can_retrieve_the_container_instance()
     {
         $app = new Application;
@@ -35,7 +36,7 @@ class HelpersTest extends TestCase
         $this->assertSame($app, Helpers::app());
     }
 
-    /** @test */
+    #[Test]
     public function can_resolve_something_from_the_container()
     {
         $app = new Application;
@@ -44,7 +45,7 @@ class HelpersTest extends TestCase
         $this->assertSame(123, Helpers::app('test'));
     }
 
-    /** @test */
+    #[Test]
     public function can_retrieve_a_config_value()
     {
         $app = new Application;
@@ -57,7 +58,7 @@ class HelpersTest extends TestCase
         $this->assertSame('production', Helpers::config('app.environment'));
     }
 
-    /** @test */
+    #[Test]
     public function can_retrieve_a_default_when_no_config_value_is_set()
     {
         $app = new Application;
@@ -69,7 +70,7 @@ class HelpersTest extends TestCase
         $this->assertSame('production', Helpers::config('app.environment', 'production'));
     }
 
-    /** @test */
+    #[Test]
     public function can_set_a_config_value_when_array_passed_to_config_helper()
     {
         $app = new Application;
@@ -86,7 +87,7 @@ class HelpersTest extends TestCase
         $this->assertSame(true, $config->get('app.debug'));
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_timber_response()
     {
         $timber = \Mockery::mock('alias:' . Timber::class);
@@ -104,7 +105,7 @@ class HelpersTest extends TestCase
         $this->assertSame(200, $view->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_timber_response_with_a_specific_status_code()
     {
         $timber = \Mockery::mock('alias:' . Timber::class);
@@ -117,7 +118,7 @@ class HelpersTest extends TestCase
         $this->assertSame(404, $view->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_timber_response_with_specific_headers()
     {
         $timber = \Mockery::mock('alias:' . Timber::class);
@@ -135,14 +136,13 @@ class HelpersTest extends TestCase
         $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_url_for_a_named_route()
     {
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/route', function () {
-        })->name('test.route');
+        $router->get('test/route', function () {})->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route');
@@ -150,14 +150,13 @@ class HelpersTest extends TestCase
         $this->assertSame('test/route', trim($url, '/'));
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_url_for_a_named_route_with_params()
     {
         $app = new Application;
         FacadeFactory::setContainer($app);
         $router = new Router;
-        $router->get('test/{name}', function ($name) {
-        })->name('test.route');
+        $router->get('test/{name}', function ($name) {})->name('test.route');
         $app->bind('router', $router);
 
         $url = Helpers::route('test.route', [
@@ -167,7 +166,7 @@ class HelpersTest extends TestCase
         $this->assertSame('test/route', trim($url, '/'));
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_redirect_response()
     {
         $response = Helpers::redirect('/new/url');
@@ -178,7 +177,7 @@ class HelpersTest extends TestCase
         $this->assertSame('/new/url', $headers['location'][0]);
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_redirect_response_with_custom_status_code()
     {
         $response = Helpers::redirect('/new/url', 301);
@@ -186,7 +185,7 @@ class HelpersTest extends TestCase
         $this->assertSame(301, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_a_redirect_response_with_custom_headers()
     {
         $response = Helpers::redirect('/new/url', 301, [
@@ -199,7 +198,7 @@ class HelpersTest extends TestCase
         $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
 
-    /** @test */
+    #[Test]
     public function can_report_an_exception()
     {
         $app = new Application;
@@ -214,7 +213,7 @@ class HelpersTest extends TestCase
         Helpers::report($exception);
     }
 
-    /** @test */
+    #[Test]
     public function can_access_an_item_in_the_session_by_key()
     {
         $app = new Application;
@@ -228,7 +227,7 @@ class HelpersTest extends TestCase
         $this->assertSame(123, Helpers::session('test'));
     }
 
-    /** @test */
+    #[Test]
     public function can_access_an_item_in_the_session_by_key_with_default()
     {
         $app = new Application;
@@ -240,7 +239,7 @@ class HelpersTest extends TestCase
         $this->assertSame(123, Helpers::session('test', 123));
     }
 
-    /** @test */
+    #[Test]
     public function can_add_an_item_in_the_session()
     {
         $app = new Application;
@@ -254,7 +253,7 @@ class HelpersTest extends TestCase
         $this->assertSame(123, Helpers::session('test'));
     }
 
-    /** @test */
+    #[Test]
     public function can_add_multiple_items_to_the_session()
     {
         $app = new Application;
@@ -269,7 +268,7 @@ class HelpersTest extends TestCase
         $this->assertSame('bar', Helpers::session('foo'));
     }
 
-    /** @test */
+    #[Test]
     public function can_resolve_the_session_manager()
     {
         $app = new Application;
@@ -281,7 +280,7 @@ class HelpersTest extends TestCase
         $this->assertSame($store, Helpers::session());
     }
 
-    /** @test */
+    #[Test]
     public function can_redirect_back()
     {
         $app = new Application;
@@ -296,7 +295,7 @@ class HelpersTest extends TestCase
         $this->assertSame('http://domain.com/previous/url', $response->getHeader('Location')[0]);
     }
 
-    /** @test */
+    #[Test]
     public function can_get_server_request()
     {
         $app = new Application;
@@ -308,7 +307,7 @@ class HelpersTest extends TestCase
         $this->assertSame($request, Helpers::request());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_logger()
     {
         $app = new Application;
@@ -323,7 +322,7 @@ class HelpersTest extends TestCase
         $this->assertSame($logger, $newLogger);
     }
 
-    /** @test */
+    #[Test]
     public function can_write_debug_log()
     {
         $app = new Application;
@@ -337,7 +336,7 @@ class HelpersTest extends TestCase
         Helpers::logger('Example message');
     }
 
-    /** @test */
+    #[Test]
     public function can_write_debug_log_with_context()
     {
         $app = new Application;
@@ -355,13 +354,13 @@ class HelpersTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function dump_function_exists()
     {
         $this->assertTrue(function_exists('dump'));
     }
 
-    /** @test */
+    #[Test]
     public function dd_function_exists()
     {
         $this->assertTrue(function_exists('dd'));
@@ -375,7 +374,5 @@ class TestExceptionHandler extends Handler
 
 class RequiresConstructorParams
 {
-    public function __construct(public $param1, public $param2)
-    {
-    }
+    public function __construct(public $param1, public $param2) {}
 }

@@ -4,7 +4,8 @@ namespace Rareloop\Lumberjack\Test;
 
 use Brain\Monkey\Functions;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Post;
@@ -15,8 +16,8 @@ class CustomPostTypesServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function should_call_register_post_type_for_each_configured_post_type()
+    #[Test]
+    public function should_call_register_post_type_for_each_configured_post_type(): void
     {
         $app = new Application(__DIR__ . '/..');
 

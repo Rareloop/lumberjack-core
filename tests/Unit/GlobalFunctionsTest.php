@@ -3,13 +3,16 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Helpers;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class GlobalFunctionsTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -21,19 +24,15 @@ class GlobalFunctionsTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     * @dataProvider globalHelperFunctions
-     */
+    #[Test]
+    #[DataProvider('globalHelperFunctions')]
     public function global_functions_are_registered($function)
     {
         $this->assertTrue(function_exists($function));
     }
 
-    /**
-     * @test
-     * @dataProvider globalHelperFunctions
-     */
+    #[Test]
+    #[DataProvider('globalHelperFunctions')]
     public function global_functions_proxy_calls_to_static_functions($function)
     {
         $helpers = Mockery::mock('alias:' . Helpers::class);
@@ -42,7 +41,7 @@ class GlobalFunctionsTest extends TestCase
         $function('param1', 'param2');
     }
 
-    public static function globalHelperFunctions()
+    public static function globalHelperFunctions(): array
     {
         $reflection = new \ReflectionClass(Helpers::class);
 

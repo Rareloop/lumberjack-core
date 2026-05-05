@@ -2,7 +2,9 @@
 
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
-class TestSupport extends \PHPUnit\Framework\TestCase
+use Rareloop\Lumberjack\Test\TestCase;
+
+class TestSupport extends TestCase
 {
     /**
      * Change a random byte, randomly. This function is used in unit testing

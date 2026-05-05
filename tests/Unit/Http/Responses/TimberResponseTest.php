@@ -4,7 +4,8 @@ namespace Rareloop\Lumberjack\Test\Http\Responses;
 
 use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\ViewModel;
 use Timber\Timber;
@@ -19,8 +20,8 @@ class TimberResponseTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
-    public function constructor_calls_timber_compile()
+    #[Test]
+    public function constructor_calls_timber_compile(): void
     {
         $context = [
             'foo' => 'bar',
@@ -38,8 +39,8 @@ class TimberResponseTest extends TestCase
         $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function exception_is_thrown_if_twig_file_is_not_found()
+    #[Test]
+    public function exception_is_thrown_if_twig_file_is_not_found(): void
     {
         $this->expectException(\Rareloop\Lumberjack\Exceptions\TwigTemplateNotFoundException::class);
         $this->expectExceptionMessage('template.twig');
@@ -60,8 +61,8 @@ class TimberResponseTest extends TestCase
         $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function can_set_headers()
+    #[Test]
+    public function can_set_headers(): void
     {
         $headers = [
             'X-Test-Header' => 'testing',
@@ -78,8 +79,8 @@ class TimberResponseTest extends TestCase
         $this->assertSame('testing', $headers['X-Test-Header'][0]);
     }
 
-    /** @test */
-    public function default_status_code_is_200()
+    #[Test]
+    public function default_status_code_is_200(): void
     {
         $timber = Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')->once()->andReturn('testing123');
@@ -89,8 +90,8 @@ class TimberResponseTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
-    /** @test */
-    public function contexts_with_view_models_are_converted()
+    #[Test]
+    public function contexts_with_view_models_are_converted(): void
     {
         $context = [
             'foo' => TestViewModel::createFromArray([
@@ -112,8 +113,8 @@ class TimberResponseTest extends TestCase
         $response = new TimberResponse('template.twig', $context, 123);
     }
 
-    /** @test */
-    public function contexts_with_view_models_at_lower_levels_of_nesting_are_converted()
+    #[Test]
+    public function contexts_with_view_models_at_lower_levels_of_nesting_are_converted(): void
     {
         $context = [
             'foo' => [
@@ -138,8 +139,8 @@ class TimberResponseTest extends TestCase
         $response = new TimberResponse('template.twig', $context, 123);
     }
 
-    /** @test */
-    public function original_data_structure_is_not_mutated()
+    #[Test]
+    public function original_data_structure_is_not_mutated(): void
     {
         $context = [
             'foo' => TestViewModel::createFromArray([
@@ -157,8 +158,8 @@ class TimberResponseTest extends TestCase
         $this->assertInstanceOf(TestViewModel::class, $context['foo']);
     }
 
-    /** @test */
-    public function contexts_with_collections_are_converted()
+    #[Test]
+    public function contexts_with_collections_are_converted(): void
     {
         $context = [
             'foo' => collect([
@@ -180,8 +181,8 @@ class TimberResponseTest extends TestCase
         $response = new TimberResponse('template.twig', $context, 123);
     }
 
-    /** @test */
-    public function contexts_with_collections_at_lower_levels_of_nesting_are_converted()
+    #[Test]
+    public function contexts_with_collections_at_lower_levels_of_nesting_are_converted(): void
     {
         $context = [
             'foo' => [
@@ -206,8 +207,8 @@ class TimberResponseTest extends TestCase
         $response = new TimberResponse('template.twig', $context, 123);
     }
 
-    /** @test */
-    public function contexts_with_view_models_in_collections_are_converted()
+    #[Test]
+    public function contexts_with_view_models_in_collections_are_converted(): void
     {
         $context = [
             'foo' => collect([

@@ -7,12 +7,17 @@ use Throwable;
 use Timber\Timber;
 use Timber\PostQuery;
 use Rareloop\Lumberjack\Post;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Collection;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
+use Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
+
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
 class ScopedQueryBuilderTest extends TestCase
 {
@@ -21,7 +26,7 @@ class ScopedQueryBuilderTest extends TestCase
      */
     public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+        ArraySubsetAsserts;
 
     private Application $app;
 
@@ -33,8 +38,8 @@ class ScopedQueryBuilderTest extends TestCase
         parent::setUp();
     }
 
-    /** @test */
-    public function correct_post_type_is_set()
+    #[Test]
+    public function correct_post_type_is_set(): void
     {
         $builder = new ScopedQueryBuilder(Post::class);
         $params = $builder->getParameters();
@@ -44,8 +49,8 @@ class ScopedQueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
-    public function cannot_overwrite_post_type()
+    #[Test]
+    public function cannot_overwrite_post_type(): void
     {
         $this->expectException(\Rareloop\Lumberjack\Exceptions\CannotRedeclarePostTypeOnQueryException::class);
 
@@ -53,12 +58,10 @@ class ScopedQueryBuilderTest extends TestCase
         $builder->wherePostType('test_post_type');
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function get_retrieves_list_of_posts()
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[Test]
+    public function get_retrieves_list_of_posts(): void
     {
         // $posts = [new PostWithQueryScope(1, true), new PostWithQueryScope(2, true)];
 
@@ -81,8 +84,8 @@ class ScopedQueryBuilderTest extends TestCase
         $this->assertSame([123, 'abc'], $returnedPosts->toArray());
     }
 
-    /** @test */
-    public function can_call_a_query_scope_on_post_object()
+    #[Test]
+    public function can_call_a_query_scope_on_post_object(): void
     {
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $chainedBuilder = $builder->inDraft();
@@ -94,8 +97,8 @@ class ScopedQueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
-    public function can_pass_params_into_a_query_scope_on_post_object()
+    #[Test]
+    public function can_pass_params_into_a_query_scope_on_post_object(): void
     {
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $chainedBuilder = $builder->without(1, 2);
@@ -107,25 +110,18 @@ class ScopedQueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /**
-     * @test
-     */
-    public function missing_query_scope_throws_an_error()
+    #[Test]
+    public function missing_query_scope_throws_an_error(): void
     {
-        $errorThrown = false;
+        $this->expectUserError();
+        $this->expectException(\ErrorException::class);
 
-        try {
-            $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
-            $builder->nonExistentScope();
-        } catch (Throwable $e) {
-            $errorThrown = true;
-        }
-
-        $this->assertTrue($errorThrown);
+        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+        $builder->nonExistentScope();
     }
 
-    /** @test */
-    public function can_use_a_different_query_builder_implementation()
+    #[Test]
+    public function can_use_a_different_query_builder_implementation(): void
     {
         $this->app->bind(QueryBuilderContract::class, CustomQueryBuilder::class);
 
@@ -134,8 +130,8 @@ class ScopedQueryBuilderTest extends TestCase
         $this->assertSame('it works', $builder->nonStandardMethod());
     }
 
-    /** @test */
-    public function can_call_a_function_added_to_querybuilder_via_a_macro()
+    #[Test]
+    public function can_call_a_function_added_to_querybuilder_via_a_macro(): void
     {
         QueryBuilder::macro('testFunctionAddedByMacro', function () {
             $this->params['foo'] = 'bar';

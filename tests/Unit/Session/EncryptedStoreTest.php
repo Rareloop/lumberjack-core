@@ -4,7 +4,8 @@ namespace Rareloop\Lumberjack\Test;
 
 use Rareloop\Lumberjack\Dcrypt\AesCbc;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Session\EncryptedStore;
@@ -15,7 +16,7 @@ class EncryptedStoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function data_is_encrypted_before_it_is_saved()
     {
         $serializedString = @serialize(['foo' => 'bar']);
@@ -33,7 +34,7 @@ class EncryptedStoreTest extends TestCase
         $store->save();
     }
 
-    /** @test */
+    #[Test]
     public function data_is_decrypted_before_it_is_loaded()
     {
         $encryptionKey = 'encryption-key';
@@ -52,9 +53,7 @@ class EncryptedStoreTest extends TestCase
         $this->assertSame('bar', $store->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unexpected_session_data_is_handled_gracefully()
     {
         $encryptionKey = 'encryption-key';
@@ -72,9 +71,7 @@ class EncryptedStoreTest extends TestCase
         $this->assertSame(null, $store->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gracefully_handle_case_with_no_exception_handler()
     {
         $encryptionKey = 'encryption-key';
@@ -89,9 +86,7 @@ class EncryptedStoreTest extends TestCase
         $this->assertSame(null, $store->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function empty_session_data_is_ignored()
     {
         $encryptionKey = 'encryption-key';

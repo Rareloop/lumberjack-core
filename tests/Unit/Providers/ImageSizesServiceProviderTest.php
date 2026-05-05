@@ -4,7 +4,8 @@ namespace Rareloop\Lumberjack\Test;
 
 use Brain\Monkey\Functions;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\ImageSizesServiceProvider;
@@ -14,8 +15,8 @@ class ImageSizesServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function single_image_size_should_be_set_from_config()
+    #[Test]
+    public function single_image_size_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
         $config = new Config;
@@ -37,8 +38,8 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider->boot($config);
     }
 
-    /** @test */
-    public function add_image_size_should_not_be_called_if_images_sizes_config_is_empty()
+    #[Test]
+    public function add_image_size_should_not_be_called_if_images_sizes_config_is_empty(): void
     {
         $app = new Application(__DIR__ . '/..');
         $config = new Config;
@@ -52,8 +53,8 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider->boot($config);
     }
 
-    /** @test */
-    public function add_image_size_should_not_be_called_if_images_sizes_config_is_not_set()
+    #[Test]
+    public function add_image_size_should_not_be_called_if_images_sizes_config_is_not_set(): void
     {
         $app = new Application(__DIR__ . '/..');
         $config = new Config;
@@ -65,8 +66,8 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider->boot($config);
     }
 
-    /** @test */
-    public function crop_should_be_false_if_not_set()
+    #[Test]
+    public function crop_should_be_false_if_not_set(): void
     {
         $app = new Application(__DIR__ . '/..');
         $config = new Config;
@@ -87,8 +88,8 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider->boot($config);
     }
 
-    /** @test */
-    public function multiple_image_sizes_should_be_set_from_config()
+    #[Test]
+    public function multiple_image_sizes_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
         $config = new Config;

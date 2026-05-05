@@ -6,7 +6,8 @@ use Mockery;
 use Timber\Timber;
 use Brain\Monkey\Functions;
 use Brain\Monkey\Filters;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -22,7 +23,7 @@ class PasswordProtectTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function it_does_nothing_when_password_is_not_required()
     {
         $middleware = new PasswordProtected;
@@ -40,7 +41,7 @@ class PasswordProtectTest extends TestCase
         $this->assertSame($response, $middleware->process($request, $handler));
     }
 
-    /** @test */
+    #[Test]
     public function it_does_nothing_when_the_password_twig_file_is_not_found()
     {
         $middleware = new PasswordProtected;
@@ -71,7 +72,7 @@ class PasswordProtectTest extends TestCase
         $this->assertSame($response, $middleware->process($request, $handler));
     }
 
-    /** @test */
+    #[Test]
     public function it_renders_the_password_template_when_needed()
     {
         Functions\expect('post_password_required')

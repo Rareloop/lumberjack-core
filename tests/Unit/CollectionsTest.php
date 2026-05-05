@@ -2,17 +2,18 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CollectionsTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function tighten_namespace_collection_no_longer_exists()
     {
         $this->assertFalse(class_exists('\Tightenco\Collect\Support\Collection'));
     }
 
-    /** @test */
+    #[Test]
     public function can_create_collection_with_illuminate_namespace()
     {
         $collection = new \Illuminate\Support\Collection(['foo', 'bar']);
@@ -20,7 +21,7 @@ class CollectionsTest extends TestCase
         $this->assertEquals(2, $collection->count());
     }
 
-    /** @test */
+    #[Test]
     public function can_create_collection_with_collect_helper()
     {
         $collection = collect(['foo', 'bar']);

@@ -3,8 +3,9 @@
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
 use Rareloop\Lumberjack\Dcrypt\Rc4;
+use Rareloop\Lumberjack\Test\TestCase;
 
-class Rc4Test extends \PHPUnit\Framework\TestCase
+class Rc4Test extends TestCase
 {
     public function testCrypt()
     {

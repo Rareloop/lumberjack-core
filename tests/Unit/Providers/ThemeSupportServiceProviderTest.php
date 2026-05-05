@@ -4,7 +4,8 @@ namespace Rareloop\Lumberjack\Test;
 
 use Brain\Monkey\Functions;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\ThemeSupportServiceProvider;
@@ -14,8 +15,8 @@ class ThemeSupportServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function should_call_add_theme_support_for_key_in_config()
+    #[Test]
+    public function should_call_add_theme_support_for_key_in_config(): void
     {
         $app = new Application(__DIR__ . '/..');
 
@@ -33,8 +34,8 @@ class ThemeSupportServiceProviderTest extends TestCase
         $provider->boot($config);
     }
 
-    /** @test */
-    public function should_call_add_theme_support_for_key_value_in_config()
+    #[Test]
+    public function should_call_add_theme_support_for_key_value_in_config(): void
     {
         $app = new Application(__DIR__ . '/..');
 

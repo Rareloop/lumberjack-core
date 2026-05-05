@@ -3,8 +3,9 @@
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
 use Rareloop\Lumberjack\Dcrypt\Otp;
+use Rareloop\Lumberjack\Test\TestCase;
 
-class OtpTest extends \PHPUnit\Framework\TestCase
+class OtpTest extends TestCase
 {
     public function testCrypt()
     {

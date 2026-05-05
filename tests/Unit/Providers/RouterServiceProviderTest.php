@@ -6,7 +6,8 @@ use Brain\Monkey;
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -27,8 +28,8 @@ class RouterServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function router_object_is_configured()
+    #[Test]
+    public function router_object_is_configured(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -43,8 +44,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertSame($app->get('router'), $app->get(Router::class));
     }
 
-    /** @test */
-    public function middleware_alias_objects_are_configured()
+    #[Test]
+    public function middleware_alias_objects_are_configured(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -62,8 +63,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertSame($app->get('middleware-resolver'), $app->get(MiddlewareResolver::class));
     }
 
-    /** @test */
-    public function configured_router_can_resolve_middleware_aliases()
+    #[Test]
+    public function configured_router_can_resolve_middleware_aliases(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -86,8 +87,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertSame('abc', $response->getHeader('X-Key')[0]);
     }
 
-    /** @test */
-    public function basedir_is_set_from_wordpress_config()
+    #[Test]
+    public function basedir_is_set_from_wordpress_config(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -110,8 +111,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertSame('abc123', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function wp_loaded_action_is_bound()
+    #[Test]
+    public function wp_loaded_action_is_bound(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -126,8 +127,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertNotFalse(has_action('wp_loaded', 'function ()'));
     }
 
-    /** @test */
-    public function request_object_is_bound_into_the_container()
+    #[Test]
+    public function request_object_is_bound_into_the_container(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -145,8 +146,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertSame($request, $app->get('request'));
     }
 
-    /** @test */
-    public function unmatched_request_will_not_call_app_shutdown_method()
+    #[Test]
+    public function unmatched_request_will_not_call_app_shutdown_method(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -169,8 +170,8 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
     }
 
-    /** @test */
-    public function matched_request_will_call_app_shutdown_method()
+    #[Test]
+    public function matched_request_will_call_app_shutdown_method(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -193,8 +194,8 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest(new ServerRequest([], [], '/test/123', 'GET'));
     }
 
-    /** @test */
-    public function lumberjack_router_response_filter_is_fired_when_request_is_processed()
+    #[Test]
+    public function lumberjack_router_response_filter_is_fired_when_request_is_processed(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
         $this->setSiteUrl('http://example.com/sub-path/');
@@ -222,8 +223,8 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest($request);
     }
 
-    /** @test */
-    public function matched_request_will_mark_request_handled_in_app()
+    #[Test]
+    public function matched_request_will_mark_request_handled_in_app(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -248,8 +249,8 @@ class RouterServiceProviderTest extends TestCase
         $this->assertTrue($app->hasRequestBeenHandled());
     }
 
-    /** @test */
-    public function unmatched_request_will_not_mark_request_handled_in_app()
+    #[Test]
+    public function unmatched_request_will_not_mark_request_handled_in_app(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -286,9 +287,7 @@ class RouterServiceProviderTest extends TestCase
 
 class RSPAddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value)
-    {
-    }
+    public function __construct(private $key, private $value) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

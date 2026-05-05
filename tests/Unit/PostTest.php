@@ -5,24 +5,23 @@ namespace Rareloop\Lumberjack\Test;
 use Brain\Monkey\Functions;
 use Illuminate\Support\Collection;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- * The above is required as we're using alias mocks which persist between tests
- * https://laracasts.com/discuss/channels/testing/mocking-a-class-persists-over-tests/replies/103075
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class PostTest extends TestCase
 {
     public $dummyData;
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function register_function_calls_register_post_type_when_post_type_and_config_are_provided()
     {
         Functions\expect('register_post_type')
@@ -34,14 +33,14 @@ class PostTest extends TestCase
         $this->assertNotFalse(has_filter('timber/post/classmap', [RegisterablePostType::class, 'filterTimberPostClassMap']));
     }
 
-    /** @test */
+    #[Test]
     public function register_function_throws_exception_if_post_type_is_not_provided()
     {
         $this->expectException(\Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException::class);
         UnregisterablePostTypeWithoutPostType::register();
     }
 
-    /** @test */
+    #[Test]
     public function register_function_throws_exception_if_config_is_not_provided()
     {
         $this->expectException(\Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException::class);
@@ -49,7 +48,7 @@ class PostTest extends TestCase
         UnregisterablePostTypeWithoutConfig::register();
     }
 
-    /** @test */
+    #[Test]
     public function can_filter_timber_post_classmaps()
     {
         $output = Post::filterTimberPostClassMap(['another' => TimberPost::class]);
@@ -61,9 +60,7 @@ class PostTest extends TestCase
         $this->assertEqualsCanonicalizing(['another' => TimberPost::class, 'post' => Post::class, 'registerable_post_type' => RegisterablePostType::class], $output);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function query_defaults_to_current_post_type_and_published()
     {
         $args = [
@@ -83,9 +80,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function query_ignores_passed_in_post_type()
     {
         $args = [
@@ -106,9 +101,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function query_can_have_post_status_overwritten()
     {
         $args = [
@@ -127,9 +120,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_defaults_to_unlimited_ordered_by_menu_order_ascending()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -146,9 +137,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_can_have_post_limit_set()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -163,9 +152,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_can_have_order_set()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -181,9 +168,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(Collection::class, $posts);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_extend_post_behaviour_with_macros()
     {
         Post::macro('testFunctionAddedByMacro', function () {
@@ -196,9 +181,7 @@ class PostTest extends TestCase
         $this->assertSame('abc123', Post::testFunctionAddedByMacro());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function macros_set_correct_this_context_on_instances()
     {
         PostWithPrivateData::macro('testFunctionAddedByMacro', function () {
@@ -210,9 +193,7 @@ class PostTest extends TestCase
         $this->assertSame('abc123', $post->testFunctionAddedByMacro());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_extend_post_behaviour_with_mixin()
     {
         Post::mixin(new PostMixin);

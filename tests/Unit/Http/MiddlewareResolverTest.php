@@ -3,7 +3,8 @@
 namespace Rareloop\Lumberjack\Test\Http;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
@@ -13,7 +14,7 @@ class MiddlewareResolverTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function can_resolve_a_key_from_the_container()
     {
         $app = new Application;
@@ -25,7 +26,7 @@ class MiddlewareResolverTest extends TestCase
         $this->assertSame($datetime, $resolver->resolve('datetime'));
     }
 
-    /** @test */
+    #[Test]
     public function can_resolve_an_object_from_a_classname_from_the_container()
     {
         $app = new Application;
@@ -34,7 +35,7 @@ class MiddlewareResolverTest extends TestCase
         $this->assertInstanceOf(MRTestClass::class, $resolver->resolve(MRTestClass::class));
     }
 
-    /** @test */
+    #[Test]
     public function can_resolve_a_middleware_alias()
     {
         $app = new Application;
@@ -46,7 +47,7 @@ class MiddlewareResolverTest extends TestCase
         $this->assertInstanceOf(MRTestClass::class, $resolver->resolve('middlewarekey'));
     }
 
-    /** @test */
+    #[Test]
     public function non_string_values_are_returned_as_is()
     {
         $app = new Application;
@@ -58,7 +59,4 @@ class MiddlewareResolverTest extends TestCase
     }
 }
 
-class MRTestClass
-{
-
-}
+class MRTestClass {}

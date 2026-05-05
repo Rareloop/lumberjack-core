@@ -5,7 +5,10 @@ namespace Rareloop\Lumberjack\Test;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\QueryBuilder;
 use Timber\Post as TimberPost;
@@ -19,9 +22,9 @@ class QueryBuilderTest extends TestCase
      */
     public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
 
-    /** @test */
+    #[Test]
     public function correct_post_type_is_set()
     {
         $builder = new QueryBuilder();
@@ -33,7 +36,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_limit_post_count()
     {
         $builder = new QueryBuilder();
@@ -46,7 +49,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_post_offset()
     {
         $builder = new QueryBuilder();
@@ -59,7 +62,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_order_desc()
     {
         $builder = new QueryBuilder();
@@ -73,7 +76,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_order_asc()
     {
         $builder = new QueryBuilder();
@@ -87,7 +90,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_order_by_meta()
     {
         $builder = new QueryBuilder();
@@ -102,7 +105,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_order_by_meta_with_numeric_ordering()
     {
         $builder = new QueryBuilder();
@@ -117,7 +120,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_restrict_to_ids_in_array()
     {
         $builder = new QueryBuilder();
@@ -130,7 +133,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_filter_by_status()
     {
         $builder = new QueryBuilder();
@@ -143,7 +146,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_filter_by_multiple_statuses_as_array()
     {
         $builder = new QueryBuilder();
@@ -156,7 +159,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_filter_by_multiple_statuses_as_multiple_params()
     {
         $builder = new QueryBuilder();
@@ -169,7 +172,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function calling_where_status_without_params_throws_an_exception()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -178,7 +181,7 @@ class QueryBuilderTest extends TestCase
         $chainedBuilder = $builder->whereStatus();
     }
 
-    /** @test */
+    #[Test]
     public function can_add_a_single_meta_query()
     {
         $builder = new QueryBuilder();
@@ -197,7 +200,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_add_multiple_meta_queries()
     {
         $builder = new QueryBuilder();
@@ -221,7 +224,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_comparison_operator_on_meta_query()
     {
         $builder = new QueryBuilder();
@@ -240,7 +243,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_type_on_meta_query()
     {
         $builder = new QueryBuilder();
@@ -260,7 +263,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_meta_query_relation_or()
     {
         $builder = new QueryBuilder();
@@ -287,7 +290,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function can_set_meta_query_relation_and()
     {
         $builder = new QueryBuilder();
@@ -314,7 +317,7 @@ class QueryBuilderTest extends TestCase
         ], $params);
     }
 
-    /** @test */
+    #[Test]
     public function invalid_meta_realtionship_throws_an_exception()
     {
         $this->expectException(\Rareloop\Lumberjack\Exceptions\InvalidMetaRelationshipException::class);
@@ -323,11 +326,9 @@ class QueryBuilderTest extends TestCase
         $builder->whereMetaRelationshipIs('INVALID');
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[Test]
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function get_retrieves_list_of_posts()
     {
         $postQuery = Mockery::mock(PostQuery::class);
@@ -352,11 +353,9 @@ class QueryBuilderTest extends TestCase
         $this->assertSame(['123', 'abc'], $returnedPosts->toArray());
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[Test]
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function get_retrieves_empty_collection_when_timber_returns_null()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -378,11 +377,9 @@ class QueryBuilderTest extends TestCase
         $this->assertSame(0, $returnedPosts->count());
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[Test]
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function first_retrieves_first_relevant_match()
     {
         $post = Mockery::mock(Post::class);
@@ -410,11 +407,9 @@ class QueryBuilderTest extends TestCase
         $this->assertSame($post, $returnedPost);
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[Test]
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function first_returns_null_if_no_matching_post()
     {
         $postQuery = Mockery::mock(PostQuery::class);
@@ -438,11 +433,9 @@ class QueryBuilderTest extends TestCase
         $this->assertSame(null, $returnedPost);
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[Test]
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function first_returns_null_when_timber_returns_null()
     {
         $timber = Mockery::mock('alias:' . Timber::class);
@@ -463,7 +456,7 @@ class QueryBuilderTest extends TestCase
         $this->assertSame(null, $returnedPost);
     }
 
-    /** @test */
+    #[Test]
     public function can_clone_an_instance()
     {
         $builder1 = new QueryBuilder();
@@ -485,9 +478,7 @@ class QueryBuilderTest extends TestCase
         ], $builder2->getParameters());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_extend_querybuilder_behaviour_with_macros()
     {
         QueryBuilder::macro('testFunctionAddedByMacro', function () {
@@ -501,9 +492,7 @@ class QueryBuilderTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $queryBuilder->testFunctionAddedByMacro()->getParameters());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_extend_querybuilder_behaviour_with_mixin()
     {
         QueryBuilder::mixin(new QueryBuilderMixin);

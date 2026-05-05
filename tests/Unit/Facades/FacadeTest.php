@@ -3,7 +3,8 @@
 namespace Rareloop\Lumberjack\Test\Facades;
 
 use DI\Container;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Psr\Container\ContainerInterface;
 use Rareloop\Lumberjack\FacadeFactory;
 use Rareloop\Lumberjack\Facades\Facade;
@@ -23,14 +24,14 @@ class FacadeTest extends TestCase
         $this->container->set(FooFacade::accessor(), new Foo());
     }
 
-    /** @test */
+    #[Test]
     public function can_initiate_facades()
     {
         FacadeFactory::setContainer($this->container);
         $this->assertInstanceOf(ContainerInterface::class, FacadeFactory::getContainer());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_facade_instance()
     {
         FacadeFactory::setContainer($this->container);
@@ -41,7 +42,7 @@ class FacadeTest extends TestCase
         $this->assertInstanceOf(Foo::class, $instance);
     }
 
-    /** @test */
+    #[Test]
     public function can_swap_instances()
     {
         FacadeFactory::setContainer($this->container);
@@ -58,12 +59,13 @@ class FacadeTest extends TestCase
         $this->assertEquals('bar', $instance);
     }
 
+    #[Test]
     public function can_call_functions()
     {
         FacadeFactory::setContainer($this->container);
 
         $this->assertEquals('bar', forward_static_call([FooFacade::class, 'foo']));
-        $this->assertEquals('bar', call_user_func('FooFacade::class::foo'));
+        $this->assertEquals('bar', call_user_func([FooFacade::class, 'foo']));
         $this->assertEquals('bar', FooFacade::foo());
     }
 }
