@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test\Exceptions;
 
 use Mockery;
+use Timber\Timber;
 use Monolog\Logger;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Test\TestCase;
@@ -13,6 +14,13 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 use Rareloop\Lumberjack\FacadeFactory;
 
+use Spatie\Ignition\Ignition;
+use Spatie\FlareClient\Report;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class HandlerTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -50,7 +58,7 @@ class HandlerTest extends TestCase
     }
 
     #[Test]
-    public function render_should_return_an_html_response_when_debug_is_enabled()
+    public function render_should_use_ignition_when_debug_is_enabled()
     {
         $app = new Application;
         FacadeFactory::setContainer($app);
@@ -58,12 +66,22 @@ class HandlerTest extends TestCase
         $config->set('app.debug', true);
         $app->bind('config', $config);
 
+        $ignition = Mockery::mock(Ignition::class);
+        $ignition->shouldReceive('handleException')->once()->andReturnUsing(function () {
+            echo 'Ignition Output';
+            return Mockery::mock(Report::class);
+        });
+        $app->singleton(Ignition::class, $ignition);
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $request = new ServerRequest;
+
+        $response = $handler->render($request, $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
+        $this->assertSame('Ignition Output', $response->getBody()->getContents());
     }
 
     #[Test]
@@ -75,12 +93,16 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
+        $this->assertSame('Lumberjack | 500', $response->getBody()->getContents());
     }
 
     #[Test]
@@ -91,6 +113,13 @@ class HandlerTest extends TestCase
         $config = new Config;
         $config->set('app.debug', true);
         $app->bind('config', $config);
+
+        $ignition = Mockery::mock(Ignition::class);
+        $ignition->shouldReceive('handleException')->once()->andReturnUsing(function () {
+            echo 'Test Exception';
+            return Mockery::mock(Report::class);
+        });
+        $app->singleton(Ignition::class, $ignition);
 
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
@@ -109,12 +138,55 @@ class HandlerTest extends TestCase
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')->once()->andReturn('Lumberjack | 500');
+
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
         $response = $handler->render(new ServerRequest, $exception);
 
         $this->assertStringNotContainsString('Test Exception', $response->getBody()->getContents());
+    }
+
+    #[Test]
+    public function render_uses_get_status_code_if_method_exists()
+    {
+        $app = new Application;
+        FacadeFactory::setContainer($app);
+        $config = new Config;
+        $config->set('app.debug', false);
+        $app->bind('config', $config);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with(Mockery::any(), Mockery::subset(['statusCode' => 404]))
+            ->once()
+            ->andReturn('Lumberjack | 404');
+
+        $exception = new ExceptionWithStatusCode('Test Exception', 404);
+        $handler = new Handler($app);
+
+        $response = $handler->render(new ServerRequest, $exception);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Lumberjack | 404', $response->getBody()->getContents());
+    }
+}
+
+class ExceptionWithStatusCode extends \Exception
+{
+    protected $statusCode;
+
+    public function __construct($message, $statusCode)
+    {
+        parent::__construct($message);
+        $this->statusCode = $statusCode;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->statusCode;
     }
 }
 

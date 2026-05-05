@@ -9,7 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Facades\Config;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
-use Spatie\Ignition\Config\IgnitionConfig;
+use Throwable;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
 class Handler implements HandlerInterface
 {
@@ -36,22 +37,34 @@ class Handler implements HandlerInterface
 
     public function render(ServerRequestInterface $request, Exception $e): ResponseInterface
     {
-        $isDebug = Config::get('app.debug', false) === true;
+        if (Config::get('app.debug', false) === true) {
+            return $this->renderExceptionWithIgnition($e);
+        }
 
-        $ignition = Ignition::make()
-            ->shouldDisplayException($isDebug)
-            ->runningInProductionEnvironment(!$isDebug)
-            ->register();
+        return $this->renderDefaultErrorView($e);
+    }
 
-        $ignition->setConfig(new IgnitionConfig(Config::get('ignition', [])));
+    protected function renderExceptionWithIgnition(Exception $e): ResponseInterface
+    {
+        $ignition = $this->app->get(Ignition::class);
 
         ob_start();
-
         $ignition->handleException($e);
 
-        $html = ob_get_clean();
+        return new HtmlResponse(ob_get_clean());
+    }
 
-        return new HtmlResponse($html);
+    protected function renderDefaultErrorView(Exception $e): ResponseInterface
+    {
+        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+        try {
+            return new TimberResponse(__DIR__ . '/views/error.twig', [
+                'statusCode' => $status,
+            ], $status);
+        } catch (Throwable) {
+            return new HtmlResponse("Lumberjack | {$status}", $status);
+        }
     }
 
     protected function shouldNotReport(Exception $e)
