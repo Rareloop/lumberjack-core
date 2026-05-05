@@ -38,7 +38,8 @@
         "php-mock/php-mock": "^2.6.2",
         "mikey179/vfsstream": "^1.6.12",
         "antecedent/patchwork": "^2.2.3",
-        "nunomaduro/pao": "^1.0"
+        "laravel/pao": "^1.0",
+        "symfony/polyfill-php85": "^1.37"
     },
     "autoload": {
         "psr-4": {

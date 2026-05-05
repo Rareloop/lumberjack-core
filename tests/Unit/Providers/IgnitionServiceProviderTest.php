@@ -2,24 +2,23 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
-use Brain\Monkey\Functions;
-use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Providers\IgnitionServiceProvider;
 use Spatie\Ignition\Ignition;
 use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class IgnitionServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function ignition_is_bound_as_a_singleton_in_the_container()
     {
         $app = new Application;
