@@ -4,13 +4,11 @@ namespace Rareloop\Lumberjack\Test\Unit\Autodiscovery;
 
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Autodiscovery\PackageManifest;
-use Symfony\Component\Filesystem\Filesystem;
 use org\bovigo\vfs\vfsStream;
 
 class PackageManifestTest extends TestCase
 {
     protected $root;
-    protected $filesystem;
 
     protected function setUp(): void
     {
@@ -40,15 +38,12 @@ class PackageManifestTest extends TestCase
             ],
             'composer.json' => json_encode([]),
         ]);
-
-        $this->filesystem = new Filesystem();
     }
 
     /** @test */
     public function it_can_discover_aliases_with_hyphens()
     {
         $manifest = new PackageManifest(
-            $this->filesystem,
             $this->root->url(),
             $this->root->url() . '/vendor'
         );

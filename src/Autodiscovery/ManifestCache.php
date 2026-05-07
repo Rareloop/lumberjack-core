@@ -2,19 +2,15 @@
 
 namespace Rareloop\Lumberjack\Autodiscovery;
 
-use Symfony\Component\Filesystem\Filesystem;
-
 class ManifestCache
 {
-    public function __construct(
-        protected Filesystem $filesystem,
-        protected string $cachePath
-    ) {
+    public function __construct(protected string $cachePath)
+    {
     }
 
     public function exists(): bool
     {
-        return $this->filesystem->exists($this->cachePath);
+        return file_exists($this->cachePath);
     }
 
     public function read(): array
@@ -26,7 +22,13 @@ class ManifestCache
 
     public function write(array $manifest): void
     {
-        $this->filesystem->dumpFile(
+        $directory = dirname($this->cachePath);
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        file_put_contents(
             $this->cachePath,
             '<?php return ' . var_export($manifest, true) . ';'
         );

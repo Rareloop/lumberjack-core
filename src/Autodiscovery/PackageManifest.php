@@ -3,12 +3,10 @@
 namespace Rareloop\Lumberjack\Autodiscovery;
 
 use Illuminate\Support\Arr;
-use Symfony\Component\Filesystem\Filesystem;
 
 class PackageManifest
 {
     public function __construct(
-        protected Filesystem $filesystem,
         protected string $basePath,
         protected string $vendorPath
     ) {
@@ -77,14 +75,14 @@ class PackageManifest
     {
         $path = $this->vendorPath . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
 
-        return $this->filesystem->exists($path) ? filemtime($path) : 0;
+        return file_exists($path) ? filemtime($path) : 0;
     }
 
     protected function getInstalledPackages(): array
     {
         $path = $this->vendorPath . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
 
-        if (!$this->filesystem->exists($path)) {
+        if (!file_exists($path)) {
             return [];
         }
 
@@ -103,7 +101,7 @@ class PackageManifest
     {
         $path = $this->basePath . DIRECTORY_SEPARATOR . 'composer.json';
 
-        if (!$this->filesystem->exists($path)) {
+        if (!file_exists($path)) {
             return [];
         }
 

@@ -4,7 +4,6 @@ namespace Rareloop\Lumberjack\Autodiscovery;
 
 use Composer\Script\Event;
 use Illuminate\Support\Arr;
-use Symfony\Component\Filesystem\Filesystem;
 
 class DiscoveryRunner
 {
@@ -24,9 +23,8 @@ class DiscoveryRunner
         try {
             $themePath = $this->resolveThemeDirectory($projectPath, $extra);
 
-            $filesystem = new Filesystem();
-            $builder = new PackageManifest($filesystem, $projectPath, $vendorPath);
-            $cache = new ManifestCache($filesystem, $themePath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'packages.php');
+            $builder = new PackageManifest($projectPath, $vendorPath);
+            $cache = new ManifestCache($themePath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'packages.php');
 
             $cache->write($builder->build());
         } catch (\RuntimeException $e) {
