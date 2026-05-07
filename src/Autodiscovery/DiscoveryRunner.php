@@ -24,11 +24,15 @@ class DiscoveryRunner
             $themePath = $this->resolveThemeDirectory($projectPath, $extra);
 
             $builder = new PackageManifest($projectPath, $vendorPath);
-            $cache = new ManifestCache($themePath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'packages.php');
+            $cachePath = $themePath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'cache'
+                . DIRECTORY_SEPARATOR . 'packages.php';
+            $cache = new ManifestCache($cachePath);
 
             $cache->write($builder->build());
         } catch (\RuntimeException $e) {
-            $io->writeError("<warning>Lumberjack: {$e->getMessage()} Package auto-discovery won't work as expected.</warning>");
+            $io->writeError(
+                "<warning>Lumberjack: {$e->getMessage()} Package auto-discovery won't work as expected.</warning>"
+            );
         }
     }
 
@@ -54,12 +58,15 @@ class DiscoveryRunner
             throw new \RuntimeException("The configured theme directory \"{$path}\" does not exist.");
         }
 
-        $defaultPath = $projectPath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . 'lumberjack';
+        $defaultPath = $projectPath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'app'
+            . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . 'lumberjack';
 
         if (is_dir($defaultPath)) {
             return $defaultPath;
         }
 
-        throw new \RuntimeException('"extra.lumberjack.theme-dir" is not set in composer.json and the default path was not found.');
+        throw new \RuntimeException(
+            '"extra.lumberjack.theme-dir" is not set in composer.json and the default path was not found.'
+        );
     }
 }
