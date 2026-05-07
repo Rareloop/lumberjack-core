@@ -3,8 +3,10 @@
 namespace Rareloop\Lumberjack\Bootstrappers;
 
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Autodiscovery\AutodiscoveredPackages;
 use Rareloop\Lumberjack\Providers\LogServiceProvider;
 use Rareloop\Lumberjack\Providers\IgnitionServiceProvider;
+use Illuminate\Support\Collection;
 
 class RegisterProviders
 {
@@ -14,7 +16,15 @@ class RegisterProviders
 
         $this->registerBaseProviders($app);
 
-        $providers = $config->get('app.providers', []);
+        $manifest = $app->get(AutodiscoveredPackages::class);
+
+        $providers = Collection::make($manifest->providers())
+            ->concat($config->get('app.providers', []))
+            ->mapWithKeys(function ($provider) {
+                return [
+                    (is_string($provider) ? $provider : $provider::class) => $provider,
+                ];
+            });
 
         foreach ($providers as $provider) {
             $app->register($provider);

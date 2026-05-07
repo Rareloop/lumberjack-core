@@ -49,6 +49,16 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function bootstrap_path_is_set_in_container_when_basepath_passed_to_constructor()
+    {
+        $app = new Application('/base/path');
+
+        $this->assertSame('/base/path/bootstrap', $app->bootstrapPath());
+        $this->assertSame('/base/path/bootstrap', $app->get('path.bootstrap'));
+        $this->assertSame('/base/path/bootstrap/cache/packages.php', $app->bootstrapPath('cache/packages.php'));
+    }
+
+    /** @test */
     public function can_bind_a_value()
     {
         $app = new Application;

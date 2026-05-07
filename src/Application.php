@@ -8,6 +8,10 @@ use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
+use Symfony\Component\Filesystem\Filesystem;
+use Rareloop\Lumberjack\Autodiscovery\AutodiscoveredPackages;
+use Rareloop\Lumberjack\Autodiscovery\ManifestCache;
+use Rareloop\Lumberjack\Autodiscovery\PackageManifest;
 
 class Application implements ContainerInterface
 {
@@ -37,13 +41,30 @@ class Application implements ContainerInterface
     {
         $this->basePath = $basePath;
 
+        $this->bootstrapContainer();
+    }
+
+    protected function bootstrapContainer()
+    {
         $this->bindPathsInContainer();
+
+        $this->registerAutodiscoveryBindings();
     }
 
     protected function bindPathsInContainer()
     {
         $this->bind('path.base', $this->basePath());
         $this->bind('path.config', $this->configPath());
+        $this->bind('path.bootstrap', $this->bootstrapPath());
+        $this->bind('path.vendor', $this->vendorPath());
+    }
+
+    protected function registerAutodiscoveryBindings()
+    {
+        $this->singleton(ManifestCache::class, \DI\autowire()
+            ->constructorParameter('cachePath', $this->bootstrapPath('cache' . DIRECTORY_SEPARATOR . 'packages.php')));
+
+        $this->singleton(AutodiscoveredPackages::class, \DI\autowire());
     }
 
     public function basePath()
@@ -54,6 +75,16 @@ class Application implements ContainerInterface
     public function configPath()
     {
         return $this->basePath . DIRECTORY_SEPARATOR . 'config';
+    }
+
+    public function vendorPath()
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'vendor';
+    }
+
+    public function bootstrapPath(string $path = '')
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'bootstrap' . ($path ? DIRECTORY_SEPARATOR . $path : '');
     }
 
     public function bind($key, $value)
