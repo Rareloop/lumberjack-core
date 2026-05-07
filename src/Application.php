@@ -19,7 +19,6 @@ class Application implements ContainerInterface
     private $loadedProviders = [];
     private $booted = false;
     private $basePath;
-    private $vendorPath;
     private $requestHandled = false;
 
     private $nonSingletonClassBinds = [];
@@ -41,13 +40,6 @@ class Application implements ContainerInterface
     public function setBasePath(string $basePath)
     {
         $this->basePath = $basePath;
-
-        $this->bootstrapContainer();
-    }
-
-    public function useVendorPath(string $path)
-    {
-        $this->vendorPath = $path;
 
         $this->bootstrapContainer();
     }
@@ -87,7 +79,7 @@ class Application implements ContainerInterface
 
     public function vendorPath()
     {
-        return $this->vendorPath ?: $this->basePath . DIRECTORY_SEPARATOR . 'vendor';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'vendor';
     }
 
     public function bootstrapPath(string $path = '')
