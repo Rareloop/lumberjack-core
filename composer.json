@@ -55,5 +55,9 @@
         "allow-plugins": {
             "composer/installers": true
         }
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint-fix": "phpcbf"
     }
 }

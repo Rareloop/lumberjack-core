@@ -3,7 +3,27 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build-test:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+
+    - name: Install dependencies
+      uses: php-actions/composer@v6
+      with:
+        php_version: '8.3'
+        command: install
+
+    - name: Run lint
+      run: composer run lint
+
+  build:
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,9 +50,6 @@ jobs:
       run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
       env:
           XDEBUG_MODE: coverage
-
-    - name: Run Codesniffer
-      run: vendor/bin/phpcs --standard=PSR2 ./src
 
     # - name: Submit coverage to Coveralls
     #   # We use php-coveralls library for this, as the official Coveralls GitHub Action lacks support for clover reports:
