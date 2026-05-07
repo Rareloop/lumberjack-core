@@ -3,7 +3,6 @@
 namespace Rareloop\Lumberjack\Autodiscovery;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Symfony\Component\Filesystem\Filesystem;
 
 class PackageManifest
@@ -15,21 +14,63 @@ class PackageManifest
     ) {
     }
 
+    /**
+     * Build the manifest of autodiscovered packages.
+     *
+     * @return array
+     */
     public function build(): array
     {
         $packages = $this->getInstalledPackages();
         $ignore = $this->getPackagesToIgnore();
 
-        return Collection::make($packages)
-            ->mapWithKeys(fn ($package) => [Arr::get($package, 'name') => Arr::get($package, 'extra.lumberjack', [])])
-            ->reject(fn ($extra, $name) => $this->shouldIgnore($name, $ignore))
-            ->filter()
-            ->reduce(function ($carry, $extra) {
-                return [
-                    'providers' => array_merge(Arr::get($carry, 'providers', []), Arr::get($extra, 'providers', [])),
-                    'aliases' => array_merge(Arr::get($carry, 'aliases', []), Arr::get($extra, 'aliases', [])),
-                ];
-            }, ['providers' => [], 'aliases' => []]);
+        $providers = [];
+        $aliases = [];
+
+        foreach ($packages as $package) {
+            $name = Arr::get($package, 'name');
+
+            if ($this->shouldIgnore($name, $ignore)) {
+                continue;
+            }
+
+            $extra = Arr::get($package, 'extra.lumberjack', []);
+
+            if (!is_array($extra) || empty($extra)) {
+                continue;
+            }
+
+            $packageProviders = Arr::get($extra, 'providers', []);
+            $packageAliases = Arr::get($extra, 'aliases', []);
+
+            if (is_array($packageProviders)) {
+                foreach ($packageProviders as $provider) {
+                    $providers[] = $this->formatClassName($provider);
+                }
+            }
+
+            if (is_array($packageAliases)) {
+                foreach ($packageAliases as $alias => $className) {
+                    $aliases[$alias] = $this->formatClassName($className);
+                }
+            }
+        }
+
+        return [
+            'providers' => array_values(array_unique($providers)),
+            'aliases' => $aliases,
+        ];
+    }
+
+    /**
+     * Format a class name, stripping accidental '::class' suffixes.
+     *
+     * @param mixed $className
+     * @return string
+     */
+    protected function formatClassName(mixed $className): string
+    {
+        return str_replace('::class', '', (string) $className);
     }
 
     public function mtime(): int
@@ -49,7 +90,13 @@ class PackageManifest
 
         $installed = json_decode(file_get_contents($path), true);
 
-        return Arr::get($installed, 'packages', $installed);
+        if (!is_array($installed)) {
+            return [];
+        }
+
+        $packages = $installed['packages'] ?? $installed;
+
+        return is_array($packages) ? $packages : [];
     }
 
     protected function getPackagesToIgnore(): array
@@ -62,11 +109,17 @@ class PackageManifest
 
         $composer = json_decode(file_get_contents($path), true);
 
-        return Arr::get($composer, 'extra.lumberjack.dont-discover', []);
+        if (!is_array($composer)) {
+            return [];
+        }
+
+        $ignore = Arr::get($composer, 'extra.lumberjack.dont-discover', []);
+
+        return is_array($ignore) ? $ignore : [];
     }
 
-    protected function shouldIgnore(string $name, array $ignore): bool
+    protected function shouldIgnore(?string $name, array $ignore): bool
     {
-        return in_array($name, $ignore) || in_array('*', $ignore);
+        return $name !== null && (in_array($name, $ignore) || in_array('*', $ignore));
     }
 }

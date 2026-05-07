@@ -19,6 +19,7 @@ class Application implements ContainerInterface
     private $loadedProviders = [];
     private $booted = false;
     private $basePath;
+    private $vendorPath;
     private $requestHandled = false;
 
     private $nonSingletonClassBinds = [];
@@ -41,7 +42,21 @@ class Application implements ContainerInterface
     {
         $this->basePath = $basePath;
 
+        $this->bootstrapContainer();
+    }
+
+    public function useVendorPath(string $path)
+    {
+        $this->vendorPath = $path;
+
+        $this->bootstrapContainer();
+    }
+
+    protected function bootstrapContainer()
+    {
         $this->bindPathsInContainer();
+
+        $this->registerAutodiscoveryBindings();
     }
 
     protected function bindPathsInContainer()
@@ -50,16 +65,14 @@ class Application implements ContainerInterface
         $this->bind('path.config', $this->configPath());
         $this->bind('path.bootstrap', $this->bootstrapPath());
         $this->bind('path.vendor', $this->vendorPath());
+    }
 
+    protected function registerAutodiscoveryBindings()
+    {
         $this->singleton(ManifestCache::class, \DI\autowire()
             ->constructorParameter('cachePath', $this->bootstrapPath('cache' . DIRECTORY_SEPARATOR . 'packages.php')));
 
-        $this->singleton(PackageManifest::class, \DI\autowire()
-            ->constructorParameter('basePath', \DI\get('path.base'))
-            ->constructorParameter('vendorPath', \DI\get('path.vendor')));
-
-        $this->singleton(AutodiscoveredPackages::class, \DI\autowire()
-            ->constructorParameter('debug', \DI\factory(fn() => defined('WP_DEBUG') && WP_DEBUG)));
+        $this->singleton(AutodiscoveredPackages::class, \DI\autowire());
     }
 
     public function basePath()
@@ -74,7 +87,7 @@ class Application implements ContainerInterface
 
     public function vendorPath()
     {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'vendor';
+        return $this->vendorPath ?: $this->basePath . DIRECTORY_SEPARATOR . 'vendor';
     }
 
     public function bootstrapPath(string $path = '')
