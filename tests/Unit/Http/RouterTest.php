@@ -6,12 +6,14 @@ use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Http\Router;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
 /**
  * Ensure all class_alias calls are reset each time
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
  */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class RouterTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;

@@ -13,12 +13,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class PasswordProtectTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;

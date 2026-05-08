@@ -23,7 +23,9 @@ use Laminas\Diactoros\Request;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+#[RunTestsInSeparateProcesses]
 class RouterServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;

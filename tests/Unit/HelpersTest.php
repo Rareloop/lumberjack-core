@@ -17,13 +17,13 @@ use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Lumberjack\Session\SessionManager;
 use Hamcrest\Arrays\IsArrayContainingKeyValuePair;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class HelpersTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;

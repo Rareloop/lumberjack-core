@@ -6,12 +6,12 @@ use Rareloop\Lumberjack\Test\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Laminas\Diactoros\Response\TextResponse;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use phpmock\MockBuilder;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class ResponseEmitterTest extends TestCase
 {
     #[Test]

@@ -13,8 +13,10 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
+#[RunTestsInSeparateProcesses]
 class LogServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;

@@ -15,15 +15,15 @@ use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use Rareloop\Router\Responsable;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class RegisterExceptionHandlerTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
