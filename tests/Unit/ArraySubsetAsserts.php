@@ -16,18 +16,18 @@ trait ArraySubsetAsserts
      */
     public function assertArraySubset($subset, $array, bool $checkForObjectIdentity = false, string $message = ''): void
     {
-        if (!is_array($subset) && !($subset instanceof \ArrayAccess)) {
+        if (!(is_array($subset) || $subset instanceof \ArrayAccess)) {
             throw new \InvalidArgumentException('Subset must be an array or ArrayAccess');
         }
 
-        if (!is_array($array) && !($array instanceof \ArrayAccess)) {
+        if (!(is_array($array) || $array instanceof \ArrayAccess)) {
             throw new \InvalidArgumentException('Array must be an array or ArrayAccess');
         }
 
         foreach ($subset as $key => $value) {
             Assert::assertArrayHasKey($key, $array, $message);
 
-            if (is_array($value) && is_array($array[$key])) {
+            if ((is_array($value) || $value instanceof \ArrayAccess) && (is_array($array[$key]) || $array[$key] instanceof \ArrayAccess)) {
                 $this->assertArraySubset($value, $array[$key], $checkForObjectIdentity, $message);
             } else {
                 if ($checkForObjectIdentity) {
