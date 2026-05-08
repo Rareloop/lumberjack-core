@@ -26,7 +26,7 @@ class ScopedQueryBuilderTest extends TestCase
      */
     public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     private Application $app;
 
