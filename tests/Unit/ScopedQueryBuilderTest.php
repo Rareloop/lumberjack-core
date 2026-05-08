@@ -14,7 +14,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
-use Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
+use Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;

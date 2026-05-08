@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Post;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 

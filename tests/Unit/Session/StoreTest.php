@@ -12,7 +12,7 @@ use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 class StoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     public static function chainableMethods(): array
     {

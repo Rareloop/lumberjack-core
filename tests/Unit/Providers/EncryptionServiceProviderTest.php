@@ -9,7 +9,7 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Providers\EncryptionServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
 class EncryptionServiceProviderTest extends TestCase
 {

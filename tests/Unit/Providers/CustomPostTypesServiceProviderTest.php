@@ -10,7 +10,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Post;
 use Rareloop\Lumberjack\Providers\CustomPostTypesServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
 class CustomPostTypesServiceProviderTest extends TestCase
 {

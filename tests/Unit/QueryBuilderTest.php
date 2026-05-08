@@ -22,7 +22,7 @@ class QueryBuilderTest extends TestCase
      */
     public $params;
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     #[Test]
     public function correct_post_type_is_set()

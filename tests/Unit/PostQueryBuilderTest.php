@@ -15,7 +15,7 @@ use Throwable;
 class PostQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     private Application $app;
 

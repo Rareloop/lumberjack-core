@@ -17,7 +17,7 @@ use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Http\Router;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\MiddlewareResolver;
 use Laminas\Diactoros\Request;
 use Laminas\Diactoros\Response\HtmlResponse;

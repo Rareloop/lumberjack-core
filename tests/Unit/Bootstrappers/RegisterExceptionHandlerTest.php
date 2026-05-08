@@ -13,7 +13,7 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Router\Responsable;
 use Laminas\Diactoros\Response;
