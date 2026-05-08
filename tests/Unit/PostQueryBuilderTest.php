@@ -49,10 +49,9 @@ class PostQueryBuilderTest extends TestCase
     #[Test]
     public function throw_error_on_missing_static_function()
     {
-        $this->expectUserError();
-        $this->expectException(\ErrorException::class);
-
-        Post::missingStaticFunction();
+        $this->assertTriggeredError(function () {
+            Post::missingStaticFunction();
+        });
     }
 
     private function assertQueryBuilder($function, $params, $postType)

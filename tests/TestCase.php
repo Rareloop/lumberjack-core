@@ -6,39 +6,38 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected $originalErrorHandler;
-    protected $originalExceptionHandler;
-
-    protected function setUp(): void
+    /**
+     * Asserts that the provided callback triggers an E_USER_ERROR.
+     */
+    protected function assertTriggeredError(callable $callback, string $expectedMessage = ''): void
     {
-        parent::setUp();
+        $errorTriggered = false;
+        $actualMessage = '';
 
-        $this->originalExceptionHandler = get_exception_handler();
-        $this->originalErrorHandler = get_error_handler();
-    }
+        set_error_handler(function (int $errno, string $errstr) use (&$errorTriggered, &$actualMessage) {
+            $errorTriggered = true;
+            $actualMessage = $errstr;
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
+            throw new \ErrorException($errstr, 0, $errno);
+        }, E_USER_ERROR);
 
-        if (get_error_handler() !== $this->originalErrorHandler) {
+        try {
+            $callback();
+        } catch (\ErrorException $e) {
+            // Error was caught, we can proceed to assertions
+        } finally {
             restore_error_handler();
         }
 
-        if (get_exception_handler() !== $this->originalExceptionHandler) {
-            restore_exception_handler();
-        }
-    }
+        // 4. Perform the actual PHPUnit assertions
+        $this->assertTrue($errorTriggered, 'Failed asserting that an E_USER_ERROR was triggered.');
 
-    /**
-     * In PHPUnit 10+ E_USER_ERROR is no longer automatically converted to an exception.
-     * This helper allows us to opt-in to this behavior for specific tests so we can
-     * use $this->expectException(ErrorException::class).
-     */
-    protected function expectUserError(): void
-    {
-        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-        }, E_USER_ERROR);
+        if ($expectedMessage !== '') {
+            $this->assertStringContainsString(
+                $expectedMessage,
+                $actualMessage,
+                "The triggered error message did not contain: '{$expectedMessage}'"
+            );
+        }
     }
 }
