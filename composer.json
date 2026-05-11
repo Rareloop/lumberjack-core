@@ -30,15 +30,15 @@
         "spatie/flare-client-php": "^1.10.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.6.29",
+        "phpunit/phpunit": "^12.0",
         "php-coveralls/php-coveralls": "^2.8",
         "mockery/mockery": "^1.6.12",
         "brain/monkey": "^2.6.2",
         "squizlabs/php_codesniffer": "^3.13.4",
         "php-mock/php-mock": "^2.6.2",
         "mikey179/vfsstream": "^1.6.12",
-        "dms/phpunit-arraysubset-asserts": "^0.5.0",
-        "antecedent/patchwork": "^2.2.3"
+        "antecedent/patchwork": "^2.2.3",
+        "laravel/pao": "^1.0"
     },
     "autoload": {
         "psr-4": {

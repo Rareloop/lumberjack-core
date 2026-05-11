@@ -5,7 +5,8 @@ namespace Rareloop\Lumberjack\Test\Exceptions;
 use Mockery;
 use Timber\Timber;
 use Monolog\Logger;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Exceptions\Handler;
@@ -15,16 +16,16 @@ use Rareloop\Lumberjack\FacadeFactory;
 
 use Spatie\Ignition\Ignition;
 use Spatie\FlareClient\Report;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class HandlerTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function report_should_log_exception()
     {
         $app = new Application;
@@ -40,7 +41,7 @@ class HandlerTest extends TestCase
         $handler->report($exception);
     }
 
-    /** @test */
+    #[Test]
     public function blacklisted_exception_types_will_not_be_logged()
     {
         $app = new Application;
@@ -56,7 +57,7 @@ class HandlerTest extends TestCase
         $handler->report($exception);
     }
 
-    /** @test */
+    #[Test]
     public function render_should_use_ignition_when_debug_is_enabled()
     {
         $app = new Application;
@@ -83,7 +84,7 @@ class HandlerTest extends TestCase
         $this->assertSame('Ignition Output', $response->getBody()->getContents());
     }
 
-    /** @test */
+    #[Test]
     public function render_should_return_an_html_response_when_debug_is_disabled()
     {
         $app = new Application;
@@ -104,7 +105,7 @@ class HandlerTest extends TestCase
         $this->assertSame('Lumberjack | 500', $response->getBody()->getContents());
     }
 
-    /** @test */
+    #[Test]
     public function render_should_include_stack_trace_when_debug_is_enabled()
     {
         $app = new Application;
@@ -128,7 +129,7 @@ class HandlerTest extends TestCase
         $this->assertStringContainsString('Test Exception', $response->getBody()->getContents());
     }
 
-    /** @test */
+    #[Test]
     public function render_should_not_include_stack_trace_when_debug_is_disabled()
     {
         $app = new Application;
@@ -148,7 +149,7 @@ class HandlerTest extends TestCase
         $this->assertStringNotContainsString('Test Exception', $response->getBody()->getContents());
     }
 
-    /** @test */
+    #[Test]
     public function render_uses_get_status_code_if_method_exists()
     {
         $app = new Application;
@@ -196,6 +197,4 @@ class HandlerWithBlacklist extends Handler
     ];
 }
 
-class BlacklistedException extends \Exception
-{
-}
+class BlacklistedException extends \Exception {}

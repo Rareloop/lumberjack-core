@@ -3,17 +3,18 @@
 namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\LoadConfiguration;
 use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Config;
+use PHPUnit\Framework\Attributes\Test;
 
 class BootProvidersTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function boots_all_registered_providers()
     {
         $app = new Application;

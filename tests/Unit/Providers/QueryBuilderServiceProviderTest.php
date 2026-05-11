@@ -2,7 +2,8 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
@@ -12,8 +13,8 @@ use Rareloop\Lumberjack\QueryBuilder;
 
 class QueryBuilderServiceProviderTest extends TestCase
 {
-    /** @test */
-    public function query_builder_is_registered_into_container()
+    #[Test]
+    public function query_builder_is_registered_into_container(): void
     {
         $app = new Application;
         $provider = new QueryBuilderServiceProvider($app);

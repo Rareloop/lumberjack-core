@@ -4,19 +4,21 @@ namespace Rareloop\Lumberjack\Test;
 
 use Rareloop\Lumberjack\Dcrypt\AesCbc;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Encrypter;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class EncrypterTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function can_encrypt_data()
     {
         $key = 'secret-key';
@@ -37,7 +39,7 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt('test-string');
     }
 
-    /** @test */
+    #[Test]
     public function can_decrypt_data()
     {
         $key = 'secret-key';
@@ -48,7 +50,7 @@ class EncrypterTest extends TestCase
         $encrypter->decrypt('test-string');
     }
 
-    /** @test */
+    #[Test]
     public function can_process_strings()
     {
         $payload = 'test-string';
@@ -57,7 +59,7 @@ class EncrypterTest extends TestCase
         $this->assertSame($payload, $encrypter->decrypt($encrypter->encrypt($payload)));
     }
 
-    /** @test */
+    #[Test]
     public function can_process_arrays()
     {
         $payload = ['foo' => 'bar'];
@@ -66,7 +68,7 @@ class EncrypterTest extends TestCase
         $this->assertSame($payload, $encrypter->decrypt($encrypter->encrypt($payload)));
     }
 
-    /** @test */
+    #[Test]
     public function can_process_objects()
     {
         $payload = new \stdClass;

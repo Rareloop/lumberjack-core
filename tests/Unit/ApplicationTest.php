@@ -4,12 +4,12 @@ namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
 use Mockery\Matcher\Closure;
-use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\ServiceProvider;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 use Brain\Monkey;
+use PHPUnit\Framework\Attributes\Test;
 use Laminas\Diactoros\Response\TextResponse;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 
@@ -30,7 +30,7 @@ class ApplicationTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function base_path_is_set_in_container_when_basepath_passed_to_constructor()
     {
         $app = new Application('/base/path');
@@ -39,7 +39,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('/base/path', $app->get('path.base'));
     }
 
-    /** @test */
+    #[Test]
     public function config_path_is_set_in_container_when_basepath_passed_to_constructor()
     {
         $app = new Application('/base/path');
@@ -48,7 +48,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('/base/path/config', $app->get('path.config'));
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_value()
     {
         $app = new Application;
@@ -58,7 +58,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('production', $app->get('app.environment'));
     }
 
-    /** @test */
+    #[Test]
     public function can_determine_if_something_has_been_bound()
     {
         $app = new Application;
@@ -68,7 +68,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue($app->has('app.environment'));
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_an_object()
     {
         $app = new Application;
@@ -79,7 +79,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($object, $app->get('test'));
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_an_object_and_always_get_the_same_instance_back()
     {
         $app = new Application;
@@ -90,7 +90,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($app->get(TestInterface::class), $app->get(TestInterface::class));
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_concrete_class_to_an_interface()
     {
         $app = new Application;
@@ -102,7 +102,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_using_closure()
     {
         $app = new Application;
@@ -120,7 +120,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_using_closure_and_get_dependencies_injected()
     {
         $app = new Application;
@@ -140,7 +140,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_singleton_concrete_class_to_an_interface()
     {
         $app = new Application;
@@ -157,7 +157,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_singleton_concrete_class_with_constructor_params_to_an_interface()
     {
         $app = new Application;
@@ -174,7 +174,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementationWithConstructorParams::class, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_singleton_with_closure()
     {
         $app = new Application;
@@ -196,7 +196,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function can_bind_a_singleton_and_get_dependencies_injected()
     {
         $app = new Application;
@@ -221,7 +221,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function app_should_be_bound_into_the_container_on_construction()
     {
         $app = new Application;
@@ -229,7 +229,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($app, $app->get(Application::class));
     }
 
-    /** @test */
+    #[Test]
     public function can_create_a_class_that_has_not_been_registered()
     {
         $app = new Application;
@@ -241,7 +241,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestInterfaceImplementation::class, $object->param);
     }
 
-    /** @test */
+    #[Test]
     public function can_make_a_class_with_additional_params_for_the_constructor()
     {
         $app = new Application;
@@ -258,7 +258,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('abc', $object->param2);
     }
 
-    /** @test */
+    #[Test]
     public function make_produces_unique_instances_of_the_bound_object()
     {
         $app = new Application;
@@ -270,7 +270,7 @@ class ApplicationTest extends TestCase
         $this->assertNotSame($object1, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function using_bind_does_not_produce_a_singleton()
     {
         $app = new Application;
@@ -282,7 +282,7 @@ class ApplicationTest extends TestCase
         $this->assertNotSame($object1, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function get_does_not_produce_a_singleton_when_the_key_has_not_been_previously_bound_to_the_container()
     {
         $app = new Application;
@@ -293,7 +293,7 @@ class ApplicationTest extends TestCase
         $this->assertNotSame($object1, $object2);
     }
 
-    /** @test */
+    #[Test]
     public function using_bind_with_closure_does_not_produce_a_singleton()
     {
         $count = 0;
@@ -310,7 +310,7 @@ class ApplicationTest extends TestCase
         $this->assertSame(2, $count);
     }
 
-    /** @test */
+    #[Test]
     public function can_register_a_service_provider()
     {
         $app = new Application;
@@ -322,7 +322,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestServiceProvider::class, $providers[0]);
     }
 
-    /** @test */
+    #[Test]
     public function registered_service_provider_is_returned_by_register()
     {
         $app = new Application;
@@ -332,7 +332,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestServiceProvider::class, $provider);
     }
 
-    /** @test */
+    #[Test]
     public function can_retrieve_a_registered_service_provider()
     {
         $app = new Application;
@@ -343,7 +343,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($provider, $app->getProvider(TestServiceProvider::class));
     }
 
-    /** @test */
+    #[Test]
     public function can_retrieve_a_registered_service_provider_by_object()
     {
         $app = new Application;
@@ -354,7 +354,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($provider, $app->getProvider($provider));
     }
 
-    /** @test */
+    #[Test]
     public function can_not_register_the_same_service_provider_twice()
     {
         $app = new Application;
@@ -369,7 +369,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($provider1, $provider2);
     }
 
-    /** @test */
+    #[Test]
     public function service_providers_without_register_functions_dont_cause_an_exception()
     {
         $app = new Application;
@@ -378,7 +378,7 @@ class ApplicationTest extends TestCase
         $this->addToAssertionCount(1);  // does not throw an exception
     }
 
-    /** @test */
+    #[Test]
     public function can_register_service_provider_from_an_object()
     {
         $app = new Application;
@@ -390,7 +390,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(TestServiceProvider::class, $providers[0]);
     }
 
-    /** @test */
+    #[Test]
     public function registered_service_providers_have_their_register_function_called()
     {
         $app = new Application;
@@ -400,7 +400,7 @@ class ApplicationTest extends TestCase
         $app->register($provider);
     }
 
-    /** @test */
+    #[Test]
     public function calling_boot_on_app_should_call_boot_on_all_registered_service_providers()
     {
         $app = new Application;
@@ -412,7 +412,7 @@ class ApplicationTest extends TestCase
         $app->boot();
     }
 
-    /** @test */
+    #[Test]
     public function calling_boot_multiple_times_should_not_fire_boot_on_service_providers_more_than_once()
     {
         $app = new Application;
@@ -425,7 +425,7 @@ class ApplicationTest extends TestCase
         $app->boot();
     }
 
-    /** @test */
+    #[Test]
     public function boot_should_resolve_dependencies_from_container_on_service_providers()
     {
         $app = new Application;
@@ -447,7 +447,7 @@ class ApplicationTest extends TestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
+    #[Test]
     public function services_registered_after_boot_should_have_their_boot_method_called_straight_away()
     {
         $app = new Application;
@@ -459,7 +459,7 @@ class ApplicationTest extends TestCase
         $app->register($provider);
     }
 
-    /** @test */
+    #[Test]
     public function is_booted_returns_false_before_boot_method_has_been_called()
     {
         $app = new Application;
@@ -467,7 +467,7 @@ class ApplicationTest extends TestCase
         $this->assertFalse($app->isBooted());
     }
 
-    /** @test */
+    #[Test]
     public function is_booted_returns_true_after_boot_method_has_been_called()
     {
         $app = new Application;
@@ -477,7 +477,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue($app->isBooted());
     }
 
-    /** @test */
+    #[Test]
     public function can_bootstrap_the_app_with_an_array_of_bootstrappers()
     {
         $app = new Application;
@@ -507,7 +507,7 @@ class ApplicationTest extends TestCase
         return $builder->build();
     }
 
-    /** @test */
+    #[Test]
     public function running_in_console_returns_true_for_cli()
     {
         $mock = $this->createPhpSapiNameMock('cli', 'Rareloop\Lumberjack');
@@ -517,7 +517,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue($app->runningInConsole());
     }
 
-    /** @test */
+    #[Test]
     public function running_in_console_returns_true_for_phpdbg()
     {
         $mock = $this->createPhpSapiNameMock('phpdbg', 'Rareloop\Lumberjack');
@@ -527,7 +527,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue($app->runningInConsole());
     }
 
-    /** @test */
+    #[Test]
     public function can_test_if_request_has_been_handled()
     {
         $app = new Application;
@@ -539,7 +539,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue($app->hasRequestBeenHandled());
     }
 
-    /** @test */
+    #[Test]
     public function calling_detectWhenRequestHasNotBeenHandled_adds_actions()
     {
         $app = new Application;
@@ -550,9 +550,7 @@ class ApplicationTest extends TestCase
         $this->assertTrue(has_action('shutdown'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function shutdown_should_use_emitter_to_output_response()
     {
         $wp = Mockery::mock('WP');

@@ -6,7 +6,8 @@ use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Monolog\Logger;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +21,7 @@ use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 use Rareloop\Lumberjack\Http\MiddlewareResolver;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
@@ -31,8 +32,8 @@ class WordPressControllersServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function template_include_filter_is_applied_on_boot()
+    #[Test]
+    public function template_include_filter_is_applied_on_boot(): void
     {
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
@@ -43,8 +44,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertNotFalse(has_filter('template_include', [$provider, 'handleTemplateInclude']));
     }
 
-    /** @test */
-    public function handle_template_include_method_includes_the_requested_file()
+    #[Test]
+    public function handle_template_include_method_includes_the_requested_file(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -56,8 +57,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertContains(__DIR__ . '/includes/single.php', get_included_files());
     }
 
-    /** @test */
-    public function handle_template_include_method_sets_details_in_container_when_controller_is_not_present()
+    #[Test]
+    public function handle_template_include_method_sets_details_in_container_when_controller_is_not_present(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -70,8 +71,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('App\SingleController', $app->get('__wp-controller-miss-controller'));
     }
 
-    /** @test */
-    public function handle_template_include_method_does_not_set_details_in_container_when_controller_is_present()
+    #[Test]
+    public function handle_template_include_method_does_not_set_details_in_container_when_controller_is_present(): void
     {
         $response = new TextResponse('Testing 123', 200);
         $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
@@ -87,8 +88,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertFalse($app->has('__wp-controller-miss-controller'));
     }
 
-    /** @test */
-    public function can_get_name_of_controller_from_template()
+    #[Test]
+    public function can_get_name_of_controller_from_template(): void
     {
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
@@ -104,8 +105,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         }
     }
 
-    /** @test */
-    public function can_get_special_case_name_of_404_controller_from_template()
+    #[Test]
+    public function can_get_special_case_name_of_404_controller_from_template(): void
     {
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
@@ -113,8 +114,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('App\\Error404Controller', $provider->getControllerClassFromTemplate(__DIR__ . 'includes/404.php'));
     }
 
-    /** @test */
-    public function handle_template_include_applies_filters_on_controller_name_and_namespace()
+    #[Test]
+    public function handle_template_include_applies_filters_on_controller_name_and_namespace(): void
     {
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
@@ -130,8 +131,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider->getControllerClassFromTemplate(__DIR__ . 'includes/single.php');
     }
 
-    /** @test */
-    public function handle_request_returns_false_if_controller_does_not_exist()
+    #[Test]
+    public function handle_request_returns_false_if_controller_does_not_exist(): void
     {
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
@@ -141,8 +142,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertFalse($response);
     }
 
-    /** @test */
-    public function handle_request_writes_warning_to_logs_if_controller_does_not_exist()
+    #[Test]
+    public function handle_request_writes_warning_to_logs_if_controller_does_not_exist(): void
     {
         $log = Mockery::mock(Logger::class);
         $log->shouldReceive('warning')->once()->with('Controller class `Does\Not\Exist` not found');
@@ -155,8 +156,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
     }
 
-    /** @test */
-    public function handle_request_will_mark_request_handled_in_app_if_controller_does_exist()
+    #[Test]
+    public function handle_request_will_mark_request_handled_in_app_if_controller_does_exist(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -172,8 +173,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertTrue($app->hasRequestBeenHandled());
     }
 
-    /** @test */
-    public function handle_request_will_not_mark_request_handled_in_app_if_controller_does_not_exist()
+    #[Test]
+    public function handle_request_will_not_mark_request_handled_in_app_if_controller_does_not_exist(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -185,8 +186,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertFalse($app->hasRequestBeenHandled());
     }
 
-    /** @test */
-    public function handle_request_returns_response_when_controller_does_exist()
+    #[Test]
+    public function handle_request_returns_response_when_controller_does_exist(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -202,8 +203,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    /** @test */
-    public function handle_request_returns_response_when_controller_returns_a_responsable()
+    #[Test]
+    public function handle_request_returns_response_when_controller_returns_a_responsable(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -220,8 +221,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('testing123', $response->getBody()->getContents());
     }
 
-    /** @test */
-    public function handle_request_resolves_constructor_params_from_container()
+    #[Test]
+    public function handle_request_resolves_constructor_params_from_container(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -237,8 +238,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    /** @test */
-    public function handle_request_resolves_controller_method_params_from_container()
+    #[Test]
+    public function handle_request_resolves_controller_method_params_from_container(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -254,8 +255,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    /** @test */
-    public function handle_request_supports_middleware()
+    #[Test]
+    public function handle_request_supports_middleware(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -275,8 +276,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
     }
 
-    /** @test */
-    public function handle_request_adds_password_protect_middleware()
+    #[Test]
+    public function handle_request_adds_password_protect_middleware(): void
     {
         $mock = Mockery::mock(PasswordProtected::class);
         $mock->shouldReceive('process')->once()->andReturn(new HtmlResponse('password-protected'));
@@ -295,8 +296,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('password-protected', $response->getBody()->getContents());
     }
 
-    /** @test */
-    public function handle_request_supports_middleware_applied_to_a_specific_method_using_only()
+    #[Test]
+    public function handle_request_supports_middleware_applied_to_a_specific_method_using_only(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -315,8 +316,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertFalse($response->hasHeader('X-Header'));
     }
 
-    /** @test */
-    public function handle_request_supports_middleware_applied_to_a_specific_method_using_except()
+    #[Test]
+    public function handle_request_supports_middleware_applied_to_a_specific_method_using_except(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -335,8 +336,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertFalse($response->hasHeader('X-Header'));
     }
 
-    /** @test */
-    public function handle_request_supports_middleware_aliases()
+    #[Test]
+    public function handle_request_supports_middleware_aliases(): void
     {
         Functions\expect('post_password_required')
             ->once()
@@ -369,8 +370,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
     }
 
-    /** @test */
-    public function handle_template_include_will_call_app_shutdown_when_it_has_handled_a_request()
+    #[Test]
+    public function handle_template_include_will_call_app_shutdown_when_it_has_handled_a_request(): void
     {
         $response = new TextResponse('Testing 123', 404);
         $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
@@ -383,8 +384,8 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
     }
 
-    /** @test */
-    public function handle_template_include_will_not_call_app_shutdown_when_it_has_not_handled_a_request()
+    #[Test]
+    public function handle_template_include_will_not_call_app_shutdown_when_it_has_not_handled_a_request(): void
     {
         $app = Mockery::mock(Application::class . '[shutdown]', [__DIR__ . '/..']);
         $app->shouldReceive('shutdown')->times(0);
@@ -399,27 +400,19 @@ class WordPressControllersServiceProviderTest extends TestCase
 
 class TestController
 {
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class TestControllerWithConstructorParams
 {
-    public function __construct(Application $app)
-    {
-    }
+    public function __construct(Application $app) {}
 
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class TestControllerWithHandleParams
 {
-    public function handle(Application $app)
-    {
-    }
+    public function handle(Application $app) {}
 }
 
 class MyResponsable implements Responsable
@@ -440,16 +433,12 @@ class TestControllerReturningAResponsable
 
 class TestControllerWithMiddleware extends Controller
 {
-    public function handle()
-    {
-    }
+    public function handle() {}
 }
 
 class AddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value)
-    {
-    }
+    public function __construct(private $key, private $value) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

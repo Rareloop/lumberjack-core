@@ -6,20 +6,23 @@ use Brain\Monkey\Functions;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Level;
 use Monolog\Logger;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Psr\Log\LoggerInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\Lumberjack;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
+#[RunTestsInSeparateProcesses]
 class LogServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function log_object_is_always_registered()
+    #[Test]
+    public function log_object_is_always_registered(): void
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
@@ -33,10 +36,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame($app->get('logger'), $app->get(LoggerInterface::class));
     }
 
-    /**
-     * @test
-     * @codingStandardsIgnoreLine */
-    function default_handler_is_in_memory_stream()
+    #[Test]
+    public function default_handler_is_in_memory_stream(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -50,8 +51,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame('php://memory', $app->get('logger')->getHandlers()[0]->getUrl());
     }
 
-    /** @test */
-    public function default_log_warning_level_is_debug()
+    #[Test]
+    public function default_log_warning_level_is_debug(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -65,8 +66,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame(Level::Debug, $app->get('logger')->getHandlers()[0]->getLevel());
     }
 
-    /** @test */
-    public function stream_is_used_when_path_is_set_but_logging_is_disabled()
+    #[Test]
+    public function stream_is_used_when_path_is_set_but_logging_is_disabled(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -82,8 +83,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame('php://memory', $app->get('logger')->getHandlers()[0]->getUrl());
     }
 
-    /** @test */
-    public function log_warning_level_can_be_set_in_config()
+    #[Test]
+    public function log_warning_level_can_be_set_in_config(): void
     {
         $app = new Application(__DIR__ . '/../');
 
@@ -98,8 +99,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame(Level::Error, $app->get('logger')->getHandlers()[0]->getLevel());
     }
 
-    /** @test */
-    public function error_log_is_used_when_path_is_set_to_false()
+    #[Test]
+    public function error_log_is_used_when_path_is_set_to_false(): void
     {
         $app = new Application('/base/path');
 
@@ -115,8 +116,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertInstanceOf(ErrorLogHandler::class, $app->get('logger')->getHandlers()[0]);
     }
 
-    /** @test */
-    public function stream_is_used_when_path_is_set_to_false_and_enabled_is_false()
+    #[Test]
+    public function stream_is_used_when_path_is_set_to_false_and_enabled_is_false(): void
     {
         $app = new Application('/base/path');
 
@@ -132,8 +133,8 @@ class LogServiceProviderTest extends TestCase
         $this->assertSame('php://memory', $app->get('logger')->getHandlers()[0]->getUrl());
     }
 
-    /** @test */
-    public function logs_path_can_be_changed_by_config_variable()
+    #[Test]
+    public function logs_path_can_be_changed_by_config_variable(): void
     {
         $app = new Application('/base/path');
 

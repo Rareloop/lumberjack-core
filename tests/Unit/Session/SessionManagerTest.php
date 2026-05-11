@@ -5,7 +5,10 @@ namespace Rareloop\Lumberjack\Test;
 use Mockery;
 use ReflectionClass;
 use org\bovigo\vfs\vfsStream;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Encrypter;
 use Rareloop\Lumberjack\Application;
@@ -18,10 +21,8 @@ use Rareloop\Lumberjack\Exceptions\HandlerInterface;
 use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 use Rareloop\Lumberjack\Contracts\Encrypter as EncrypterContract;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class SessionManagerTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -40,7 +41,7 @@ class SessionManagerTest extends TestCase
         return $app;
     }
 
-    /** @test */
+    #[Test]
     public function default_driver_is_read_from_config()
     {
         $app = $this->appWithSessionDriverConfig('driver-name');
@@ -50,7 +51,7 @@ class SessionManagerTest extends TestCase
         $this->assertSame('driver-name', $manager->getDefaultDriver());
     }
 
-    /** @test */
+    #[Test]
     public function can_create_a_file_driver()
     {
         $app = $this->appWithSessionDriverConfig('file', 'lumberjack');
@@ -61,7 +62,7 @@ class SessionManagerTest extends TestCase
         $this->assertSame('lumberjack', $manager->driver()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function file_driver_uses_path_from_config_when_present()
     {
         $rootFileSystem = vfsStream::setup('exampleDir');
@@ -75,7 +76,7 @@ class SessionManagerTest extends TestCase
         $this->assertCount(1, $rootFileSystem->getChildren());
     }
 
-    /** @test */
+    #[Test]
     public function can_extend_list_of_drivers()
     {
         $app = new Application;
@@ -88,7 +89,7 @@ class SessionManagerTest extends TestCase
         $this->assertInstanceOf(TestSessionHandler::class, $manager->driver('test')->getHandler());
     }
 
-    /** @test */
+    #[Test]
     public function can_create_an_unencrypted_store()
     {
         $app = $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = false);
@@ -97,7 +98,7 @@ class SessionManagerTest extends TestCase
         $this->assertInstanceOf(Store::class, $manager->driver());
     }
 
-    /** @test */
+    #[Test]
     public function can_create_an_encrypted_store()
     {
         $app = $this->appWithSessionDriverConfig('file', 'lumberjack', $encrypted = true);

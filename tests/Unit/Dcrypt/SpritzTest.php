@@ -3,8 +3,9 @@
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
 use Rareloop\Lumberjack\Dcrypt\Spritz;
+use Rareloop\Lumberjack\Test\TestCase;
 
-class SpritzTest extends \PHPUnit\Framework\TestCase
+class SpritzTest extends TestCase
 {
     public function testCrypt()
     {

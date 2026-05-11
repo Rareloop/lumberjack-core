@@ -3,20 +3,23 @@
 namespace Rareloop\Lumberjack\Test\Http;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Http\Router;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
 /**
  * Ensure all class_alias calls are reset each time
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
  */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class RouterTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
-    public function controller_has_namespace_added()
+    #[Test]
+    public function controller_has_namespace_added(): void
     {
         class_alias(RouterTestController::class, 'App\Http\Controllers\MyController');
         $router = new Router;
@@ -26,8 +29,8 @@ class RouterTest extends TestCase
         $this->assertSame('App\Http\Controllers\MyController@test', $route->getActionName());
     }
 
-    /** @test */
-    public function controller_does_not_have_namespace_added_when_it_already_exists()
+    #[Test]
+    public function controller_does_not_have_namespace_added_when_it_already_exists(): void
     {
         $router = new Router;
 
@@ -36,8 +39,8 @@ class RouterTest extends TestCase
         $this->assertSame(RouterTestController::class . '@test', $route->getActionName());
     }
 
-    /** @test */
-    public function controller_does_not_have_namespace_added_when_it_is_callable()
+    #[Test]
+    public function controller_does_not_have_namespace_added_when_it_is_callable(): void
     {
         $router = new Router;
         $controller = new RouterTestController;
@@ -47,8 +50,8 @@ class RouterTest extends TestCase
         $this->assertSame(RouterTestController::class . '@test', $route->getActionName());
     }
 
-    /** @test */
-    public function controller_does_not_have_namespace_added_when_it_is_closure()
+    #[Test]
+    public function controller_does_not_have_namespace_added_when_it_is_closure(): void
     {
         $router = new Router;
         $controller = new RouterTestController;
@@ -58,10 +61,8 @@ class RouterTest extends TestCase
         $this->assertSame('Closure', $route->getActionName());
     }
 
-    /**
-     * @test
-     */
-    public function can_extend_post_behaviour_with_macros()
+    #[Test]
+    public function can_extend_post_behaviour_with_macros(): void
     {
         Router::macro('testFunctionAddedByMacro', function () {
             return 'abc123';
@@ -73,10 +74,8 @@ class RouterTest extends TestCase
         $this->assertSame('abc123', Router::testFunctionAddedByMacro());
     }
 
-    /**
-     * @test
-     */
-    public function can_extend_post_behaviour_with_mixin()
+    #[Test]
+    public function can_extend_post_behaviour_with_mixin(): void
     {
         Router::mixin(new RouterMixin);
 
@@ -90,7 +89,7 @@ class RouterMixin
 {
     function testFunctionAddedByMixin()
     {
-        return function() {
+        return function () {
             return 'abc123';
         };
     }

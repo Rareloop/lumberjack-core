@@ -4,7 +4,7 @@ namespace Rareloop\Lumberjack\Test\Bootstrappers;
 
 use Brain\Monkey\Functions;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Rareloop\Lumberjack\Application;
@@ -13,21 +13,22 @@ use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Rareloop\Lumberjack\Exceptions\Handler;
 use Rareloop\Lumberjack\Exceptions\HandlerInterface;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use Rareloop\Router\Responsable;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class RegisterExceptionHandlerTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function errors_are_converted_to_exceptions()
     {
         $this->expectException(\ErrorException::class);
@@ -43,9 +44,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_USER_ERROR, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function E_NOTICE_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -66,9 +65,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_NOTICE, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function E_WARNING_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -89,9 +86,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_WARNING, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function E_USER_NOTICE_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -112,9 +107,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_USER_NOTICE, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function E_USER_DEPRECATED_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -135,9 +128,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function E_DEPRECATED_errors_are_not_converted_to_exceptions()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -158,9 +149,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_DEPRECATED, 'Test Error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function custom_error_level_can_be_set_for_report_only()
     {
         $this->expectException(\ErrorException::class);
@@ -184,7 +173,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleError(E_USER_DEPRECATED, 'Test Error');
     }
 
-    /** @test */
+    #[Test]
     public function handle_exception_should_call_handlers_report_and_render_methods()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -207,7 +196,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleException($exception);
     }
 
-    /** @test */
+    #[Test]
     public function handle_exception_should_call_handlers_report_and_render_methods_using_an_error()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -230,7 +219,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleException($error);
     }
 
-    /** @test */
+    #[Test]
     public function handle_exception_should_call_handlers_report_and_render_methods_even_if_request_is_not_set_in_the_container()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -251,7 +240,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleException($exception);
     }
 
-    /** @test */
+    #[Test]
     public function handle_exception_should_not_call_render_methods_when_exception_is_responsable()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
@@ -276,7 +265,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $bootstrapper->handleException($exception);
     }
 
-    /** @test */
+    #[Test]
     public function send_should_use_the_emitter()
     {
         $app = new Application;

@@ -3,7 +3,8 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Post;
@@ -14,7 +15,7 @@ use Throwable;
 class PostQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     private Application $app;
 
@@ -26,7 +27,7 @@ class PostQueryBuilderTest extends TestCase
         parent::setUp();
     }
 
-    /** @test */
+    #[Test]
     public function can_create_a_builder()
     {
         $builder = Post::builder();
@@ -37,7 +38,7 @@ class PostQueryBuilderTest extends TestCase
         ], $builder->getParameters());
     }
 
-    /** @test */
+    #[Test]
     public function can_create_a_builder_from_static_functions()
     {
         $this->assertQueryBuilder('whereStatus', ['publish'], QueryBuilderTestPost::class);
@@ -45,20 +46,12 @@ class PostQueryBuilderTest extends TestCase
         $this->assertQueryBuilder('whereIdNotIn', [[1, 2, 3]], QueryBuilderTestPost::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throw_error_on_missing_static_function()
     {
-        $errorThrown = false;
-
-        try {
+        $this->assertTriggeredUserError(function () {
             Post::missingStaticFunction();
-        } catch (Throwable $e) {
-            $errorThrown = true;
-        }
-
-        $this->assertTrue($errorThrown);
+        });
     }
 
     private function assertQueryBuilder($function, $params, $postType)
