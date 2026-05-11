@@ -49,7 +49,7 @@ class PostQueryBuilderTest extends TestCase
     #[Test]
     public function throw_error_on_missing_static_function()
     {
-        $this->assertTriggeredError(function () {
+        $this->assertTriggeredUserError(function () {
             Post::missingStaticFunction();
         });
     }

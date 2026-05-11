@@ -12,10 +12,6 @@ use Timber\Timber;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
-/**
- * The above is required as we're using alias mocks which persist between tests
- * https://laracasts.com/discuss/channels/testing/mocking-a-class-persists-over-tests/replies/103075
- */
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 class TimberResponseTest extends TestCase

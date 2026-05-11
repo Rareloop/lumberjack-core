@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Throwable;
 use Timber\Timber;
 use Timber\PostQuery;
@@ -25,8 +26,8 @@ class ScopedQueryBuilderTest extends TestCase
      * @var array<string, string>
      */
     public $params;
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
+    use MockeryPHPUnitIntegration,
+        ArraySubsetAsserts;
 
     private Application $app;
 
@@ -113,7 +114,7 @@ class ScopedQueryBuilderTest extends TestCase
     #[Test]
     public function missing_query_scope_throws_an_error(): void
     {
-        $this->assertTriggeredError(function () {
+        $this->assertTriggeredUserError(function () {
             $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
             $builder->nonExistentScope();
         });

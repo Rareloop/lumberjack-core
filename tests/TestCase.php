@@ -9,16 +9,16 @@ abstract class TestCase extends BaseTestCase
     /**
      * Asserts that the provided callback triggers an E_USER_ERROR.
      */
-    protected function assertTriggeredError(callable $callback, string $expectedMessage = ''): void
+    protected function assertTriggeredUserError(callable $callback, string $expectedMessage = ''): void
     {
         $errorTriggered = false;
         $actualMessage = '';
 
-        set_error_handler(function (int $errno, string $errstr) use (&$errorTriggered, &$actualMessage) {
+        set_error_handler(function (int $errNo, string $errStr) use (&$errorTriggered, &$actualMessage) {
             $errorTriggered = true;
-            $actualMessage = $errstr;
+            $actualMessage = $errStr;
 
-            throw new \ErrorException($errstr, 0, $errno);
+            throw new \ErrorException($errStr, 0, $errNo);
         }, E_USER_ERROR);
 
         try {
@@ -29,14 +29,13 @@ abstract class TestCase extends BaseTestCase
             restore_error_handler();
         }
 
-        // 4. Perform the actual PHPUnit assertions
         $this->assertTrue($errorTriggered, 'Failed asserting that an E_USER_ERROR was triggered.');
 
         if ($expectedMessage !== '') {
-            $this->assertStringContainsString(
+            $this->assertEquals(
                 $expectedMessage,
                 $actualMessage,
-                "The triggered error message did not contain: '{$expectedMessage}'"
+                "The triggered error message was not: '{$expectedMessage}'"
             );
         }
     }
