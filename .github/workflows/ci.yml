@@ -1,6 +1,16 @@
 name: CI
 
-on: [push, pull_request]
+on:
+    push:
+        branches: [master]
+    pull_request:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
 
 jobs:
     ci:
@@ -27,8 +37,8 @@ jobs:
                   extensions: xdebug, curl
                   tools: composer
 
-            - name: Configure Git
-              run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+            # - name: Configure Git
+            #   run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
             - name: Install dependencies
               run: composer update ${{ matrix.composer_flags }}
@@ -55,9 +65,8 @@ jobs:
                   output: both
                   thresholds: "60 80"
 
-            - name: Add Coverage PR Comment
-              if: github.event_name == 'pull_request' && matrix.php == '8.3' && matrix.dependency_type == 'stable'
-              uses: marocchino/sticky-pull-request-comment@v2
-              with:
-                  recreate: true
-                  path: code-coverage-results.md
+            - name: Write Coverage to Job Summary
+              if: matrix.php == '8.3' && matrix.dependency_type == 'stable'
+              run: |
+                  echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
+                  cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
