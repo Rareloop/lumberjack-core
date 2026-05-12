@@ -3,7 +3,8 @@
 namespace Rareloop\Lumberjack\Test\Http;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Server\MiddlewareInterface;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
@@ -12,7 +13,7 @@ class MiddlewareAliasStoreTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function can_register_an_alias_for_a_middleware_object()
     {
         $store = new MiddlewareAliasStore;
@@ -23,7 +24,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertSame($middleware, $store->get('middlewarekey'));
     }
 
-    /** @test */
+    #[Test]
     public function can_register_an_alias_for_a_middleware_closure_factory()
     {
         $store = new MiddlewareAliasStore;
@@ -36,7 +37,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertSame($middleware, $store->get('middlewarekey'));
     }
 
-    /** @test */
+    #[Test]
     public function can_register_an_alias_for_a_classname()
     {
         $store = new MiddlewareAliasStore();
@@ -46,7 +47,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertInstanceOf(MASTestClass::class, $store->get('middlewarekey'));
     }
 
-    /** @test */
+    #[Test]
     public function can_register_an_alias_with_params_for_a_middleware_closure_factory()
     {
         $store = new MiddlewareAliasStore;
@@ -61,7 +62,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertSame($middleware, $store->get('middlewarekey:123,abc'));
     }
 
-    /** @test */
+    #[Test]
     public function can_register_an_alias_with_params_for_a_classname()
     {
         $store = new MiddlewareAliasStore;
@@ -74,7 +75,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertSame('abc', $middleware->param2);
     }
 
-    /** @test */
+    #[Test]
     public function can_check_if_alias_exists()
     {
         $store = new MiddlewareAliasStore;
@@ -87,7 +88,7 @@ class MiddlewareAliasStoreTest extends TestCase
         $this->assertTrue($store->has('middlewarekey'));
     }
 
-    /** @test */
+    #[Test]
     public function can_check_if_alias_exists_when_string_contains_params()
     {
         $store = new MiddlewareAliasStore;
@@ -101,14 +102,9 @@ class MiddlewareAliasStoreTest extends TestCase
     }
 }
 
-class MASTestClass
-{
-
-}
+class MASTestClass {}
 
 class MASTestClassWithConstructorParams
 {
-    public function __construct(public $param1, public $param2)
-    {
-    }
+    public function __construct(public $param1, public $param2) {}
 }

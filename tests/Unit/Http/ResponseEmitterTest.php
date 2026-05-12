@@ -2,26 +2,27 @@
 
 namespace Rareloop\Lumberjack\Test\Http;
 
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Laminas\Diactoros\Response\TextResponse;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use phpmock\MockBuilder;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 class ResponseEmitterTest extends TestCase
 {
-    /** @test */
-    public function emit_should_echo_body_when_headers_sent()
+    #[Test]
+    public function emit_should_echo_body_when_headers_sent(): void
     {
         $builder = new MockBuilder();
         $builder->setNamespace('Rareloop\Lumberjack\Http')
-                ->setName('headers_sent')
-                ->setFunction(function () {
-                    return true;
-                });
+            ->setName('headers_sent')
+            ->setFunction(function () {
+                return true;
+            });
         $mock = $builder->build();
         $mock->enable();
 
@@ -37,35 +38,34 @@ class ResponseEmitterTest extends TestCase
         $mock->disable();
     }
 
-    /** @test */
-    public function emit_should_use_sapi_emitter_when_headers_not_sent()
+    #[Test]
+    public function emit_should_use_sapi_emitter_when_headers_not_sent(): void
     {
         $builder = new MockBuilder();
         $builder->setNamespace('Rareloop\Lumberjack\Http')
-                ->setName('headers_sent')
-                ->setFunction(function () {
-                    return false;
-                });
+            ->setName('headers_sent')
+            ->setFunction(function () {
+                return false;
+            });
         $mock = $builder->build();
         $mock->enable();
 
-        // SapiEmitter uses the global header() function. 
+        // SapiEmitter uses the global header() function.
         // We mock it in the SapiEmitter's namespace to prevent it from actually sending headers
         $headerBuilder = new MockBuilder();
         $headerBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
-                ->setName('header')
-                ->setFunction(function () {
-                });
+            ->setName('header')
+            ->setFunction(function () {});
         $headerMock = $headerBuilder->build();
         $headerMock->enable();
 
         // SapiEmitterTrait checks for namespaced headers_sent
         $emitterHeadersSentBuilder = new MockBuilder();
         $emitterHeadersSentBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
-                ->setName('headers_sent')
-                ->setFunction(function () {
-                    return false;
-                });
+            ->setName('headers_sent')
+            ->setFunction(function () {
+                return false;
+            });
         $emitterHeadersSentMock = $emitterHeadersSentBuilder->build();
         $emitterHeadersSentMock->enable();
 

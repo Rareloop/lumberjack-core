@@ -2,12 +2,13 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Config;
+use PHPUnit\Framework\Attributes\Test;
 
 class ConfigTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function config_values_can_be_set_and_get()
     {
         $config = new Config;
@@ -17,7 +18,7 @@ class ConfigTest extends TestCase
         $this->assertSame('production', $config->get('app.environment'));
     }
 
-    /** @test */
+    #[Test]
     public function get_returns_default_when_no_value_is_set()
     {
         $config = new Config;
@@ -26,7 +27,7 @@ class ConfigTest extends TestCase
         $this->assertSame('production', $config->get('app.environment', 'production'));
     }
 
-    /** @test */
+    #[Test]
     public function get_ignores_default_when_value_is_set()
     {
         $config = new Config;
@@ -36,7 +37,7 @@ class ConfigTest extends TestCase
         $this->assertSame('production', $config->get('app.environment', 'staging'));
     }
 
-    /** @test */
+    #[Test]
     public function get_returns_default_when_using_dot_notation_but_not_an_array()
     {
         $config = new Config;
@@ -46,7 +47,7 @@ class ConfigTest extends TestCase
         $this->assertSame(false, $config->get('app.logs.enabled', false));
     }
 
-    /** @test */
+    #[Test]
     public function set_is_chainable()
     {
         $config = new Config;
@@ -54,7 +55,7 @@ class ConfigTest extends TestCase
         $this->assertSame($config, $config->set('app.environment', 'production'));
     }
 
-    /** @test */
+    #[Test]
     public function can_read_config_from_files()
     {
         $config = new Config;
@@ -66,7 +67,7 @@ class ConfigTest extends TestCase
         $this->assertSame(123, $config->get('another.test'));
     }
 
-    /** @test */
+    #[Test]
     public function can_read_config_from_files_in_constructor()
     {
         $config = new Config(__DIR__ . '/config');
@@ -76,7 +77,7 @@ class ConfigTest extends TestCase
         $this->assertSame(123, $config->get('another.test'));
     }
 
-    /** @test */
+    #[Test]
     public function read_is_chainable()
     {
         $config = new Config;
@@ -84,7 +85,7 @@ class ConfigTest extends TestCase
         $this->assertSame($config, $config->load(__DIR__ . '/config'));
     }
 
-    /** @test */
+    #[Test]
     public function config_values_can_be_checked_for_existence()
     {
         $config = new Config;

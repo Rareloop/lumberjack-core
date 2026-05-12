@@ -3,7 +3,8 @@
 namespace Rareloop\Lumberjack\Test;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Session\FileSessionHandler;
 use Rareloop\Lumberjack\Session\Store;
 use org\bovigo\vfs\vfsStream;
@@ -16,10 +17,12 @@ class FileSessionHandlerTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->rootFileSystem = vfsStream::setup('exampleDir');
     }
 
-    /** @test */
+    #[Test]
     public function open_returns_true()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -27,7 +30,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertTrue($handler->open('save-path', 'session-name'));
     }
 
-    /** @test */
+    #[Test]
     public function close_returns_true()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -35,7 +38,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertTrue($handler->close());
     }
 
-    /** @test */
+    #[Test]
     public function write_creates_a_file_to_disk()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -47,7 +50,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertSame('abc', file_get_contents(vfsStream::url('exampleDir/lumberjack_session_12345')));
     }
 
-    /** @test */
+    #[Test]
     public function read_gets_data_from_disk_when_file_exists()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -58,7 +61,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertSame('abc', $response);
     }
 
-    /** @test */
+    #[Test]
     public function read_returns_empty_string_when_file_does_not_exist()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -68,7 +71,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertSame('', $response);
     }
 
-    /** @test */
+    #[Test]
     public function destroy_removes_file_from_disk_when_file_exists()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -80,7 +83,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertFalse($this->rootFileSystem->hasChild('lumberjack_session_12345'));
     }
 
-    /** @test */
+    #[Test]
     public function destroy_returns_true_when_file_does_not_exist()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));
@@ -91,7 +94,7 @@ class FileSessionHandlerTest extends TestCase
         $this->assertFalse($this->rootFileSystem->hasChild('lumberjack_session_12345'));
     }
 
-    /** @test */
+    #[Test]
     public function gc_does_not_remove_files_that_are_not_older_than_the_lifetime()
     {
         $handler = new FileSessionHandler(vfsStream::url('exampleDir'));

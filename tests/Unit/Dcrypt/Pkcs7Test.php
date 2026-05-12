@@ -3,8 +3,9 @@
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
 use Rareloop\Lumberjack\Dcrypt\Pkcs7;
+use Rareloop\Lumberjack\Test\TestCase;
 
-class Pkcs7Test extends \PHPUnit\Framework\TestCase
+class Pkcs7Test extends TestCase
 {
     public function testVectors()
     {

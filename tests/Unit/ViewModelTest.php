@@ -2,14 +2,15 @@
 
 namespace Rareloop\Lumberjack\Test;
 
-use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Test\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\ViewModel;
 
 class ViewModelTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function public_methods_are_serialised_by_to_array()
     {
         $viewModel = new TestViewModel();
@@ -21,7 +22,7 @@ class ViewModelTest extends TestCase
         $this->assertFalse(isset($data['privateFoo']));
     }
 
-    /** @test */
+    #[Test]
     public function public_methods_with_params_are_not_serialised_by_to_array()
     {
         $viewModel = new TestMethodWithParamsViewModel();
@@ -30,7 +31,7 @@ class ViewModelTest extends TestCase
         $this->assertFalse(isset($data['foo']));
     }
 
-    /** @test */
+    #[Test]
     public function static_public_methods_are_not_serialised_by_to_array()
     {
         $viewModel = new TestStaticMethodViewModel();
@@ -40,7 +41,7 @@ class ViewModelTest extends TestCase
         $this->assertFalse(isset($data['staticFoo']));
     }
 
-    /** @test */
+    #[Test]
     public function public_properties_are_serialised_by_to_array()
     {
         $viewModel = new TestPropertiesViewModel();
@@ -52,7 +53,7 @@ class ViewModelTest extends TestCase
         $this->assertFalse(isset($data['privateFoo']));
     }
 
-    /** @test */
+    #[Test]
     public function static_public_properties_are_not_serialised_by_to_array()
     {
         $viewModel = new TestStaticPropertiesViewModel();

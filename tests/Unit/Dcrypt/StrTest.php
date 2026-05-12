@@ -3,8 +3,9 @@
 namespace Rareloop\Lumberjack\Test\Unit\Dcrypt;
 
 use Rareloop\Lumberjack\Dcrypt\Str;
+use Rareloop\Lumberjack\Test\TestCase;
 
-class StrTest extends \PHPUnit\Framework\TestCase
+class StrTest extends TestCase
 {
     public function testEquals()
     {

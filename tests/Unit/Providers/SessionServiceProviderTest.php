@@ -2,18 +2,19 @@
 
 namespace Rareloop\Lumberjack\Test\Providers;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Providers\SessionServiceProvider;
 use Rareloop\Lumberjack\Session\SessionManager;
-use Rareloop\Lumberjack\Test\Unit\BrainMonkeyPHPUnitIntegration;
+use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 
 class SessionServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
-    /** @test */
-    public function session_is_registered_in_container()
+    #[Test]
+    public function session_is_registered_in_container(): void
     {
         $app = new Application();
         $provider = new SessionServiceProvider($app);
