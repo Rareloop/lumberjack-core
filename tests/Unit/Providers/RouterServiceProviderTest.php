@@ -82,7 +82,8 @@ class RouterServiceProviderTest extends TestCase
         $store->set('middleware-key', new RSPAddHeaderMiddleware('X-Key', 'abc'));
         $request = new ServerRequest([], [], '/test/123', 'GET');
 
-        $router->get('/test/123', function () {})->middleware('middleware-key');
+        $router->get('/test/123', function () {
+        })->middleware('middleware-key');
         $response = $router->match($request);
 
         $this->assertTrue($response->hasHeader('X-Key'));
@@ -289,7 +290,9 @@ class RouterServiceProviderTest extends TestCase
 
 class RSPAddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value) {}
+    public function __construct(private $key, private $value)
+    {
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

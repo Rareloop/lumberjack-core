@@ -8,7 +8,6 @@ use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Encrypter;
 use PHPUnit\Framework\Attributes\Test;
-
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
@@ -71,7 +70,7 @@ class EncrypterTest extends TestCase
     #[Test]
     public function can_process_objects()
     {
-        $payload = new \stdClass;
+        $payload = new \stdClass();
         $payload->foo = 'bar';
         $encrypter = new Encrypter('secret-key');
 

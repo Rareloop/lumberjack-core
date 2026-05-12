@@ -19,7 +19,7 @@ class ImageSizesServiceProviderTest extends TestCase
     public function single_image_size_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('images.sizes', [
             [
@@ -42,7 +42,7 @@ class ImageSizesServiceProviderTest extends TestCase
     public function add_image_size_should_not_be_called_if_images_sizes_config_is_empty(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('images.sizes', []);
 
@@ -57,7 +57,7 @@ class ImageSizesServiceProviderTest extends TestCase
     public function add_image_size_should_not_be_called_if_images_sizes_config_is_not_set(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         Functions\expect('add_image_size')
             ->times(0);
@@ -70,7 +70,7 @@ class ImageSizesServiceProviderTest extends TestCase
     public function crop_should_be_false_if_not_set(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('images.sizes', [
             [
@@ -92,7 +92,7 @@ class ImageSizesServiceProviderTest extends TestCase
     public function multiple_image_sizes_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('images.sizes', [
             [

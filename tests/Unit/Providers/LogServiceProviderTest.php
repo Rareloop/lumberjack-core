@@ -41,7 +41,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/../');
 
-        $config = new Config;
+        $config = new Config();
         $app->bind('config', $config);
 
         $app->bootstrapWith([
@@ -56,7 +56,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/../');
 
-        $config = new Config;
+        $config = new Config();
         $app->bind('config', $config);
 
         $app->bootstrapWith([
@@ -71,7 +71,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/../');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.logs.enabled', false);
         $config->set('app.logs.path', 'app.log');
         $app->bind('config', $config);
@@ -88,7 +88,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/../');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.logs.level', Level::Error);
         $app->bind('config', $config);
 
@@ -104,7 +104,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application('/base/path');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.logs.enabled', true);
         $config->set('app.logs.path', false);
         $app->bind('config', $config);
@@ -121,7 +121,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application('/base/path');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.logs.enabled', false);
         $config->set('app.logs.path', false);
         $app->bind('config', $config);
@@ -138,7 +138,7 @@ class LogServiceProviderTest extends TestCase
     {
         $app = new Application('/base/path');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.logs.enabled', true);
         $config->set('app.logs.path', '/base/new.log');
         $app->bind('config', $config);

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ruleset name="Lumberjack">
+    <description>Lumberjack Coding Standard</description>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <!-- Use PSR12 as a base -->
+    <rule ref="PSR12"/>
+
+    <!-- Allow snake_case in tests -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Allow multiple classes in a file for tests (stubs/mocks) -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Allow multiple namespaces/classes in a file for tests -->
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+</ruleset>

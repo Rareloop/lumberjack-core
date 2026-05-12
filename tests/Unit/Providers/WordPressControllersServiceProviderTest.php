@@ -25,7 +25,7 @@ use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Responsable;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
-use \Mockery;
+use Mockery;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 
 class WordPressControllersServiceProviderTest extends TestCase
@@ -111,7 +111,10 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
 
-        $this->assertSame('App\\Error404Controller', $provider->getControllerClassFromTemplate(__DIR__ . 'includes/404.php'));
+        $this->assertSame(
+            'App\\Error404Controller',
+            $provider->getControllerClassFromTemplate(__DIR__ . 'includes/404.php')
+        );
     }
 
     #[Test]
@@ -137,7 +140,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
         $provider = new WordPressControllersServiceProvider($app);
 
-        $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), 'Does\\Not\\Exist', 'handle');
 
         $this->assertFalse($response);
     }
@@ -153,7 +156,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), 'Does\\Not\\Exist', 'handle');
     }
 
     #[Test]
@@ -168,7 +171,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestController::class, 'handle');
 
         $this->assertTrue($app->hasRequestBeenHandled());
     }
@@ -181,7 +184,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, 'Does\\Not\\Exist', 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), 'Does\\Not\\Exist', 'handle');
 
         $this->assertFalse($app->hasRequestBeenHandled());
     }
@@ -198,7 +201,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestController::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestController::class, 'handle');
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
@@ -215,7 +218,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerReturningAResponsable::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerReturningAResponsable::class, 'handle');
 
         $this->assertInstanceOf(TextResponse::class, $response);
         $this->assertSame('testing123', $response->getBody()->getContents());
@@ -233,7 +236,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithConstructorParams::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithConstructorParams::class, 'handle');
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
@@ -250,7 +253,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithHandleParams::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithHandleParams::class, 'handle');
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
@@ -263,14 +266,14 @@ class WordPressControllersServiceProviderTest extends TestCase
             ->andReturn(false);
 
         $app = new Application(__DIR__ . '/../');
-        $controller = new TestControllerWithMiddleware;
+        $controller = new TestControllerWithMiddleware();
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'));
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithMiddleware::class, 'handle');
 
         $this->assertTrue($response->hasHeader('X-Header'));
         $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
@@ -285,13 +288,13 @@ class WordPressControllersServiceProviderTest extends TestCase
         $app = new Application(__DIR__ . '/../');
         $app->bind(PasswordProtected::class, $mock);
 
-        $controller = new TestControllerWithMiddleware;
+        $controller = new TestControllerWithMiddleware();
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithMiddleware::class, 'handle');
 
         $this->assertSame('password-protected', $response->getBody()->getContents());
     }
@@ -304,14 +307,14 @@ class WordPressControllersServiceProviderTest extends TestCase
             ->andReturn(false);
 
         $app = new Application(__DIR__ . '/../');
-        $controller = new TestControllerWithMiddleware;
+        $controller = new TestControllerWithMiddleware();
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->only('notHandle');
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithMiddleware::class, 'handle');
 
         $this->assertFalse($response->hasHeader('X-Header'));
     }
@@ -324,14 +327,14 @@ class WordPressControllersServiceProviderTest extends TestCase
             ->andReturn(false);
 
         $app = new Application(__DIR__ . '/../');
-        $controller = new TestControllerWithMiddleware;
+        $controller = new TestControllerWithMiddleware();
         $controller->middleware(new AddHeaderMiddleware('X-Header', 'testing123'))->except('handle');
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
         $provider = new WordPressControllersServiceProvider($app);
         $provider->boot();
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithMiddleware::class, 'handle');
 
         $this->assertFalse($response->hasHeader('X-Header'));
     }
@@ -351,7 +354,7 @@ class WordPressControllersServiceProviderTest extends TestCase
 
         $app = new Application(__DIR__ . '/../');
 
-        $controller = new TestControllerWithMiddleware;
+        $controller = new TestControllerWithMiddleware();
         $controller->middleware('middleware-key');
         $app->bind(TestControllerWithMiddleware::class, $controller);
 
@@ -364,7 +367,7 @@ class WordPressControllersServiceProviderTest extends TestCase
         $store = $app->get(MiddlewareAliases::class);
         $store->set('middleware-key', new AddHeaderMiddleware('X-Header', 'testing123'));
 
-        $response = $provider->handleRequest(new ServerRequest, TestControllerWithMiddleware::class, 'handle');
+        $response = $provider->handleRequest(new ServerRequest(), TestControllerWithMiddleware::class, 'handle');
 
         $this->assertTrue($response->hasHeader('X-Header'));
         $this->assertSame('testing123', $response->getHeader('X-Header')[0]);
@@ -400,19 +403,27 @@ class WordPressControllersServiceProviderTest extends TestCase
 
 class TestController
 {
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class TestControllerWithConstructorParams
 {
-    public function __construct(Application $app) {}
+    public function __construct(Application $app)
+    {
+    }
 
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class TestControllerWithHandleParams
 {
-    public function handle(Application $app) {}
+    public function handle(Application $app)
+    {
+    }
 }
 
 class MyResponsable implements Responsable
@@ -427,18 +438,22 @@ class TestControllerReturningAResponsable
 {
     public function handle()
     {
-        return new MyResponsable;
+        return new MyResponsable();
     }
 }
 
 class TestControllerWithMiddleware extends Controller
 {
-    public function handle() {}
+    public function handle()
+    {
+    }
 }
 
 class AddHeaderMiddleware implements MiddlewareInterface
 {
-    public function __construct(private $key, private $value) {}
+    public function __construct(private $key, private $value)
+    {
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

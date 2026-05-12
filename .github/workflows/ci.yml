@@ -1,46 +1,69 @@
 name: CI
 
-on: [push, pull_request]
+on:
+    push:
+        branches: [master]
+    pull_request:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php_version: [8.3, 8.4, 8.5]
-        composer_flags: ['', '--prefer-lowest']
+    ci:
+        name: PHP ${{ matrix.php }} ${{ matrix.dependency_type }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.3", "8.4", "8.5"]
+                dependency_type: ["stable", "lowest"]
+                include:
+                    - dependency_type: "stable"
+                      composer_flags: "--no-interaction --no-progress"
+                    - dependency_type: "lowest"
+                      composer_flags: "--no-interaction --no-progress --prefer-lowest"
 
-    steps:
-    - uses: actions/checkout@v6
+        steps:
+            - uses: actions/checkout@v6
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php_version }}
-        extensions: xdebug
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: xdebug, curl
+                  tools: composer
 
-    - name: Install dependencies
-      uses: php-actions/composer@v6
-      with:
-        php_version: ${{ matrix.php_version }}
-        args: ${{ matrix.composer_flags }}
-        command: update
+            - name: Install dependencies
+              run: composer update ${{ matrix.composer_flags }}
 
-    - name: Run tests
-      run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
-      env:
-          XDEBUG_MODE: coverage
+            - name: Run lint
+              run: ./vendor/bin/phpcs
 
-    - name: Run Codesniffer
-      run: vendor/bin/phpcs --standard=PSR2 ./src
+            - name: Run tests
+              run: ./vendor/bin/phpunit --coverage-cobertura ./cobertura.xml
+              env:
+                  XDEBUG_MODE: coverage
 
-    # - name: Submit coverage to Coveralls
-    #   # We use php-coveralls library for this, as the official Coveralls GitHub Action lacks support for clover reports:
-    #   # https://github.com/coverallsapp/github-action/issues/15
-    #   env:
-    #     COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     COVERALLS_PARALLEL: true
-    #     COVERALLS_FLAG_NAME: ${{ github.job }}-PHP-${{ matrix.php_version }} ${{ matrix.composer_flags }}
-    #   run: |
-    #     composer global require php-coveralls/php-coveralls
-    #     ~/.composer/vendor/bin/php-coveralls -v
+            - name: Code Coverage Report
+              if: matrix.php == '8.3' && matrix.dependency_type == 'stable'
+              uses: irongut/CodeCoverageSummary@v1.3.0
+              with:
+                  filename: ./cobertura.xml
+                  badge: true
+                  fail_below_min: true
+                  format: markdown
+                  hide_branch_rate: false
+                  hide_complexity: true
+                  indicators: true
+                  output: both
+                  thresholds: "60 80"
+
+            - name: Write Coverage to Job Summary
+              if: matrix.php == '8.3' && matrix.dependency_type == 'stable'
+              run: |
+                  echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
+                  cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY

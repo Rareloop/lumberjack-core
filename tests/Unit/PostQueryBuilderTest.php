@@ -14,14 +14,14 @@ use Throwable;
 
 class PostQueryBuilderTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     private Application $app;
 
     public function setUp(): void
     {
-        $this->app = new Application;
+        $this->app = new Application();
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
 
         parent::setUp();

@@ -27,7 +27,10 @@ trait ArraySubsetAsserts
         foreach ($subset as $key => $value) {
             Assert::assertArrayHasKey($key, $array, $message);
 
-            if ((is_array($value) || $value instanceof \ArrayAccess) && (is_array($array[$key]) || $array[$key] instanceof \ArrayAccess)) {
+            if (
+                (is_array($value) || $value instanceof \ArrayAccess) &&
+                (is_array($array[$key]) || $array[$key] instanceof \ArrayAccess)
+            ) {
                 $this->assertArraySubset($value, $array[$key], $checkForObjectIdentity, $message);
             } else {
                 if ($checkForObjectIdentity) {

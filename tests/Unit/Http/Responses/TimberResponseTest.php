@@ -238,7 +238,7 @@ class TestViewModel extends ViewModel
 
     public static function createFromArray(array $array)
     {
-        $vm = new static;
+        $vm = new static();
 
         foreach ($array as $key => $value) {
             $vm->{$key} = $value;

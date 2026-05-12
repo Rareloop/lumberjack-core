@@ -55,7 +55,8 @@ class ResponseEmitterTest extends TestCase
         $headerBuilder = new MockBuilder();
         $headerBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
             ->setName('header')
-            ->setFunction(function () {});
+            ->setFunction(function () {
+            });
         $headerMock = $headerBuilder->build();
         $headerMock->enable();
 

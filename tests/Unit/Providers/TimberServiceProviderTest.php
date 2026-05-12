@@ -15,7 +15,6 @@ use Rareloop\Lumberjack\Bootstrappers\BootProviders;
 use Rareloop\Lumberjack\Bootstrappers\RegisterProviders;
 use Rareloop\Lumberjack\Providers\TimberServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
-
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
@@ -45,7 +44,7 @@ class TimberServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/../');
 
-        $config = new Config;
+        $config = new Config();
         $config->set('timber.paths', [
             'path/one',
             'path/two',

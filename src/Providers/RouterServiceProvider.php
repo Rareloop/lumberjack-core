@@ -15,7 +15,7 @@ class RouterServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $store = new MiddlewareAliasStore;
+        $store = new MiddlewareAliasStore();
         $resolver = new MiddlewareResolver($this->app, $store);
 
         $router = new Router($this->app, $resolver);

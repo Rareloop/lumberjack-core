@@ -18,7 +18,7 @@ class ServerRequestTest extends TestCase
     #[Test]
     public function request_is_prs7_compliant(): void
     {
-        $request = new ServerRequest;
+        $request = new ServerRequest();
 
         $this->assertInstanceOf(ServerRequestInterface::class, $request);
     }
@@ -26,7 +26,7 @@ class ServerRequestTest extends TestCase
     #[Test]
     public function request_uses_extension_traits(): void
     {
-        $request = new ServerRequest;
+        $request = new ServerRequest();
 
         $traits = array_keys(class_uses($request));
 
@@ -47,7 +47,14 @@ class ServerRequestTest extends TestCase
     #[Test]
     public function fromRequest_parses_json_requests(): void
     {
-        $request = new DiactorosServerRequest([], [], '/test/123', 'POST', 'data://text/plain,{"foo": "bar"}', ['Content-Type' => 'application/json']);
+        $request = new DiactorosServerRequest(
+            [],
+            [],
+            '/test/123',
+            'POST',
+            'data://text/plain,{"foo": "bar"}',
+            ['Content-Type' => 'application/json']
+        );
 
         $lumberjackRequest = ServerRequest::fromRequest($request);
 

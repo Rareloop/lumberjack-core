@@ -11,7 +11,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function config_values_can_be_set_and_get()
     {
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.environment', 'production');
 
@@ -21,7 +21,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function get_returns_default_when_no_value_is_set()
     {
-        $config = new Config;
+        $config = new Config();
 
         $this->assertNull($config->get('app.environment'));
         $this->assertSame('production', $config->get('app.environment', 'production'));
@@ -30,7 +30,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function get_ignores_default_when_value_is_set()
     {
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.environment', 'production');
 
@@ -40,7 +40,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function get_returns_default_when_using_dot_notation_but_not_an_array()
     {
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.logs', 'app.log');
 
@@ -50,7 +50,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function set_is_chainable()
     {
-        $config = new Config;
+        $config = new Config();
 
         $this->assertSame($config, $config->set('app.environment', 'production'));
     }
@@ -58,7 +58,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function can_read_config_from_files()
     {
-        $config = new Config;
+        $config = new Config();
 
         $config->load(__DIR__ . '/config');
 
@@ -80,7 +80,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function read_is_chainable()
     {
-        $config = new Config;
+        $config = new Config();
 
         $this->assertSame($config, $config->load(__DIR__ . '/config'));
     }
@@ -88,7 +88,7 @@ class ConfigTest extends TestCase
     #[Test]
     public function config_values_can_be_checked_for_existence()
     {
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.environment', 'production');
         $config->set('app.null', null);

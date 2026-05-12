@@ -31,7 +31,7 @@ class OpensslBridge
      * dcrypt\mcrypt and dcrypt\aes. Since v7, this is only needed for backwards
      * compatibility with older versions
      */
-    const RIJNDA = 'rijndael-128';
+    public const RIJNDA = 'rijndael-128';
 
     /**
      * Decrypt cyphertext
