@@ -30,11 +30,8 @@ jobs:
             - name: Configure Git
               run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-            - name: DEBUG
-              run: composer update guzzlehttp/guzzle:7.10.0 --with-all-dependencies -vvv
-
             - name: Install dependencies
-              run: composer update ${{ matrix.composer_flags }}
+              run: composer update ${{ matrix.composer_flags }} --verbose --dry-run
 
             - name: Run lint
               run: composer run lint
