@@ -55,6 +55,7 @@
             "composer/installers": true
         }
     },
+    "minimum-stability": "stable",
     "scripts": {
         "lint": "phpcs",
         "lint-fix": "phpcbf"
