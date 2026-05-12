@@ -13,9 +13,9 @@ jobs:
                 dependency_type: ["stable", "lowest"]
                 include:
                     - dependency_type: "stable"
-                      composer_flags: "--no-interaction"
+                      composer_flags: "--no-interaction --no-progress"
                     - dependency_type: "lowest"
-                      composer_flags: "--no-interaction --prefer-lowest"
+                      composer_flags: "--no-interaction --no-progress --prefer-lowest"
 
         steps:
             - uses: actions/checkout@v6
@@ -29,6 +29,9 @@ jobs:
 
             - name: Configure Git
               run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+            - name: DEBUG
+              run: composer update guzzlehttp/guzzle:7.10.0 --with-all-dependencies -vvv
 
             - name: Install dependencies
               run: composer update ${{ matrix.composer_flags }}
