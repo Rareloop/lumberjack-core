@@ -31,13 +31,13 @@ jobs:
               run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
             - name: Install dependencies
-              run: composer update ${{ matrix.composer_flags }} --verbose --dry-run
+              run: composer update ${{ matrix.composer_flags }}
 
             - name: Run lint
-              run: composer run lint
+              run: ./vendor/bin/phpcs
 
             - name: Run tests
-              run: ./vendor/bin/phpunit--coverage-cobertura ./cobertura.xml
+              run: ./vendor/bin/phpunit --coverage-cobertura ./cobertura.xml
               env:
                   XDEBUG_MODE: coverage
 
