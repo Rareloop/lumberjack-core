@@ -36,15 +36,15 @@ class QueryBuilder implements QueryBuilderContract
     private $params = [];
 
     // Order Directions
-    const DESC = 'DESC';
-    const ASC = 'ASC';
+    public const DESC = 'DESC';
+    public const ASC = 'ASC';
 
     // Field Types
-    const NUMERIC = 'numeric';
+    public const NUMERIC = 'numeric';
 
     // Logical Operators
-    const OR = 'OR';
-    const AND = 'AND';
+    public const OR = 'OR';
+    public const AND = 'AND';
 
     public function getParameters(): array
     {

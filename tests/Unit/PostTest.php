@@ -18,8 +18,9 @@ use Timber\Timber;
 #[PreserveGlobalState(false)]
 class PostTest extends TestCase
 {
-    public $dummyData;
     use BrainMonkeyPHPUnitIntegration;
+
+    public $dummyData;
 
     #[Test]
     public function register_function_calls_register_post_type_when_post_type_and_config_are_provided()
@@ -30,7 +31,10 @@ class PostTest extends TestCase
 
         RegisterablePostType::register();
 
-        $this->assertNotFalse(has_filter('timber/post/classmap', [RegisterablePostType::class, 'filterTimberPostClassMap']));
+        $this->assertNotFalse(has_filter(
+            'timber/post/classmap',
+            [RegisterablePostType::class, 'filterTimberPostClassMap']
+        ));
     }
 
     #[Test]
@@ -57,7 +61,11 @@ class PostTest extends TestCase
 
         $output = RegisterablePostType::filterTimberPostClassMap($output);
 
-        $this->assertEqualsCanonicalizing(['another' => TimberPost::class, 'post' => Post::class, 'registerable_post_type' => RegisterablePostType::class], $output);
+        $this->assertEqualsCanonicalizing([
+            'another' => TimberPost::class,
+            'post' => Post::class,
+            'registerable_post_type' => RegisterablePostType::class,
+        ], $output);
     }
 
     #[Test]
@@ -196,7 +204,7 @@ class PostTest extends TestCase
     #[Test]
     public function can_extend_post_behaviour_with_mixin()
     {
-        Post::mixin(new PostMixin);
+        Post::mixin(new PostMixin());
 
         $post = new Post(null, true);
 
@@ -206,7 +214,7 @@ class PostTest extends TestCase
 
 class PostMixin
 {
-    function testFunctionAddedByMixin()
+    public function testFunctionAddedByMixin()
     {
         return function () {
             return 'abc123';

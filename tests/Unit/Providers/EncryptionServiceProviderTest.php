@@ -18,7 +18,7 @@ class EncryptionServiceProviderTest extends TestCase
     #[Test]
     public function encryptor_is_registered_in_container_when_a_config_key_is_present(): void
     {
-        $config = new Config;
+        $config = new Config();
         $config->set('app.key', 'encryption-key');
 
         $app = new Application();

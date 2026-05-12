@@ -42,7 +42,9 @@ class AesCbcTest extends TestSupport
     {
         $input = 'hello world';
         $pass = 'password';
-        $vector = \base64_decode('eZu2DqB2gYhdA2YkjagLNJJVMVo1BbpJ75tW/PO2bGIY98XHD+Gp+YlO5cv/rHzo45LHMCxL2qOircdST1w5hg==');
+        $vector = \base64_decode(
+            'eZu2DqB2gYhdA2YkjagLNJJVMVo1BbpJ75tW/PO2bGIY98XHD+Gp+YlO5cv/rHzo45LHMCxL2qOircdST1w5hg=='
+        );
 
         $this->assertEquals($input, AesCbc::decrypt($vector, $pass));
     }

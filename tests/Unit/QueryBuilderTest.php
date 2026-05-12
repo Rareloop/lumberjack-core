@@ -17,12 +17,13 @@ use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
+
     /**
      * @var array<string, string>
      */
     public $params;
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     #[Test]
     public function correct_post_type_is_set()
@@ -495,7 +496,7 @@ class QueryBuilderTest extends TestCase
     #[Test]
     public function can_extend_querybuilder_behaviour_with_mixin()
     {
-        QueryBuilder::mixin(new QueryBuilderMixin);
+        QueryBuilder::mixin(new QueryBuilderMixin());
 
         $queryBuilder = new QueryBuilder();
 
@@ -511,7 +512,8 @@ class QueryBuilderMixin
      * @var array<string, string>
      */
     public $params;
-    function testFunctionAddedByMixin()
+
+    public function testFunctionAddedByMixin()
     {
         return function () {
             $this->params['foo'] = 'bar';

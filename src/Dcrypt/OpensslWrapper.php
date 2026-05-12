@@ -16,7 +16,6 @@ namespace Rareloop\Lumberjack\Dcrypt;
 
 class OpensslWrapper
 {
-
     /**
      * OpenSSL encrypt wrapper function
      *

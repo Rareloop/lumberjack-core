@@ -31,5 +31,5 @@ class AesCtr extends AesCbc
      *
      * @var string
      */
-    const CIPHER = 'aes-256-ctr';
+    public const CIPHER = 'aes-256-ctr';
 }

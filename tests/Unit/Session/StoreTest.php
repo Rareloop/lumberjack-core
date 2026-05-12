@@ -11,8 +11,8 @@ use Rareloop\Lumberjack\Test\Unit\Session\NullSessionHandler;
 
 class StoreTest extends TestCase
 {
-    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration,
-        \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use \Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
 
     public static function chainableMethods(): array
     {
@@ -34,7 +34,7 @@ class StoreTest extends TestCase
     #[DataProvider('chainableMethods')]
     public function public_methods_are_chainable($methodName, ...$params)
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $this->assertSame($store, $store->{$methodName}(...$params));
     }
@@ -42,7 +42,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_get_session_name()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $this->assertSame('session-name', $store->getName());
     }
@@ -50,7 +50,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_get_session_id()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $this->assertSame('session-id', $store->getId());
     }
@@ -58,7 +58,7 @@ class StoreTest extends TestCase
     #[Test]
     public function id_is_generated_if_none_is_provided()
     {
-        $store = new Store('session-name', new NullSessionHandler);
+        $store = new Store('session-name', new NullSessionHandler());
 
         $this->assertNotNull($store->getId());
         $this->assertEquals(40, strlen($store->getId()));
@@ -67,7 +67,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_put_a_single_key_value_pair()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put('foo', 'bar');
 
@@ -77,7 +77,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_put_a_single_key_value_pair_as_array()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put(['foo' => 'bar']);
 
@@ -87,7 +87,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_get_a_default_value_if_none_is_present()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $this->assertSame(null, $store->get('foo'));
         $this->assertSame('bar', $store->get('foo', 'bar'));
@@ -96,7 +96,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_get_all_values()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put('foo1', 'bar1');
         $store->put('foo2', 'bar2');
@@ -110,7 +110,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_check_if_session_has_a_value_set()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put('foo', 'bar');
 
@@ -121,7 +121,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_pull_a_value()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put('foo', 'bar');
         $this->assertTrue($store->has('foo'));
@@ -135,7 +135,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_push_a_value_into_an_array_when_not_previously_set()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->push('foo', 'bar');
 
@@ -145,7 +145,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_push_a_value_into_an_array_when_it_already_exists()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->put('foo', ['bar1']);
         $store->push('foo', 'bar2');
@@ -156,7 +156,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_forget_a_single_value()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->push('foo', 'bar');
 
@@ -170,7 +170,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_forget_multiple_values()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->push('foo1', 'bar1');
         $store->push('foo2', 'bar2');
@@ -187,7 +187,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_flush_all_values()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->push('foo1', 'bar1');
         $store->push('foo2', 'bar2');
@@ -234,7 +234,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_flash_values_into_the_session_using_array_syntax()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash([
             'key' => 'value',
@@ -248,7 +248,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_flash_a_value_into_the_session()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo', 'bar');
 
@@ -258,7 +258,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_read_flash_value_after_one_save()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo', 'bar');
         $store->save();
@@ -269,7 +269,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_not_read_flash_value_after_two_saves()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo', 'bar');
         $store->save();
@@ -281,7 +281,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_flash_the_same_key_on_consecutive_sessions()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo', 'bar');
         $store->save();
@@ -295,7 +295,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_reflash_data()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo1', 'bar1');
         $store->flash('foo2', 'bar2');
@@ -315,7 +315,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_keep_a_single_key()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo1', 'bar1');
         $store->flash('foo2', 'bar2');
@@ -333,7 +333,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_keep_multiple_keys()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->flash('foo1', 'bar1');
         $store->flash('foo2', 'bar2');
@@ -351,7 +351,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_get_handler()
     {
-        $handler = new NullSessionHandler;
+        $handler = new NullSessionHandler();
         $store = new Store('session-name', $handler, 'session-id');
 
         $this->assertSame($handler, $store->getHandler());
@@ -360,7 +360,7 @@ class StoreTest extends TestCase
     #[Test]
     public function can_store_previous_url()
     {
-        $store = new Store('session-name', new NullSessionHandler, 'session-id');
+        $store = new Store('session-name', new NullSessionHandler(), 'session-id');
 
         $store->setPreviousUrl('/a/valid/route');
 

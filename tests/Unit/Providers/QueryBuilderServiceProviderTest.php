@@ -16,7 +16,7 @@ class QueryBuilderServiceProviderTest extends TestCase
     #[Test]
     public function query_builder_is_registered_into_container(): void
     {
-        $app = new Application;
+        $app = new Application();
         $provider = new QueryBuilderServiceProvider($app);
 
         $provider->register();

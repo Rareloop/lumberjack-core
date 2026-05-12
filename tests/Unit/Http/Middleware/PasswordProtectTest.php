@@ -26,7 +26,7 @@ class PasswordProtectTest extends TestCase
     #[Test]
     public function it_does_nothing_when_password_is_not_required()
     {
-        $middleware = new PasswordProtected;
+        $middleware = new PasswordProtected();
 
         Functions\expect('post_password_required')
             ->once()
@@ -44,7 +44,7 @@ class PasswordProtectTest extends TestCase
     #[Test]
     public function it_does_nothing_when_the_password_twig_file_is_not_found()
     {
-        $middleware = new PasswordProtected;
+        $middleware = new PasswordProtected();
 
         Functions\expect('post_password_required')
             ->once()
@@ -97,7 +97,7 @@ class PasswordProtectTest extends TestCase
 
         $handler->shouldReceive('handle')->never();
 
-        $middleware = new PasswordProtected;
+        $middleware = new PasswordProtected();
         $response = $middleware->process($request, $handler);
 
         $this->assertInstanceOf(TimberResponse::class, $response);

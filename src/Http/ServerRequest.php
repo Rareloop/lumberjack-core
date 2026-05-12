@@ -9,7 +9,8 @@ use Laminas\Diactoros\ServerRequest as DiactorosServerRequest;
 
 class ServerRequest extends DiactorosServerRequest
 {
-    use InteractsWithInput, InteractsWithUri;
+    use InteractsWithInput;
+    use InteractsWithUri;
 
     public static function fromRequest(ServerRequestInterface $request)
     {

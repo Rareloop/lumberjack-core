@@ -10,5 +10,5 @@ interface HandlerInterface
 {
     public function report(Exception $e);
 
-    public function render(ServerRequestInterface $request, Exception $e) : ResponseInterface;
+    public function render(ServerRequestInterface $request, Exception $e): ResponseInterface;
 }

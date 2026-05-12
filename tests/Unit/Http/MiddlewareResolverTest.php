@@ -17,10 +17,10 @@ class MiddlewareResolverTest extends TestCase
     #[Test]
     public function can_resolve_a_key_from_the_container()
     {
-        $app = new Application;
-        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore);
+        $app = new Application();
+        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore());
 
-        $datetime = new \DateTime;
+        $datetime = new \DateTime();
         $app->bind('datetime', $datetime);
 
         $this->assertSame($datetime, $resolver->resolve('datetime'));
@@ -29,8 +29,8 @@ class MiddlewareResolverTest extends TestCase
     #[Test]
     public function can_resolve_an_object_from_a_classname_from_the_container()
     {
-        $app = new Application;
-        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore);
+        $app = new Application();
+        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore());
 
         $this->assertInstanceOf(MRTestClass::class, $resolver->resolve(MRTestClass::class));
     }
@@ -38,10 +38,10 @@ class MiddlewareResolverTest extends TestCase
     #[Test]
     public function can_resolve_a_middleware_alias()
     {
-        $app = new Application;
+        $app = new Application();
         $store = Mockery::mock(MiddlewareAliases::class);
         $store->shouldReceive('has')->with('middlewarekey')->once()->andReturn(true);
-        $store->shouldReceive('get')->with('middlewarekey')->once()->andReturn(new MRTestClass);
+        $store->shouldReceive('get')->with('middlewarekey')->once()->andReturn(new MRTestClass());
         $resolver = new MiddlewareResolver($app, $store);
 
         $this->assertInstanceOf(MRTestClass::class, $resolver->resolve('middlewarekey'));
@@ -50,13 +50,15 @@ class MiddlewareResolverTest extends TestCase
     #[Test]
     public function non_string_values_are_returned_as_is()
     {
-        $app = new Application;
-        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore);
+        $app = new Application();
+        $resolver = new MiddlewareResolver($app, new MiddlewareAliasStore());
 
-        $datetime = new \DateTime;
+        $datetime = new \DateTime();
 
         $this->assertSame($datetime, $resolver->resolve($datetime));
     }
 }
 
-class MRTestClass {}
+class MRTestClass
+{
+}

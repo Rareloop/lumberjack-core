@@ -16,24 +16,24 @@ use Rareloop\Lumberjack\QueryBuilder;
 use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Rareloop\Lumberjack\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\Test\Unit\Concerns\ArraySubsetAsserts;
-
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
 class ScopedQueryBuilderTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+    use ArraySubsetAsserts;
+
     /**
      * @var array<string, string>
      */
     public $params;
-    use MockeryPHPUnitIntegration,
-        ArraySubsetAsserts;
 
     private Application $app;
 
     public function setUp(): void
     {
-        $this->app = new Application;
+        $this->app = new Application();
         $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
 
         parent::setUp();

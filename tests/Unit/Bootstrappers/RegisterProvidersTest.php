@@ -18,33 +18,33 @@ class RegisterProvidersTest extends TestCase
     #[Test]
     public function registers_all_providers_found_in_config()
     {
-        $app = new Application;
+        $app = new Application();
 
         $provider1 = Mockery::mock(RPTestServiceProvider1::class, [$app]);
         $provider1->shouldReceive('register')->once();
         $provider2 = Mockery::mock(RPTestServiceProvider2::class, [$app]);
         $provider2->shouldReceive('register')->once();
 
-        $config = new Config;
+        $config = new Config();
         $config->set('app.providers', [
             $provider1,
             $provider2,
         ]);
         $app->bind('config', $config);
 
-        $registerProvidersBootstrapper = new RegisterProviders;
+        $registerProvidersBootstrapper = new RegisterProviders();
         $registerProvidersBootstrapper->bootstrap($app);
     }
 
     #[Test]
     public function should_not_fall_over_on_empty_config_data()
     {
-        $app = new Application;
+        $app = new Application();
 
-        $config = new Config;
+        $config = new Config();
         $app->bind('config', $config);
 
-        $registerProvidersBootstrapper = new RegisterProviders;
+        $registerProvidersBootstrapper = new RegisterProviders();
         $registerProvidersBootstrapper->bootstrap($app);
 
         $this->addToAssertionCount(1);  // does not throw an exception
@@ -53,10 +53,14 @@ class RegisterProvidersTest extends TestCase
 
 class RPTestServiceProvider1 extends ServiceProvider
 {
-    public function register() {}
+    public function register()
+    {
+    }
 }
 
 class RPTestServiceProvider2 extends ServiceProvider
 {
-    public function register() {}
+    public function register()
+    {
+    }
 }

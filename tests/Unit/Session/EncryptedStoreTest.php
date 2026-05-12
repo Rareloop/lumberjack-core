@@ -27,7 +27,7 @@ class EncryptedStoreTest extends TestCase
             return $array['foo'] === 'bar';
         })->once();
 
-        $store = new EncryptedStore('session-name', new NullSessionHandler, $encrypter, 'session-id');
+        $store = new EncryptedStore('session-name', new NullSessionHandler(), $encrypter, 'session-id');
 
         $store->put('foo', 'bar');
 
@@ -65,7 +65,13 @@ class EncryptedStoreTest extends TestCase
         $errorHandler = Mockery::mock(HandlerInterface::class);
         $errorHandler->shouldReceive('report')->once();
 
-        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id', $errorHandler);
+        $store = new EncryptedStore(
+            'session-name',
+            $handler,
+            new Encrypter($encryptionKey),
+            'session-id',
+            $errorHandler
+        );
         $store->start();
 
         $this->assertSame(null, $store->get('foo'));
@@ -98,7 +104,13 @@ class EncryptedStoreTest extends TestCase
         $errorHandler = Mockery::mock(HandlerInterface::class);
         $errorHandler->shouldNotHaveReceived('report');
 
-        $store = new EncryptedStore('session-name', $handler, new Encrypter($encryptionKey), 'session-id', $errorHandler);
+        $store = new EncryptedStore(
+            'session-name',
+            $handler,
+            new Encrypter($encryptionKey),
+            'session-id',
+            $errorHandler
+        );
         $store->start();
 
         $this->assertSame(null, $store->get('foo'));

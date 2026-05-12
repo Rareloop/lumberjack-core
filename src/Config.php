@@ -16,7 +16,7 @@ class Config
         }
     }
 
-    public function set(string $key, $value) : Config
+    public function set(string $key, $value): Config
     {
         Arr::set($this->data, $key, $value);
 
@@ -33,7 +33,7 @@ class Config
         return Arr::has($this->data, $key);
     }
 
-    public function load(string $path) : Config
+    public function load(string $path): Config
     {
         $files = glob($path . '/*.php');
 

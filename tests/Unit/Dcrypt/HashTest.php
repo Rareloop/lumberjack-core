@@ -6,7 +6,6 @@ use Rareloop\Lumberjack\Dcrypt\Hash;
 
 class HashTest extends TestSupport
 {
-
     public function testIhmacSanity()
     {
         // Make sure at least one hash always happens with any kind of crazy cost value
@@ -58,7 +57,9 @@ class HashTest extends TestSupport
     {
         $input = 'hello world';
         $key = 'password';
-        $vector = base64_decode('dvvWMEFPCo9EV+l+htGGcoK5Uj8zrh6bfxCh16NOjJxuugObuidTQ3+R3qiyZLnHl7zRxSmfHRasEJQpTymZDw==');
+        $vector = base64_decode(
+            'dvvWMEFPCo9EV+l+htGGcoK5Uj8zrh6bfxCh16NOjJxuugObuidTQ3+R3qiyZLnHl7zRxSmfHRasEJQpTymZDw=='
+        );
         $this->assertTrue(Hash::verify($input, $vector, $key));
     }
 }

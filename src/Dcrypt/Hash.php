@@ -33,7 +33,7 @@ namespace Rareloop\Lumberjack\Dcrypt;
  */
 class Hash
 {
-    const ALGO = 'sha256';
+    public const ALGO = 'sha256';
 
     /**
      * Internal function used to build the actual hash.

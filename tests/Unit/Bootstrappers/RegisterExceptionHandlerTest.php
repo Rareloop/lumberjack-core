@@ -34,7 +34,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $this->expectException(\ErrorException::class);
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $config = new Config();
         $app->bind('config', $config);
         $app->bind(Config::class, $config);
@@ -49,7 +49,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -70,7 +70,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -91,7 +91,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -112,7 +112,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -133,7 +133,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -155,7 +155,7 @@ class RegisterExceptionHandlerTest extends TestCase
         $this->expectException(\ErrorException::class);
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
         $handler = Mockery::mock(HandlerInterface::class);
         $app->bind(HandlerInterface::class, $handler);
         $config = new Config();
@@ -178,7 +178,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
 
         $exception = new \Exception('Test Exception');
         $request = new ServerRequest([], [], '/test/123', 'GET');
@@ -201,7 +201,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
 
         $error = new \Error('Test Exception');
         $request = new ServerRequest([], [], '/test/123', 'GET');
@@ -209,7 +209,10 @@ class RegisterExceptionHandlerTest extends TestCase
 
         $handler = Mockery::mock(Handler::class);
         $handler->shouldReceive('report')->with(Mockery::type(\ErrorException::class))->once();
-        $handler->shouldReceive('render')->with($request, Mockery::type(\ErrorException::class))->once()->andReturn(new Response());
+        $handler->shouldReceive('render')
+            ->with($request, Mockery::type(\ErrorException::class))
+            ->once()
+            ->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
         $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
@@ -220,17 +223,20 @@ class RegisterExceptionHandlerTest extends TestCase
     }
 
     #[Test]
-    public function handle_exception_should_call_handlers_report_and_render_methods_even_if_request_is_not_set_in_the_container()
+    public function handle_exception_calls_handler_report_and_render_even_if_request_is_not_set()
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
 
         $exception = new \Exception('Test Exception');
 
         $handler = Mockery::mock(Handler::class);
         $handler->shouldReceive('report')->with($exception)->once();
-        $handler->shouldReceive('render')->with(Mockery::type(ServerRequest::class), $exception)->once()->andReturn(new Response());
+        $handler->shouldReceive('render')
+            ->with(Mockery::type(ServerRequest::class), $exception)
+            ->once()
+            ->andReturn(new Response());
         $app->bind(HandlerInterface::class, $handler);
 
         $bootstrapper = Mockery::mock(RegisterExceptionHandler::class . '[send]', [$app, new ResponseEmitter()]);
@@ -245,7 +251,7 @@ class RegisterExceptionHandlerTest extends TestCase
     {
         Functions\expect('is_admin')->once()->andReturn(false);
 
-        $app = new Application;
+        $app = new Application();
 
         $request = new ServerRequest([], [], '/test/123', 'GET');
         $app->bind('request', $request);
@@ -268,7 +274,7 @@ class RegisterExceptionHandlerTest extends TestCase
     #[Test]
     public function send_should_use_the_emitter()
     {
-        $app = new Application;
+        $app = new Application();
         $response = new TextResponse('Hello World');
         $emitter = Mockery::mock(ResponseEmitter::class);
         $emitter->shouldReceive('emit')->once()->with($response);

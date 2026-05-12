@@ -13,9 +13,9 @@ class RegisterFacadesTest extends TestCase
     #[Test]
     public function boots_all_registered_providers()
     {
-        $app = new Application;
+        $app = new Application();
 
-        $registerFacadesBootstrapper = new RegisterFacades;
+        $registerFacadesBootstrapper = new RegisterFacades();
         $registerFacadesBootstrapper->bootstrap($app);
 
         $this->assertSame($app, FacadeFactory::getContainer());

@@ -75,6 +75,6 @@ class ScopedQueryBuilder
 
     public function wherePostType($postType)
     {
-        throw new CannotRedeclarePostTypeOnQueryException;
+        throw new CannotRedeclarePostTypeOnQueryException();
     }
 }

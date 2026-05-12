@@ -19,7 +19,7 @@ class MenusServiceProviderTest extends TestCase
     public function add_theme_support_should_be_called_with_menus(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('menus.menus', []);
 
@@ -35,7 +35,7 @@ class MenusServiceProviderTest extends TestCase
     public function single_menu_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('menus.menus', [
             ['menu-name' => 'Menu Name'],
@@ -57,7 +57,7 @@ class MenusServiceProviderTest extends TestCase
     public function multiple_menus_should_be_set_from_config(): void
     {
         $app = new Application(__DIR__ . '/..');
-        $config = new Config;
+        $config = new Config();
 
         $config->set('menus.menus', [
             ['menu-name' => 'Menu Name'],

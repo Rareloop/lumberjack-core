@@ -21,7 +21,7 @@ class IgnitionServiceProviderTest extends TestCase
     #[Test]
     public function ignition_is_bound_as_a_singleton_in_the_container()
     {
-        $app = new Application;
+        $app = new Application();
         $config = new Config();
         $app->bind('config', $config);
 

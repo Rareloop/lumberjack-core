@@ -6,7 +6,8 @@ use Rareloop\Lumberjack\Dcrypt\AesCtr;
 
 class AesCtrTest extends TestSupport
 {
-    private $input = 'AAAAAAAA', $key = 'BBBBBBBB';
+    private $input = 'AAAAAAAA';
+    private $key = 'BBBBBBBB';
 
     public function testPbkdf()
     {

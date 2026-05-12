@@ -29,8 +29,8 @@ class SessionManagerTest extends TestCase
 
     private function appWithSessionDriverConfig($driver, $cookie = 'lumberjack', $encrypted = false)
     {
-        $app = new Application;
-        $config = new Config;
+        $app = new Application();
+        $config = new Config();
 
         $config->set('session.cookie', $cookie);
         $config->set('session.driver', $driver);
@@ -79,11 +79,11 @@ class SessionManagerTest extends TestCase
     #[Test]
     public function can_extend_list_of_drivers()
     {
-        $app = new Application;
+        $app = new Application();
         $manager = new SessionManager($app);
 
         $manager->extend('test', function () {
-            return new Store('name', new TestSessionHandler);
+            return new Store('name', new TestSessionHandler());
         });
 
         $this->assertInstanceOf(TestSessionHandler::class, $manager->driver('test')->getHandler());
@@ -119,4 +119,6 @@ class SessionManagerTest extends TestCase
     }
 }
 
-class TestSessionHandler extends NullSessionHandler {}
+class TestSessionHandler extends NullSessionHandler
+{
+}

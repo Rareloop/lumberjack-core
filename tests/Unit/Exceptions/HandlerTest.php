@@ -13,7 +13,6 @@ use Rareloop\Lumberjack\Exceptions\Handler;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 use Rareloop\Lumberjack\FacadeFactory;
-
 use Spatie\Ignition\Ignition;
 use Spatie\FlareClient\Report;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -28,7 +27,7 @@ class HandlerTest extends TestCase
     #[Test]
     public function report_should_log_exception()
     {
-        $app = new Application;
+        $app = new Application();
 
         $exception = new \Exception('Test Exception');
 
@@ -44,7 +43,7 @@ class HandlerTest extends TestCase
     #[Test]
     public function blacklisted_exception_types_will_not_be_logged()
     {
-        $app = new Application;
+        $app = new Application();
 
         $exception = new BlacklistedException('Test Exception');
 
@@ -60,9 +59,9 @@ class HandlerTest extends TestCase
     #[Test]
     public function render_should_use_ignition_when_debug_is_enabled()
     {
-        $app = new Application;
+        $app = new Application();
         FacadeFactory::setContainer($app);
-        $config = new Config;
+        $config = new Config();
         $config->set('app.debug', true);
         $app->bind('config', $config);
 
@@ -76,7 +75,7 @@ class HandlerTest extends TestCase
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $request = new ServerRequest;
+        $request = new ServerRequest();
 
         $response = $handler->render($request, $exception);
 
@@ -87,9 +86,9 @@ class HandlerTest extends TestCase
     #[Test]
     public function render_should_return_an_html_response_when_debug_is_disabled()
     {
-        $app = new Application;
+        $app = new Application();
         FacadeFactory::setContainer($app);
-        $config = new Config;
+        $config = new Config();
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
@@ -99,7 +98,7 @@ class HandlerTest extends TestCase
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $response = $handler->render(new ServerRequest(), $exception);
 
         $this->assertInstanceOf(HtmlResponse::class, $response);
         $this->assertSame('Lumberjack | 500', $response->getBody()->getContents());
@@ -108,9 +107,9 @@ class HandlerTest extends TestCase
     #[Test]
     public function render_should_include_stack_trace_when_debug_is_enabled()
     {
-        $app = new Application;
+        $app = new Application();
         FacadeFactory::setContainer($app);
-        $config = new Config;
+        $config = new Config();
         $config->set('app.debug', true);
         $app->bind('config', $config);
 
@@ -124,7 +123,7 @@ class HandlerTest extends TestCase
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $response = $handler->render(new ServerRequest(), $exception);
 
         $this->assertStringContainsString('Test Exception', $response->getBody()->getContents());
     }
@@ -132,9 +131,9 @@ class HandlerTest extends TestCase
     #[Test]
     public function render_should_not_include_stack_trace_when_debug_is_disabled()
     {
-        $app = new Application;
+        $app = new Application();
         FacadeFactory::setContainer($app);
-        $config = new Config;
+        $config = new Config();
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
@@ -144,7 +143,7 @@ class HandlerTest extends TestCase
         $exception = new \Exception('Test Exception');
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $response = $handler->render(new ServerRequest(), $exception);
 
         $this->assertStringNotContainsString('Test Exception', $response->getBody()->getContents());
     }
@@ -152,9 +151,9 @@ class HandlerTest extends TestCase
     #[Test]
     public function render_uses_get_status_code_if_method_exists()
     {
-        $app = new Application;
+        $app = new Application();
         FacadeFactory::setContainer($app);
-        $config = new Config;
+        $config = new Config();
         $config->set('app.debug', false);
         $app->bind('config', $config);
 
@@ -167,7 +166,7 @@ class HandlerTest extends TestCase
         $exception = new ExceptionWithStatusCode('Test Exception', 404);
         $handler = new Handler($app);
 
-        $response = $handler->render(new ServerRequest, $exception);
+        $response = $handler->render(new ServerRequest(), $exception);
 
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('Lumberjack | 404', $response->getBody()->getContents());
@@ -197,4 +196,6 @@ class HandlerWithBlacklist extends Handler
     ];
 }
 
-class BlacklistedException extends \Exception {}
+class BlacklistedException extends \Exception
+{
+}

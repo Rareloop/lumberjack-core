@@ -20,7 +20,7 @@ class ThemeSupportServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/..');
 
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.themeSupport', [
             'post-thumbnail',
@@ -39,7 +39,7 @@ class ThemeSupportServiceProviderTest extends TestCase
     {
         $app = new Application(__DIR__ . '/..');
 
-        $config = new Config;
+        $config = new Config();
 
         $config->set('app.themeSupport', [
             'post-formats' => ['aside', 'gallery'],

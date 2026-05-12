@@ -31,12 +31,12 @@ class AesCbc extends OpensslBridge
      *
      * @var string
      */
-    const CIPHER = 'aes-256-cbc';
+    public const CIPHER = 'aes-256-cbc';
 
     /**
      * Specify sha256 for message authentication
      *
      * @var string
      */
-    const CHKSUM = 'sha256';
+    public const CHKSUM = 'sha256';
 }
