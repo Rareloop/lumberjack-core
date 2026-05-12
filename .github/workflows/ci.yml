@@ -13,6 +13,9 @@ jobs:
               with:
                   php-version: "8.3"
 
+            - name: Configure directory
+              run: git config --global --add safe.directory /app
+
             - name: Install dependencies
               uses: php-actions/composer@v6
               with:
@@ -22,7 +25,7 @@ jobs:
             - name: Run lint
               run: composer run lint
 
-    build:
+    test:
         needs: lint
         runs-on: ubuntu-latest
         strategy:
@@ -38,6 +41,9 @@ jobs:
               with:
                   php-version: ${{ matrix.php_version }}
                   extensions: xdebug
+
+            - name: Configure directory
+              run: git config --global --add safe.directory /app
 
             - name: Install dependencies
               uses: php-actions/composer@v6
