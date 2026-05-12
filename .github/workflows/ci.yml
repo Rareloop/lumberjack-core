@@ -3,67 +3,40 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-    lint:
+    ci:
+        name: PHP ${{ matrix.php }} ${{ matrix.dependency_type }}
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.3", "8.4", "8.5"]
+                dependency_type: ["stable", "lowest"]
+                include:
+                    - dependency_type: "stable"
+                      composer_flags: "--no-interaction --prefer-dist"
+                    - dependency_type: "lowest"
+                      composer_flags: "--no-interaction --prefer-dist --prefer-lowest"
+
         steps:
             - uses: actions/checkout@v6
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: "8.3"
+                  php-version: ${{ matrix.php }}
+                  extensions: xdebug, mbstring, openssl
+                  tools: composer
 
-            - name: Configure directory
-              run: git config --global --add safe.directory /app
+            - name: Configure Git
+              run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
             - name: Install dependencies
-              uses: php-actions/composer@v6
-              with:
-                  php_version: "8.3"
-                  command: update
+              run: composer update ${{ matrix.composer_flags }}
 
             - name: Run lint
               run: composer run lint
-
-    test:
-        needs: lint
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                php_version: [8.3, 8.4, 8.5]
-                composer_flags: ["", "--prefer-lowest"]
-
-        steps:
-            - uses: actions/checkout@v6
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php_version }}
-                  extensions: xdebug
-
-            - name: Configure directory
-              run: git config --global --add safe.directory /app
-
-            - name: Install dependencies
-              uses: php-actions/composer@v6
-              with:
-                  php_version: ${{ matrix.php_version }}
-                  args: ${{ matrix.composer_flags }}
-                  command: update
 
             - name: Run tests
               run: ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
               env:
                   XDEBUG_MODE: coverage
-
-        # - name: Submit coverage to Coveralls
-        #   # We use php-coveralls library for this, as the official Coveralls GitHub Action lacks support for clover reports:
-        #   # https://github.com/coverallsapp/github-action/issues/15
-        #   env:
-        #     COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #     COVERALLS_PARALLEL: true
-        #     COVERALLS_FLAG_NAME: ${{ github.job }}-PHP-${{ matrix.php_version }} ${{ matrix.composer_flags }}
-        #   run: |
-        #     composer global require php-coveralls/php-coveralls
-        #     ~/.composer/vendor/bin/php-coveralls -v
