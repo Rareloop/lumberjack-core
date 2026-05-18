@@ -18,11 +18,47 @@ use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 
+use Rareloop\Lumberjack\Http\TimberContext;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
+
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 class TimberServiceProviderTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
+
+    #[Test]
+    public function it_registers_timber_context_as_a_singleton(): void
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('init');
+        $timber->shouldReceive('context')->once()->andReturn(['foo' => 'bar']);
+
+        $app = new Application();
+        $provider = new TimberServiceProvider($app);
+        $provider->register();
+
+        $this->assertTrue($app->has(TimberContext::class));
+        $context = $app->get(TimberContext::class);
+        $this->assertInstanceOf(TimberContext::class, $context);
+        $this->assertSame('bar', $context->get('foo'));
+
+        // Verify singleton
+        $this->assertSame($context, $app->get(TimberContext::class));
+    }
+
+    #[Test]
+    public function it_binds_timber_response(): void
+    {
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('init');
+
+        $app = new Application();
+        $provider = new TimberServiceProvider($app);
+        $provider->register();
+
+        $this->assertTrue($app->has(TimberResponse::class));
+    }
 
     #[Test]
     public function timber_plugin_is_initialiased(): void

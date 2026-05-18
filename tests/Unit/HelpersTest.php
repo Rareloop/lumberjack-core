@@ -90,6 +90,7 @@ class HelpersTest extends TestCase
     #[Test]
     public function can_get_a_timber_response()
     {
+        new Application();
         $timber = \Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')
             ->with('template.twig', IsArrayContainingKeyValuePair::hasKeyValuePair('foo', 'bar'))
@@ -108,6 +109,7 @@ class HelpersTest extends TestCase
     #[Test]
     public function can_get_a_timber_response_with_a_specific_status_code()
     {
+        new Application();
         $timber = \Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')
             ->once()
@@ -121,6 +123,7 @@ class HelpersTest extends TestCase
     #[Test]
     public function can_get_a_timber_response_with_specific_headers()
     {
+        new Application();
         $timber = \Mockery::mock('alias:' . Timber::class);
         $timber->shouldReceive('compile')
             ->once()

@@ -206,6 +206,27 @@ class TimberResponseTest extends TestCase
     }
 
     #[Test]
+    public function contexts_that_are_arrayable_objects_are_converted(): void
+    {
+        $context = collect([
+            'foo' => 'bar',
+        ]);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertIsArray($passedContext);
+                $this->assertSame('bar', $passedContext['foo']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+    }
+
+    #[Test]
     public function contexts_with_view_models_in_collections_are_converted(): void
     {
         $context = [

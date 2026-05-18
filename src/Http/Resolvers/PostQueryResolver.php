@@ -5,6 +5,8 @@ namespace Rareloop\Lumberjack\Http\Resolvers;
 use Rareloop\Lumberjack\Application;
 use ReflectionParameter;
 use Timber\PostQuery as TimberPostQuery;
+use Timber\PostCollectionInterface;
+use Timber\Timber;
 use WP_Query;
 
 class PostQueryResolver extends AbstractContextResolver
@@ -23,7 +25,9 @@ class PostQueryResolver extends AbstractContextResolver
 
         $className = $type->getName();
 
-        return $className === TimberPostQuery::class || is_subclass_of($className, TimberPostQuery::class);
+        return $className === TimberPostQuery::class
+            || $className === PostCollectionInterface::class
+            || is_subclass_of($className, TimberPostQuery::class);
     }
 
     protected function resolve(ReflectionParameter $parameter): mixed
@@ -33,6 +37,13 @@ class PostQueryResolver extends AbstractContextResolver
         // Resolve WP_Query from the container instead of globals
         $query = $this->app->get(WP_Query::class);
 
+        // If they asked for the interface or the base Timber PostQuery, use the factory
+        if ($className === PostCollectionInterface::class || $className === TimberPostQuery::class) {
+            return Timber::get_posts($query);
+        }
+
+        // If it's a subclass (like Rareloop\Lumberjack\PostQuery), we must instantiate it manually
+        // to ensure we get the correct instance type.
         return new $className($query);
     }
 }

@@ -23,7 +23,8 @@ class TermResolver extends AbstractContextResolver
 
         return $className === Term::class
             || is_subclass_of($className, Term::class)
-            || $className === TimberTerm::class;
+            || $className === TimberTerm::class
+            || is_subclass_of($className, TimberTerm::class);
     }
 
     protected function resolve(ReflectionParameter $parameter): mixed

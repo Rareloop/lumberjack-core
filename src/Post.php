@@ -7,6 +7,7 @@ use Rareloop\Lumberjack\ScopedQueryBuilder;
 use Spatie\Macroable\Macroable;
 use Timber\Post as TimberPost;
 use Timber\Timber;
+use Illuminate\Support\Arr;
 
 class Post extends TimberPost
 {

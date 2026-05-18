@@ -23,7 +23,8 @@ class UserResolver extends AbstractContextResolver
 
         return $className === User::class
             || is_subclass_of($className, User::class)
-            || $className === TimberUser::class;
+            || $className === TimberUser::class
+            || is_subclass_of($className, TimberUser::class);
     }
 
     protected function resolve(ReflectionParameter $parameter): mixed

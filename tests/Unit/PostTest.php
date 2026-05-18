@@ -2,6 +2,7 @@
 
 namespace Rareloop\Lumberjack\Test;
 
+use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use Illuminate\Support\Collection;
 use Mockery;
@@ -143,6 +144,21 @@ class PostTest extends TestCase
         $posts = Post::all();
 
         $this->assertInstanceOf(Collection::class, $posts);
+    }
+
+    #[Test]
+    public function can_get_post_class_from_classmap(): void
+    {
+        Filters\expectApplied('timber/post/classmap')
+            ->times(3)
+            ->andReturn([
+                'post' => Post::class,
+                'page' => \Rareloop\Lumberjack\Page::class,
+            ]);
+
+        $this->assertSame(Post::class, Post::postClass('post'));
+        $this->assertSame(\Rareloop\Lumberjack\Page::class, Post::postClass('page'));
+        $this->assertNull(Post::postClass('missing'));
     }
 
     #[Test]

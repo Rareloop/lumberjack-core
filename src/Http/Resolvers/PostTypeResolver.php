@@ -22,7 +22,7 @@ class PostTypeResolver extends AbstractContextResolver
 
         $className = $type->getName();
 
-        return $className === PostType::class || $className === TimberPostType::class;
+        return is_a($className, PostType::class, true) || is_a($className, TimberPostType::class, true);
     }
 
     protected function resolve(ReflectionParameter $parameter): mixed
@@ -30,19 +30,7 @@ class PostTypeResolver extends AbstractContextResolver
         $className = $parameter->getType()->getName();
         $queriedObject = get_queried_object();
 
-        $postType = null;
-
-        if ($queriedObject instanceof WP_Post_Type) {
-            $postType = new PostType($queriedObject->name);
-        }
-
-        if ($queriedObject instanceof WP_Post) {
-            $postTypeObject = get_post_type_object($queriedObject->post_type);
-
-            if ($postTypeObject) {
-                $postType = new PostType($postTypeObject->name);
-            }
-        }
+        $postType = $this->getPostTypeFromQueriedObject($queriedObject);
 
         if (!$postType) {
             throw MissingContextException::forType($className, $queriedObject);
@@ -53,5 +41,22 @@ class PostTypeResolver extends AbstractContextResolver
         }
 
         return $postType;
+    }
+
+    private function getPostTypeFromQueriedObject($queriedObject): ?PostType
+    {
+        if (is_a($queriedObject, 'WP_Post_Type')) {
+            return new PostType($queriedObject->name);
+        }
+
+        if (is_a($queriedObject, 'WP_Post')) {
+            $postTypeObject = get_post_type_object($queriedObject->post_type);
+
+            if ($postTypeObject) {
+                return new PostType($postTypeObject->name);
+            }
+        }
+
+        return null;
     }
 }

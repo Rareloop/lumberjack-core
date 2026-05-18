@@ -15,21 +15,30 @@ use Invoker\ParameterResolver\ResolverChain;
 use Rareloop\Lumberjack\Http\Resolvers\PostQueryResolver;
 use Rareloop\Lumberjack\Http\Resolvers\UserResolver;
 use Rareloop\Lumberjack\Http\Resolvers\PostTypeResolver;
-use Invoker\ParameterResolver\ResolverChain;
+use Rareloop\Lumberjack\Http\Resolvers\PostResolver;
+use Rareloop\Lumberjack\Http\Resolvers\TermResolver;
 
 class WordPressControllersServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind(Invoker::class, fn($app) => new Invoker($app, new ResolverChain(
-            collect([
-                PostQueryResolver::class,
-                PostResolver::class,
-                TermResolver::class,
-                UserResolver::class,
-                PostTypeResolver::class,
-            ])->map(fn($class) => $app->make($class))->all()
-        )));
+        $this->app->bind(Invoker::class, function ($app) {
+            $invoker = new Invoker($app);
+            $resolverChain = $invoker->getParameterResolver();
+
+            collect($app->get('config')->get('app.resolvers', []))
+                ->merge([
+                    PostTypeResolver::class,
+                    PostQueryResolver::class,
+                    PostResolver::class,
+                    TermResolver::class,
+                    UserResolver::class,
+                ])
+                ->reverse()
+                ->each(fn($resolver) => $resolverChain->prependResolver($app->make($resolver)));
+
+            return $invoker;
+        });
     }
     public function boot()
     {
