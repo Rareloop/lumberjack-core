@@ -3,13 +3,19 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Http\TimberContext;
 use Timber\Timber;
+use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
 class TimberServiceProvider extends ServiceProvider
 {
     public function register()
     {
         Timber::init();
+
+        $this->app->singleton(TimberContext::class, fn() => new TimberContext(Timber::context()));
+
+        $this->app->bind(TimberResponse::class, TimberResponse::class);
     }
 
     public function boot(Config $config)

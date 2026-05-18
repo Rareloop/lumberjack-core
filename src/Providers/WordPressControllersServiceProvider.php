@@ -11,9 +11,26 @@ use Psr\Http\Message\RequestInterface;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 use Laminas\Diactoros\ServerRequestFactory;
 use Rareloop\Router\ProvidesControllerMiddleware;
+use Invoker\ParameterResolver\ResolverChain;
+use Rareloop\Lumberjack\Http\Resolvers\PostQueryResolver;
+use Rareloop\Lumberjack\Http\Resolvers\UserResolver;
+use Rareloop\Lumberjack\Http\Resolvers\PostTypeResolver;
+use Invoker\ParameterResolver\ResolverChain;
 
 class WordPressControllersServiceProvider extends ServiceProvider
 {
+    public function register()
+    {
+        $this->app->bind(Invoker::class, fn($app) => new Invoker($app, new ResolverChain(
+            collect([
+                PostQueryResolver::class,
+                PostResolver::class,
+                TermResolver::class,
+                UserResolver::class,
+                PostTypeResolver::class,
+            ])->map(fn($class) => $app->make($class))->all()
+        )));
+    }
     public function boot()
     {
         add_filter('template_include', [$this, 'handleTemplateInclude']);
@@ -87,8 +104,10 @@ class WordPressControllersServiceProvider extends ServiceProvider
             $this->app->get(PasswordProtected::class),
             ...$middlewares,
             function ($request) use ($controller, $methodName) {
-                $invoker = new Invoker($this->app);
-                $output = $invoker->setRequest($request)->call([$controller, $methodName]);
+                $output = $this->app->make(Invoker::class)
+                    ->setRequest($request)
+                    ->call([$controller, $methodName]);
+
                 return ResponseFactory::create($request, $output);
             }
         ];

@@ -21,14 +21,13 @@ class TimberResponse extends HtmlResponse
         parent::__construct($template, $status, $headers);
     }
 
-    private function flattenContextToArrays(array $context): array
+    private function flattenContextToArrays(array|Arrayable|CollectionArrayable $context): array
     {
-        // Recursively walk the array, when we find something that implements the Arrayable interface
-        // flatten it to an array. Because we're passing by reference by updating what the value of
-        // $item is will mutate the original data structure passed in.
-        array_walk_recursive($context, function (&$item, $key) {
+        $context = is_array($context) ? $context : $context->toArray();
+
+        array_walk_recursive($context, function (&$item) {
             if ($item instanceof Arrayable || $item instanceof CollectionArrayable) {
-                $item = $this->flattenContextToArrays($item->toArray());
+                $item = $this->flattenContextToArrays($item);
             }
         });
 

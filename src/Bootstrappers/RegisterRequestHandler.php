@@ -13,5 +13,9 @@ class RegisterRequestHandler
         if ($config->get('app.debug')) {
             $app->detectWhenRequestHasNotBeenHandled();
         }
+
+        $app->bind(\WP_Query::class, function () {
+            return $GLOBALS['wp_query'];
+        });
     }
 }
