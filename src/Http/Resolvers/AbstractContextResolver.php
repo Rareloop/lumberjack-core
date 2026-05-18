@@ -16,23 +16,28 @@ abstract class AbstractContextResolver implements ParameterResolver
         array $providedParameters,
         array $resolvedParameters
     ): array {
-        return collect($reflection->getParameters())
-            ->reject(fn($p) => Arr::has($resolvedParameters, $p->getPosition()))
-            ->filter(fn($p) => $this->canResolve($p))
-            ->reduce(function ($resolved, $p) {
-                try {
-                    $resolved[$p->getPosition()] = $this->resolve($p);
-                } catch (MissingContextException $e) {
-                    // If the context is entirely missing, we allow null if the typehint supports it
-                    if (!$p->allowsNull()) {
-                        throw $e;
-                    }
+        foreach ($reflection->getParameters() as $parameter) {
+            if (Arr::has($resolvedParameters, $parameter->getPosition())) {
+                continue;
+            }
 
-                    $resolved[$p->getPosition()] = null;
+            if (!$this->canResolve($parameter)) {
+                continue;
+            }
+
+            try {
+                $resolvedParameters[$parameter->getPosition()] = $this->resolve($parameter);
+            } catch (MissingContextException $e) {
+                // If the context is entirely missing, we allow null if the typehint supports it
+                if (!$parameter->allowsNull()) {
+                    throw $e;
                 }
 
-                return $resolved;
-            }, $resolvedParameters);
+                $resolvedParameters[$parameter->getPosition()] = null;
+            }
+        }
+
+        return $resolvedParameters;
     }
 
     abstract protected function canResolve(ReflectionParameter $parameter): bool;

@@ -40,11 +40,7 @@ class PostQueryResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_timber_post_query(): void
     {
-        Functions\expect('wp_parse_args')->andReturnUsing(fn($a, $b) => array_merge($b, $a));
-
-        $wpQuery = Mockery::mock(WP_Query::class);
-        $wpQuery->found_posts = 0;
-        $wpQuery->posts = [];
+        $wpQuery = $this->mockWpQuery();
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
@@ -62,11 +58,7 @@ class PostQueryResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_post_collection_interface(): void
     {
-        Functions\expect('wp_parse_args')->andReturnUsing(fn($a, $b) => array_merge($b, $a));
-
-        $wpQuery = Mockery::mock(WP_Query::class);
-        $wpQuery->found_posts = 0;
-        $wpQuery->posts = [];
+        $wpQuery = $this->mockWpQuery();
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
@@ -84,9 +76,7 @@ class PostQueryResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_subclass_of_timber_post_query(): void
     {
-        $wpQuery = Mockery::mock(WP_Query::class);
-        $wpQuery->found_posts = 0;
-        $wpQuery->posts = [];
+        $wpQuery = $this->mockWpQuery();
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
@@ -99,5 +89,16 @@ class PostQueryResolverTest extends TestCase
         $result = $this->invoker->call([$controller, 'handle']);
 
         $this->assertInstanceOf(PostQueryStub::class, $result);
+    }
+
+    protected function mockWpQuery()
+    {
+        Functions\expect('wp_parse_args')->andReturnUsing(fn($a, $b) => array_merge($b, $a));
+
+        $wpQuery = Mockery::mock(WP_Query::class);
+        $wpQuery->found_posts = 0;
+        $wpQuery->posts = [];
+
+        return $wpQuery;
     }
 }

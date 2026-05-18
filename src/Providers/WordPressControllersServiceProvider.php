@@ -27,19 +27,25 @@ class WordPressControllersServiceProvider extends ServiceProvider
             $resolverChain = $invoker->getParameterResolver();
 
             collect($app->get('config')->get('app.resolvers', []))
-                ->merge([
-                    PostTypeResolver::class,
-                    PostQueryResolver::class,
-                    PostResolver::class,
-                    TermResolver::class,
-                    UserResolver::class,
-                ])
+                ->merge($this->getCoreResolvers())
                 ->reverse()
                 ->each(fn($resolver) => $resolverChain->prependResolver($app->make($resolver)));
 
             return $invoker;
         });
     }
+
+    protected function getCoreResolvers(): array
+    {
+        return [
+            PostTypeResolver::class,
+            PostQueryResolver::class,
+            PostResolver::class,
+            TermResolver::class,
+            UserResolver::class,
+        ];
+    }
+
     public function boot()
     {
         add_filter('template_include', [$this, 'handleTemplateInclude']);
