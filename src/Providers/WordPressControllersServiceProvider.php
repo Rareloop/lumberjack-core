@@ -36,13 +36,11 @@ class WordPressControllersServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Get the core resolvers in the order they should be prepended.
-     * The last item in this list will have the highest priority among core resolvers,
-     * unless overridden by user-defined resolvers in config.
-     *
-     * @return array
-     */
+    public function boot()
+    {
+        add_filter('template_include', [$this, 'handleTemplateInclude']);
+    }
+
     protected function getCoreResolvers(): array
     {
         return [
@@ -52,11 +50,6 @@ class WordPressControllersServiceProvider extends ServiceProvider
             TermResolver::class,
             UserResolver::class,
         ];
-    }
-
-    public function boot()
-    {
-        add_filter('template_include', [$this, 'handleTemplateInclude']);
     }
 
     public function handleTemplateInclude($template)
