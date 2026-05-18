@@ -25,6 +25,9 @@ class TimberResponse extends HtmlResponse
     {
         $context = is_array($context) ? $context : $context->toArray();
 
+        // Recursively walk the array, when we find something that implements the Arrayable interface
+        // flatten it to an array. Because we're passing by reference by updating what the value of
+        // $item is will mutate the original data structure passed in.
         array_walk_recursive($context, function (&$item) {
             if ($item instanceof Arrayable || $item instanceof CollectionArrayable) {
                 $item = $this->flattenContextToArrays($item);
