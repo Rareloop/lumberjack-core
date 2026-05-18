@@ -20,7 +20,7 @@ class PostQueryTest extends TestCase
         $wpQuery = Mockery::mock(WP_Query::class);
         $wpQuery->found_posts = 0;
         $wpQuery->posts = [];
-        
+
         $postQuery = new PostQuery($wpQuery);
 
         $this->assertInstanceOf(TimberPostQuery::class, $postQuery);

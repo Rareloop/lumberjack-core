@@ -32,11 +32,11 @@ class PostResolverTest extends TestCase
         parent::setUp();
 
         $this->app = new Application(__DIR__ . '/../../../../');
-        
+
         $config = Mockery::mock(\Rareloop\Lumberjack\Config::class);
         $config->shouldReceive('get')->with('app.resolvers', [])->andReturn([]);
         $this->app->bind('config', $config);
-        
+
         // Register the provider so the Invoker is set up with all resolvers
         $provider = new WordPressControllersServiceProvider($this->app);
         $provider->register();
@@ -55,7 +55,8 @@ class PostResolverTest extends TestCase
         $timber->shouldReceive('get_post')->once()->with($wpPost)->andReturn($timberPost);
 
         $controller = new class {
-            public function handle(Post $post) {
+            public function handle(Post $post)
+            {
                 return $post;
             }
         };
@@ -76,7 +77,8 @@ class PostResolverTest extends TestCase
         $timber->shouldReceive('get_post')->once()->with($wpPost)->andReturn($postStub);
 
         $controller = new class {
-            public function handle(PostStub $post) {
+            public function handle(PostStub $post)
+            {
                 return $post;
             }
         };
@@ -92,7 +94,9 @@ class PostResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(Post $post) {}
+            public function handle(Post $post)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
@@ -106,7 +110,8 @@ class PostResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(?Post $post) {
+            public function handle(?Post $post)
+            {
                 return $post;
             }
         };
@@ -127,7 +132,9 @@ class PostResolverTest extends TestCase
         $timber->shouldReceive('get_post')->once()->with($wpPost)->andReturn($timberPost);
 
         $controller = new class {
-            public function handle(PostStub $post) {}
+            public function handle(PostStub $post)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MismatchedContextException::class);

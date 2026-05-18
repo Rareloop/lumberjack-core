@@ -53,7 +53,8 @@ class TermResolverTest extends TestCase
         $timber->shouldReceive('get_term')->once()->with($wpTerm)->andReturn($timberTerm);
 
         $controller = new class {
-            public function handle(Term $term) {
+            public function handle(Term $term)
+            {
                 return $term;
             }
         };
@@ -74,7 +75,8 @@ class TermResolverTest extends TestCase
         $timber->shouldReceive('get_term')->once()->with($wpTerm)->andReturn($termStub);
 
         $controller = new class {
-            public function handle(TermStub $term) {
+            public function handle(TermStub $term)
+            {
                 return $term;
             }
         };
@@ -90,7 +92,9 @@ class TermResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(Term $term) {}
+            public function handle(Term $term)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
@@ -104,7 +108,8 @@ class TermResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(?Term $term) {
+            public function handle(?Term $term)
+            {
                 return $term;
             }
         };
@@ -125,7 +130,9 @@ class TermResolverTest extends TestCase
         $timber->shouldReceive('get_term')->once()->with($wpTerm)->andReturn($timberTerm);
 
         $controller = new class {
-            public function handle(TermStub $term) {}
+            public function handle(TermStub $term)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MismatchedContextException::class);

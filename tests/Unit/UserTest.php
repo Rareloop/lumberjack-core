@@ -36,6 +36,11 @@ class UserTest extends TestCase
 
 class TestableUser extends User
 {
-    public function __construct() {}
-    public static function create() { return new static(); }
+    public function __construct()
+    {
+    }
+    public static function create()
+    {
+        return new static();
+    }
 }

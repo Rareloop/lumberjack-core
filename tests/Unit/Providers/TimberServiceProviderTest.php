@@ -17,7 +17,6 @@ use Rareloop\Lumberjack\Providers\TimberServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
-
 use Rareloop\Lumberjack\Http\TimberContext;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 

@@ -48,7 +48,8 @@ class PostQueryResolverTest extends TestCase
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
-            public function handle(\Timber\PostQuery $query) {
+            public function handle(\Timber\PostQuery $query)
+            {
                 return $query;
             }
         };
@@ -69,7 +70,8 @@ class PostQueryResolverTest extends TestCase
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
-            public function handle(\Timber\PostCollectionInterface $query) {
+            public function handle(\Timber\PostCollectionInterface $query)
+            {
                 return $query;
             }
         };
@@ -88,7 +90,8 @@ class PostQueryResolverTest extends TestCase
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
-            public function handle(PostQueryStub $query) {
+            public function handle(PostQueryStub $query)
+            {
                 return $query;
             }
         };

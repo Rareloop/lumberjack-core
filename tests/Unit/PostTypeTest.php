@@ -30,7 +30,7 @@ class PostTypeTest extends TestCase
         $wpPostType = new \stdClass();
         $wpPostType->name = 'book';
         Functions\expect('get_post_type_object')->andReturn($wpPostType);
-        
+
         $postType = new PostType('book');
 
         Filters\expectApplied('timber/post/classmap')
@@ -46,7 +46,7 @@ class PostTypeTest extends TestCase
         $wpPostType = new \stdClass();
         $wpPostType->name = 'post';
         Functions\expect('get_post_type_object')->andReturn($wpPostType);
-        
+
         PostType::macro('testMacro', function () {
             return 'macro_result';
         });

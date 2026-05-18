@@ -53,7 +53,8 @@ class UserResolverTest extends TestCase
         $timber->shouldReceive('get_user')->once()->with($wpUser)->andReturn($timberUser);
 
         $controller = new class {
-            public function handle(User $user) {
+            public function handle(User $user)
+            {
                 return $user;
             }
         };
@@ -74,7 +75,8 @@ class UserResolverTest extends TestCase
         $timber->shouldReceive('get_user')->once()->with($wpUser)->andReturn($userStub);
 
         $controller = new class {
-            public function handle(UserStub $user) {
+            public function handle(UserStub $user)
+            {
                 return $user;
             }
         };
@@ -90,7 +92,9 @@ class UserResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(User $user) {}
+            public function handle(User $user)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
@@ -104,7 +108,8 @@ class UserResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(?User $user) {
+            public function handle(?User $user)
+            {
                 return $user;
             }
         };
@@ -125,7 +130,9 @@ class UserResolverTest extends TestCase
         $timber->shouldReceive('get_user')->once()->with($wpUser)->andReturn($timberUser);
 
         $controller = new class {
-            public function handle(UserStub $user) {}
+            public function handle(UserStub $user)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MismatchedContextException::class);

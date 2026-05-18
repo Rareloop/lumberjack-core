@@ -42,12 +42,13 @@ class PostTypeResolverTest extends TestCase
         $wpPostType = Mockery::mock('WP_Post_Type');
         $wpPostType->name = 'page';
         Functions\expect('get_queried_object')->once()->andReturn($wpPostType);
-        
+
         // Timber\PostType constructor calls get_post_type_object
         Functions\expect('get_post_type_object')->once()->with('page')->andReturn($wpPostType);
 
         $controller = new class {
-            public function handle(LumberjackPostType $postType) {
+            public function handle(LumberjackPostType $postType)
+            {
                 return $postType;
             }
         };
@@ -67,12 +68,13 @@ class PostTypeResolverTest extends TestCase
 
         $wpPostTypeObject = Mockery::mock('WP_Post_Type');
         $wpPostTypeObject->name = 'post';
-        
+
         // Called once by our resolver and once by the Timber\PostType constructor
         Functions\expect('get_post_type_object')->twice()->with('post')->andReturn($wpPostTypeObject);
 
         $controller = new class {
-            public function handle(LumberjackPostType $postType) {
+            public function handle(LumberjackPostType $postType)
+            {
                 return $postType;
             }
         };
@@ -89,11 +91,12 @@ class PostTypeResolverTest extends TestCase
         $wpPostType = Mockery::mock('WP_Post_Type');
         $wpPostType->name = 'page';
         Functions\expect('get_queried_object')->once()->andReturn($wpPostType);
-        
+
         Functions\expect('get_post_type_object')->once()->with('page')->andReturn($wpPostType);
 
         $controller = new class {
-            public function handle(TimberPostType $postType) {
+            public function handle(TimberPostType $postType)
+            {
                 return $postType;
             }
         };
@@ -110,7 +113,9 @@ class PostTypeResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(LumberjackPostType $postType) {}
+            public function handle(LumberjackPostType $postType)
+            {
+            }
         };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
@@ -124,7 +129,8 @@ class PostTypeResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(?LumberjackPostType $postType) {
+            public function handle(?LumberjackPostType $postType)
+            {
                 return $postType;
             }
         };

@@ -36,6 +36,11 @@ class TermTest extends TestCase
 
 class TestableTerm extends Term
 {
-    public function __construct() {}
-    public static function create() { return new static(); }
+    public function __construct()
+    {
+    }
+    public static function create()
+    {
+        return new static();
+    }
 }
