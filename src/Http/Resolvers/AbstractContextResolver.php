@@ -4,10 +4,9 @@ namespace Rareloop\Lumberjack\Http\Resolvers;
 
 use Illuminate\Support\Arr;
 use Invoker\ParameterResolver\ParameterResolver;
+use Rareloop\Lumberjack\Exceptions\MismatchedContextException;
 use Rareloop\Lumberjack\Exceptions\MissingContextException;
-use Rareloop\Lumberjack\Exceptions\UnresolvableContextException;
 use ReflectionFunctionAbstract;
-use ReflectionParameter;
 
 abstract class AbstractContextResolver implements ParameterResolver
 {
@@ -21,12 +20,32 @@ abstract class AbstractContextResolver implements ParameterResolver
                 continue;
             }
 
-            if (!$this->canResolve($parameter)) {
+            $type = $parameter->getType();
+
+            if (!$type || $type->isBuiltin()) {
+                continue;
+            }
+
+            $className = $type->getName();
+
+            if (!$this->canResolveClass($className)) {
                 continue;
             }
 
             try {
-                $resolvedParameters[$parameter->getPosition()] = $this->resolve($parameter);
+                $context = $this->getContext();
+
+                if (is_null($context)) {
+                    throw MissingContextException::forType($className, $context);
+                }
+
+                $resolvedObject = $this->resolveObject($className, $context);
+
+                if (!$resolvedObject instanceof $className) {
+                    throw MismatchedContextException::forIncorrectClass($className, $resolvedObject);
+                }
+
+                $resolvedParameters[$parameter->getPosition()] = $resolvedObject;
             } catch (MissingContextException $e) {
                 // If the context is entirely missing, we allow null if the typehint supports it
                 if (!$parameter->allowsNull()) {
@@ -40,7 +59,31 @@ abstract class AbstractContextResolver implements ParameterResolver
         return $resolvedParameters;
     }
 
-    abstract protected function canResolve(ReflectionParameter $parameter): bool;
+    /**
+     * Get the raw context object to resolve from (e.g. WP_Post, WP_Term, WP_Query).
+     * Defaults to the current WordPress queried object.
+     *
+     * @return mixed
+     */
+    protected function getContext(): mixed
+    {
+        return get_queried_object();
+    }
 
-    abstract protected function resolve(ReflectionParameter $parameter): mixed;
+    /**
+     * Determine if this resolver can handle the given class type-hint.
+     *
+     * @param string $className
+     * @return bool
+     */
+    abstract protected function canResolveClass(string $className): bool;
+
+    /**
+     * Build the concrete object instance from the raw context.
+     *
+     * @param string $className
+     * @param mixed $context
+     * @return mixed
+     */
+    abstract protected function resolveObject(string $className, mixed $context): mixed;
 }

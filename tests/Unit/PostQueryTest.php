@@ -27,6 +27,20 @@ class PostQueryTest extends TestCase
     }
 
     #[Test]
+    public function can_convert_to_collection(): void
+    {
+        $wpQuery = Mockery::mock(WP_Query::class);
+        $wpQuery->found_posts = 1;
+        $wpQuery->posts = [new \stdClass()];
+
+        $postQuery = new PostQuery($wpQuery);
+        $collection = $postQuery->toCollection();
+
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $collection);
+        $this->assertCount(1, $collection);
+    }
+
+    #[Test]
     public function can_extend_post_query_with_macros(): void
     {
         PostQuery::macro('testMacro', function () {

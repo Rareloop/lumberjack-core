@@ -139,4 +139,19 @@ class PostTypeResolverTest extends TestCase
 
         $this->assertNull($result);
     }
+
+    #[Test]
+    public function it_ignores_builtin_typehints(): void
+    {
+        $controller = new class {
+            public function handle(int $id)
+            {
+                return $id;
+            }
+        };
+
+        $result = $this->invoker->call([$controller, 'handle'], ['id' => 123]);
+
+        $this->assertSame(123, $result);
+    }
 }
