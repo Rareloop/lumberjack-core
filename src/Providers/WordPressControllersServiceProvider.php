@@ -26,15 +26,23 @@ class WordPressControllersServiceProvider extends ServiceProvider
             $invoker = new Invoker($app);
             $resolverChain = $invoker->getParameterResolver();
 
-            collect($app->get('config')->get('app.resolvers', []))
-                ->merge($this->getCoreResolvers())
-                ->reverse()
+            // We iterate and prepend so that the last items in the collection end up at the top
+            // of the resolver chain (highest priority).
+            collect($this->getCoreResolvers())
+                ->merge($app->get('config')->get('app.resolvers', []))
                 ->each(fn($resolver) => $resolverChain->prependResolver($app->make($resolver)));
 
             return $invoker;
         });
     }
 
+    /**
+     * Get the core resolvers in the order they should be prepended.
+     * The last item in this list will have the highest priority among core resolvers,
+     * unless overridden by user-defined resolvers in config.
+     *
+     * @return array
+     */
     protected function getCoreResolvers(): array
     {
         return [
