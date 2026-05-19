@@ -35,4 +35,22 @@ class TimberContextTest extends TestCase
 
         $this->assertSame('default', $context->get('missing', 'default'));
     }
+
+    #[Test]
+    public function can_get_data_with_numeric_keys_using_dot_notation(): void
+    {
+        $context = new TimberContext([
+            'posts' => [
+                ['title' => 'Post 1'],
+                ['title' => 'Post 2'],
+            ],
+            'collection' => collect([
+                ['title' => 'Post 3'],
+            ]),
+        ]);
+
+        $this->assertSame('Post 1', $context->get('posts.0.title'));
+        $this->assertSame(['title' => 'Post 2'], $context->get('posts.1'));
+        $this->assertSame('Post 3', $context->get('collection.0.title'));
+    }
 }

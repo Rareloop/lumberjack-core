@@ -48,4 +48,26 @@ class TimberContext extends Collection
     {
         return Arr::has($this->items, $key);
     }
+
+    /**
+     * Determine if an item exists at an offset using dot-notation.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function offsetExists($key): bool
+    {
+        return $this->has($key);
+    }
+
+    /**
+     * Get an item at a given offset using dot-notation.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function offsetGet($key): mixed
+    {
+        return $this->get($key);
+    }
 }
