@@ -7,6 +7,7 @@ use Rareloop\Lumberjack\User;
 use Timber\User as TimberUser;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
+use Mockery;
 
 class UserTest extends TestCase
 {
@@ -31,6 +32,19 @@ class UserTest extends TestCase
         $user = TestableUser::create();
 
         $this->assertSame('macro_result', $user->testMacro());
+    }
+
+    #[Test]
+    public function can_get_user_class_from_filter(): void
+    {
+        $wpUser = Mockery::mock(\WP_User::class);
+
+        \Brain\Monkey\Filters\expectApplied('timber/user/class')
+            ->once()
+            ->with(User::class, $wpUser)
+            ->andReturn('App\User\Administrator');
+
+        $this->assertSame('App\User\Administrator', User::userClass($wpUser));
     }
 }
 

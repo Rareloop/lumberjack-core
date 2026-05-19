@@ -32,6 +32,21 @@ class TermTest extends TestCase
 
         $this->assertSame('macro_result', $term->testMacro());
     }
+
+    #[Test]
+    public function can_get_term_class_from_classmap(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('timber/term/classmap')
+            ->times(3)
+            ->andReturn([
+                'category' => Term::class,
+                'book_cat' => 'App\Term\BookCategory',
+            ]);
+
+        $this->assertSame(Term::class, Term::termClass('category'));
+        $this->assertSame('App\Term\BookCategory', Term::termClass('book_cat'));
+        $this->assertNull(Term::termClass('missing'));
+    }
 }
 
 class TestableTerm extends Term
