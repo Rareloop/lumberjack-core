@@ -18,13 +18,11 @@ class PostTypeResolver extends AbstractContextResolver
             return new PostType($context->name);
         }
 
-        if (is_a($context, 'WP_Post')) {
-            if (function_exists('get_post_type_object')) {
-                $postTypeObject = get_post_type_object($context->post_type);
+        if (is_a($context, 'WP_Post') && function_exists('get_post_type_object')) {
+            $postTypeObject = get_post_type_object($context->post_type);
 
-                if ($postTypeObject) {
-                    return new PostType($postTypeObject->name);
-                }
+            if ($postTypeObject) {
+                return new PostType($postTypeObject->name);
             }
         }
 
