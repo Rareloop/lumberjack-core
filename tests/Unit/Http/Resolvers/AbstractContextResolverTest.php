@@ -5,37 +5,62 @@ namespace Rareloop\Lumberjack\Test\Unit\Http\Resolvers;
 use Brain\Monkey\Functions;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Http\Resolvers\AbstractContextResolver;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
-use ReflectionFunction;
-use ReflectionParameter;
+use Rareloop\Router\Invoker;
 
 class AbstractContextResolverTest extends TestCase
 {
     use BrainMonkeyPHPUnitIntegration;
 
+    private Application $app;
+    private TestContextResolver $resolver;
+    private Invoker $invoker;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->app = new Application();
+        $this->resolver = new TestContextResolver();
+
+        // We use a fresh Invoker with ONLY our test resolver to verify the base class logic
+        $this->invoker = new Invoker($this->app);
+        $this->invoker->getParameterResolver()->prependResolver($this->resolver);
+    }
+
     #[Test]
     public function it_ignores_builtin_typehints(): void
     {
-        $resolver = new TestContextResolver();
+        $controller = new class {
+            public function handle(int $id, string $name, $noType)
+            {
+                return $id;
+            }
+        };
 
-        $reflection = new ReflectionFunction(function (int $id, string $name, $noType) {
-        });
+        $result = $this->invoker->call([$controller, 'handle'], ['id' => 123, 'name' => 'foo', 'noType' => 'bar']);
 
-        $this->assertEmpty($resolver->getParameters($reflection, [], []));
+        $this->assertSame(123, $result);
     }
 
     #[Test]
     public function it_ignores_classes_it_cannot_handle(): void
     {
-        $resolver = new TestContextResolver();
-        $resolver->canResolve = false;
+        $this->resolver->canResolve = false;
 
-        $reflection = new ReflectionFunction(function (\stdClass $obj) {
-        });
+        $controller = new class {
+            public function handle(Application $app)
+            {
+                return $app;
+            }
+        };
 
-        $this->assertEmpty($resolver->getParameters($reflection, [], []));
+        $result = $this->invoker->call([$controller, 'handle']);
+
+        $this->assertSame($this->app, $result);
     }
 
     #[Test]
@@ -43,13 +68,14 @@ class AbstractContextResolverTest extends TestCase
     {
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
-        $resolver = new TestContextResolver();
-
-        $reflection = new ReflectionFunction(function (\stdClass $obj) {
-        });
+        $controller = new class {
+            public function handle(\stdClass $obj)
+            {
+            }
+        };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
-        $resolver->getParameters($reflection, [], []);
+        $this->invoker->call([$controller, 'handle']);
     }
 
     #[Test]
@@ -57,14 +83,16 @@ class AbstractContextResolverTest extends TestCase
     {
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
-        $resolver = new TestContextResolver();
+        $controller = new class {
+            public function handle(?\stdClass $obj)
+            {
+                return $obj;
+            }
+        };
 
-        $reflection = new ReflectionFunction(function (?\stdClass $obj) {
-        });
-        $resolved = $resolver->getParameters($reflection, [], []);
+        $result = $this->invoker->call([$controller, 'handle']);
 
-        $this->assertCount(1, $resolved);
-        $this->assertNull($resolved[0]);
+        $this->assertNull($result);
     }
 
     #[Test]
@@ -72,14 +100,16 @@ class AbstractContextResolverTest extends TestCase
     {
         Functions\expect('get_queried_object')->once()->andReturn(new \stdClass());
 
-        $resolver = new TestContextResolver();
-        $resolver->resolvedObject = new \Exception(); // Not a stdClass
+        $this->resolver->resolvedObject = new \Exception(); // Not a stdClass
 
-        $reflection = new ReflectionFunction(function (\stdClass $obj) {
-        });
+        $controller = new class {
+            public function handle(\stdClass $obj)
+            {
+            }
+        };
 
         $this->expectException(\Rareloop\Lumberjack\Exceptions\MismatchedContextException::class);
-        $resolver->getParameters($reflection, [], []);
+        $this->invoker->call([$controller, 'handle']);
     }
 }
 
