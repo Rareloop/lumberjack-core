@@ -3,4 +3,3 @@ composer.lock
 /tests/Unit/logs
 .phpunit.result.cache
 .phpunit.cache
-coverage_report
