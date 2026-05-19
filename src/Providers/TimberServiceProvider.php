@@ -14,8 +14,6 @@ class TimberServiceProvider extends ServiceProvider
         Timber::init();
 
         $this->app->singleton(TimberContext::class, fn() => new TimberContext(Timber::context()));
-
-        $this->app->bind(TimberResponse::class, TimberResponse::class);
     }
 
     public function boot(Config $config)
