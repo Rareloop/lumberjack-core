@@ -3,7 +3,6 @@
 namespace Rareloop\Lumberjack\Http\Resolvers;
 
 use Rareloop\Lumberjack\Post;
-use Timber\CoreEntityInterface;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 
