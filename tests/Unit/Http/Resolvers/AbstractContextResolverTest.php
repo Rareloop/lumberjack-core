@@ -116,11 +116,17 @@ class AbstractContextResolverTest extends TestCase
 class TestContextResolver extends AbstractContextResolver
 {
     public bool $canResolve = true;
+    public bool $isValid = true;
     public $resolvedObject;
 
     protected function canResolveClass(string $className): bool
     {
         return $this->canResolve;
+    }
+
+    protected function isValidContext(mixed $context, string $className): bool
+    {
+        return $this->isValid;
     }
 
     protected function resolveObject(string $className, mixed $context): mixed

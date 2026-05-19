@@ -21,9 +21,14 @@ class PostQueryResolver extends AbstractContextResolver
             || is_subclass_of($className, TimberPostQuery::class);
     }
 
+    protected function isValidContext(mixed $context, string $className): bool
+    {
+        return is_a($context, 'WP_Query');
+    }
+
     protected function getContext(): mixed
     {
-        return $this->app->get(WP_Query::class);
+        return $this->app->get('WP_Query');
     }
 
     protected function resolveObject(string $className, mixed $context): mixed

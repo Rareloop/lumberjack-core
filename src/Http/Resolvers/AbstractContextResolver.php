@@ -39,15 +39,19 @@ abstract class AbstractContextResolver implements ParameterResolver
                     throw MissingContextException::forType($className, $context);
                 }
 
+                if (!$this->isValidContext($context, $className)) {
+                    throw MismatchedContextException::forIncorrectClass($className, $context);
+                }
+
                 $resolvedObject = $this->resolveObject($className, $context);
 
-                if (!$resolvedObject instanceof $className) {
+                if (!is_null($resolvedObject) && !$resolvedObject instanceof $className) {
                     throw MismatchedContextException::forIncorrectClass($className, $resolvedObject);
                 }
 
                 $resolvedParameters[$parameter->getPosition()] = $resolvedObject;
-            } catch (MissingContextException $e) {
-                // If the context is entirely missing, we allow null if the typehint supports it
+            } catch (MissingContextException | MismatchedContextException $e) {
+                // If the context is entirely missing or mismatched, we allow null if the typehint supports it
                 if (!$parameter->allowsNull()) {
                     throw $e;
                 }
@@ -77,6 +81,15 @@ abstract class AbstractContextResolver implements ParameterResolver
      * @return bool
      */
     abstract protected function canResolveClass(string $className): bool;
+
+    /**
+     * Determine if the current context is valid for this resolver.
+     *
+     * @param mixed $context
+     * @param string $className
+     * @return bool
+     */
+    abstract protected function isValidContext(mixed $context, string $className): bool;
 
     /**
      * Build the concrete object instance from the raw context.

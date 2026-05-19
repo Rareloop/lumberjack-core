@@ -12,6 +12,11 @@ class PostTypeResolver extends AbstractContextResolver
         return is_a($className, PostType::class, true) || is_a($className, TimberPostType::class, true);
     }
 
+    protected function isValidContext(mixed $context, string $className): bool
+    {
+        return is_a($context, 'WP_Post_Type') || is_a($context, 'WP_Post');
+    }
+
     protected function resolveObject(string $className, mixed $context): mixed
     {
         if (is_a($context, 'WP_Post_Type')) {
