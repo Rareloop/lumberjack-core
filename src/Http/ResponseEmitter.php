@@ -8,9 +8,7 @@ use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 class ResponseEmitter
 {
-    protected EmitterInterface $emitter;
-
-    public function __construct(?EmitterInterface $emitter = null)
+    public function __construct(protected ?EmitterInterface $emitter = null)
     {
         $this->emitter = $emitter ?? new SapiEmitter();
     }
