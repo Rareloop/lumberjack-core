@@ -4,9 +4,17 @@ namespace Rareloop\Lumberjack\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 class ResponseEmitter
 {
+    protected EmitterInterface $emitter;
+
+    public function __construct(?EmitterInterface $emitter = null)
+    {
+        $this->emitter = $emitter ?? new SapiEmitter();
+    }
+
     /**
      * Emit a response.
      *
@@ -26,13 +34,33 @@ class ResponseEmitter
         // If the output buffer has content, SapiEmitter will throw an exception.
         // We circumvent this by stacking a new buffer, emitting into it,
         // and then echoing the result.
-        if (ob_get_level() > 0 && ob_get_length() > 0) {
-            ob_start();
-            (new SapiEmitter())->emit($response);
-            echo ob_get_clean();
+        if ($this->isOutputBufferDirty()) {
+            $this->emitWithStackedBuffer($response);
             return;
         }
 
-        (new SapiEmitter())->emit($response);
+        $this->emitter->emit($response);
+    }
+
+    /**
+     * Check if the output buffer has existing content.
+     */
+    protected function isOutputBufferDirty(): bool
+    {
+        return ob_get_level() > 0 && ob_get_length() > 0;
+    }
+
+    /**
+     * Emit the response into a clean buffer to bypass SapiEmitter's strict checks.
+     */
+    protected function emitWithStackedBuffer(ResponseInterface $response): void
+    {
+        ob_start();
+
+        try {
+            $this->emitter->emit($response);
+        } finally {
+            echo ob_get_clean();
+        }
     }
 }
