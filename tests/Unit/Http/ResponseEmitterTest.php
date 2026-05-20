@@ -84,4 +84,59 @@ class ResponseEmitterTest extends TestCase
         $headerMock->disable();
         $emitterHeadersSentMock->disable();
     }
+
+    #[Test]
+    public function emit_should_not_throw_exception_when_output_buffer_has_content_but_headers_not_sent(): void
+    {
+        $builder = new MockBuilder();
+        $builder->setNamespace('Rareloop\Lumberjack\Http')
+            ->setName('headers_sent')
+            ->setFunction(function () {
+                return false;
+            });
+        $mock = $builder->build();
+        $mock->enable();
+
+        // SapiEmitter uses the global header() function.
+        $headerBuilder = new MockBuilder();
+        $headerBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
+            ->setName('header')
+            ->setFunction(function () {
+            });
+        $headerMock = $headerBuilder->build();
+        $headerMock->enable();
+
+        // SapiEmitterTrait checks for namespaced headers_sent
+        $emitterHeadersSentBuilder = new MockBuilder();
+        $emitterHeadersSentBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
+            ->setName('headers_sent')
+            ->setFunction(function () {
+                return false;
+            });
+        $emitterHeadersSentMock = $emitterHeadersSentBuilder->build();
+        $emitterHeadersSentMock->enable();
+
+        $response = new TextResponse('Hello World');
+        $emitter = new ResponseEmitter();
+
+        // Start output buffering and put some content in it
+        ob_start();
+        echo 'Existing output';
+
+        // We expect no exception now
+        ob_start();
+        $emitter->emit($response);
+        $output = ob_get_clean();
+
+        // Final output should contain both existing and new content
+        // The outer buffer was started before 'Existing output'
+        $existing = ob_get_clean();
+
+        $this->assertSame('Hello World', $output);
+        $this->assertSame('Existing output', $existing);
+
+        $mock->disable();
+        $headerMock->disable();
+        $emitterHeadersSentMock->disable();
+    }
 }

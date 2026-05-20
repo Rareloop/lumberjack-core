@@ -23,6 +23,12 @@ class ResponseEmitter
             return;
         }
 
+        // If the output buffer has content, SapiEmitter will throw an exception.
+        // We can circumvent this by cleaning the buffer and echoing the content.
+        if (ob_get_level() > 0 && ob_get_length() > 0) {
+            echo ob_get_clean();
+        }
+
         (new SapiEmitter())->emit($response);
     }
 }
