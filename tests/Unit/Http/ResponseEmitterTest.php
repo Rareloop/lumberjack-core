@@ -124,16 +124,12 @@ class ResponseEmitterTest extends TestCase
         echo 'Existing output';
 
         // We expect no exception now
-        ob_start();
         $emitter->emit($response);
+        
+        // Final output should contain both existing and new content
         $output = ob_get_clean();
 
-        // Final output should contain both existing and new content
-        // The outer buffer was started before 'Existing output'
-        $existing = ob_get_clean();
-
-        $this->assertSame('Hello World', $output);
-        $this->assertSame('Existing output', $existing);
+        $this->assertSame('Existing outputHello World', $output);
 
         $mock->disable();
         $headerMock->disable();
