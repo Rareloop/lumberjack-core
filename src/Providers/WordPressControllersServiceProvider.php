@@ -11,10 +11,8 @@ use Psr\Http\Message\RequestInterface;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 use Laminas\Diactoros\ServerRequestFactory;
 use Rareloop\Router\ProvidesControllerMiddleware;
-use Invoker\ParameterResolver\ResolverChain;
 use Rareloop\Lumberjack\Http\Resolvers\PostQueryResolver;
 use Rareloop\Lumberjack\Http\Resolvers\UserResolver;
-use Rareloop\Lumberjack\Http\Resolvers\PostTypeResolver;
 use Rareloop\Lumberjack\Http\Resolvers\PostResolver;
 use Rareloop\Lumberjack\Http\Resolvers\TermResolver;
 
@@ -137,7 +135,6 @@ class WordPressControllersServiceProvider extends ServiceProvider
     private function getCoreResolvers(): array
     {
         return [
-            PostTypeResolver::class,
             PostQueryResolver::class,
             PostResolver::class,
             TermResolver::class,

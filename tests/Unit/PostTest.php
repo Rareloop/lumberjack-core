@@ -149,21 +149,6 @@ class PostTest extends TestCase
     }
 
     #[Test]
-    public function can_get_post_class_from_classmap(): void
-    {
-        Filters\expectApplied('timber/post/classmap')
-            ->times(3)
-            ->andReturn([
-                'post' => Post::class,
-                'page' => Page::class,
-            ]);
-
-        $this->assertSame(Post::class, Post::postClass('post'));
-        $this->assertSame(Page::class, Post::postClass('page'));
-        $this->assertNull(Post::postClass('missing'));
-    }
-
-    #[Test]
     public function all_can_have_post_limit_set()
     {
         $timber = Mockery::mock('alias:' . Timber::class);

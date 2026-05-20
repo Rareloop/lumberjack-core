@@ -114,17 +114,6 @@ class Post extends TimberPost
     }
 
     /**
-     * Get the Post class associated with a post type slug.
-     *
-     * @param string $postType
-     * @return string|null
-     */
-    public static function postClass(string $postType): ?string
-    {
-        return Arr::get(apply_filters('timber/post/classmap', []), $postType);
-    }
-
-    /**
      * Get all posts of this type
      *
      * @param  integer $perPage The number of items to return (defaults to all)
