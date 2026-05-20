@@ -6,14 +6,14 @@ use Rareloop\Lumberjack\Test\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Http\ResponseEmitter;
 use Laminas\Diactoros\Response\TextResponse;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Mockery;
 use phpmock\MockBuilder;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
 class ResponseEmitterTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     #[Test]
     public function emit_should_echo_body_when_headers_sent(): void
     {
@@ -39,7 +39,7 @@ class ResponseEmitterTest extends TestCase
     }
 
     #[Test]
-    public function emit_should_use_sapi_emitter_when_headers_not_sent(): void
+    public function emit_should_use_provided_emitter_when_headers_not_sent(): void
     {
         $builder = new MockBuilder();
         $builder->setNamespace('Rareloop\Lumberjack\Http')
@@ -50,38 +50,53 @@ class ResponseEmitterTest extends TestCase
         $mock = $builder->build();
         $mock->enable();
 
-        // SapiEmitter uses the global header() function.
-        // We mock it in the SapiEmitter's namespace to prevent it from actually sending headers
-        $headerBuilder = new MockBuilder();
-        $headerBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
-            ->setName('header')
-            ->setFunction(function () {
-            });
-        $headerMock = $headerBuilder->build();
-        $headerMock->enable();
+        $response = new TextResponse('Hello World');
+        $innerEmitter = Mockery::mock(EmitterInterface::class);
 
-        // SapiEmitterTrait checks for namespaced headers_sent
-        $emitterHeadersSentBuilder = new MockBuilder();
-        $emitterHeadersSentBuilder->setNamespace('Laminas\HttpHandlerRunner\Emitter')
+        $innerEmitter->shouldReceive('emit')->once()->with($response)->andReturn(true);
+
+        $emitter = new ResponseEmitter($innerEmitter);
+        $emitter->emit($response);
+
+        $mock->disable();
+    }
+
+    #[Test]
+    public function emit_should_use_stacked_buffer_when_output_buffer_has_content_but_headers_not_sent(): void
+    {
+        $builder = new MockBuilder();
+        $builder->setNamespace('Rareloop\Lumberjack\Http')
             ->setName('headers_sent')
             ->setFunction(function () {
                 return false;
             });
-        $emitterHeadersSentMock = $emitterHeadersSentBuilder->build();
-        $emitterHeadersSentMock->enable();
+        $mock = $builder->build();
+        $mock->enable();
 
         $response = new TextResponse('Hello World');
-        $emitter = new ResponseEmitter();
+        $innerEmitter = Mockery::mock(EmitterInterface::class);
 
+        // We expect the inner emitter to be called.
+        // We'll make it echo something to verify it's captured by the stacked buffer
+        $innerEmitter->shouldReceive('emit')->once()->with($response)->andReturnUsing(function () {
+            echo 'Hello World';
+            return true;
+        });
+
+        $emitter = new ResponseEmitter($innerEmitter);
+
+        // Start output buffering and put some content in it
         ob_start();
+        echo 'Existing output';
+
+        // We expect no exception now
         $emitter->emit($response);
+
+        // Final output should contain both existing and new content
         $output = ob_get_clean();
 
-        // SapiEmitter echoes the body, so we should see 'Hello World'
-        $this->assertSame('Hello World', $output);
+        $this->assertSame('Existing outputHello World', $output);
 
         $mock->disable();
-        $headerMock->disable();
-        $emitterHeadersSentMock->disable();
     }
 }
