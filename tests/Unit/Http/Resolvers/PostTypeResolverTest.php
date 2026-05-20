@@ -12,6 +12,9 @@ use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Invoker;
 use Timber\PostType as TimberPostType;
+use WP_Post;
+use WP_Post_Type;
+use Rareloop\Lumberjack\Config;
 
 class PostTypeResolverTest extends TestCase
 {
@@ -26,7 +29,7 @@ class PostTypeResolverTest extends TestCase
 
         $this->app = new Application(__DIR__ . '/../../../../');
 
-        $config = Mockery::mock(\Rareloop\Lumberjack\Config::class);
+        $config = Mockery::mock(Config::class);
         $config->shouldReceive('get')->with('app.resolvers', [])->andReturn([]);
         $this->app->bind('config', $config);
 
@@ -39,7 +42,7 @@ class PostTypeResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_post_type_from_a_post_type_object(): void
     {
-        $wpPostType = Mockery::mock('WP_Post_Type');
+        $wpPostType = Mockery::mock(WP_Post_Type::class);
         $wpPostType->name = 'page';
         Functions\expect('get_queried_object')->once()->andReturn($wpPostType);
 
@@ -62,11 +65,11 @@ class PostTypeResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_post_type_from_a_post_object(): void
     {
-        $wpPost = Mockery::mock('WP_Post');
+        $wpPost = Mockery::mock(WP_Post::class);
         $wpPost->post_type = 'post';
         Functions\expect('get_queried_object')->once()->andReturn($wpPost);
 
-        $wpPostTypeObject = Mockery::mock('WP_Post_Type');
+        $wpPostTypeObject = Mockery::mock(WP_Post_Type::class);
         $wpPostTypeObject->name = 'post';
 
         // Called once by our resolver and once by the Timber\PostType constructor
@@ -88,7 +91,7 @@ class PostTypeResolverTest extends TestCase
     #[Test]
     public function it_can_resolve_a_timber_post_type(): void
     {
-        $wpPostType = Mockery::mock('WP_Post_Type');
+        $wpPostType = Mockery::mock(WP_Post_Type::class);
         $wpPostType->name = 'page';
         Functions\expect('get_queried_object')->once()->andReturn($wpPostType);
 

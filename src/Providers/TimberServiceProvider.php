@@ -5,7 +5,6 @@ namespace Rareloop\Lumberjack\Providers;
 use Rareloop\Lumberjack\Config;
 use Rareloop\Lumberjack\Http\TimberContext;
 use Timber\Timber;
-use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 
 class TimberServiceProvider extends ServiceProvider
 {

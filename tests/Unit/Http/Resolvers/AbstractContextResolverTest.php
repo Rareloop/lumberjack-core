@@ -2,14 +2,17 @@
 
 namespace Rareloop\Lumberjack\Test\Unit\Http\Resolvers;
 
+use stdClass;
+use Exception;
 use Brain\Monkey\Functions;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Http\Resolvers\AbstractContextResolver;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Invoker;
+use Rareloop\Lumberjack\Exceptions\MissingContextException;
+use Rareloop\Lumberjack\Exceptions\MismatchedContextException;
 
 class AbstractContextResolverTest extends TestCase
 {
@@ -69,12 +72,12 @@ class AbstractContextResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(\stdClass $obj)
+            public function handle(stdClass $obj)
             {
             }
         };
 
-        $this->expectException(\Rareloop\Lumberjack\Exceptions\MissingContextException::class);
+        $this->expectException(MissingContextException::class);
         $this->invoker->call([$controller, 'handle']);
     }
 
@@ -84,7 +87,7 @@ class AbstractContextResolverTest extends TestCase
         Functions\expect('get_queried_object')->once()->andReturn(null);
 
         $controller = new class {
-            public function handle(?\stdClass $obj)
+            public function handle(?stdClass $obj)
             {
                 return $obj;
             }
@@ -98,17 +101,17 @@ class AbstractContextResolverTest extends TestCase
     #[Test]
     public function it_throws_an_exception_if_resolved_object_is_wrong_type(): void
     {
-        Functions\expect('get_queried_object')->once()->andReturn(new \stdClass());
+        Functions\expect('get_queried_object')->once()->andReturn(new stdClass());
 
-        $this->resolver->resolvedObject = new \Exception(); // Not a stdClass
+        $this->resolver->resolvedObject = new Exception(); // Not a stdClass
 
         $controller = new class {
-            public function handle(\stdClass $obj)
+            public function handle(stdClass $obj)
             {
             }
         };
 
-        $this->expectException(\Rareloop\Lumberjack\Exceptions\MismatchedContextException::class);
+        $this->expectException(MismatchedContextException::class);
         $this->invoker->call([$controller, 'handle']);
     }
 }
@@ -131,6 +134,6 @@ class TestContextResolver extends AbstractContextResolver
 
     protected function resolveObject(string $className, mixed $context): mixed
     {
-        return $this->resolvedObject ?? new \stdClass();
+        return $this->resolvedObject ?? new stdClass();
     }
 }

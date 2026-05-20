@@ -14,6 +14,7 @@ use Rareloop\Router\Invoker;
 use Timber\User;
 use Timber\Timber;
 use WP_User;
+use Rareloop\Lumberjack\Config;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
@@ -32,7 +33,7 @@ class UserResolverTest extends TestCase
 
         $this->app = new Application(__DIR__ . '/../../../../');
 
-        $config = Mockery::mock(\Rareloop\Lumberjack\Config::class);
+        $config = Mockery::mock(Config::class);
         $config->shouldReceive('get')->with('app.resolvers', [])->andReturn([]);
         $this->app->bind('config', $config);
 

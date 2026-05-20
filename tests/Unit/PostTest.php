@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Test;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Post;
+use Rareloop\Lumberjack\Page;
+use Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Timber\Post as TimberPost;
 use Timber\Timber;
@@ -41,14 +43,14 @@ class PostTest extends TestCase
     #[Test]
     public function register_function_throws_exception_if_post_type_is_not_provided()
     {
-        $this->expectException(\Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException::class);
+        $this->expectException(PostTypeRegistrationException::class);
         UnregisterablePostTypeWithoutPostType::register();
     }
 
     #[Test]
     public function register_function_throws_exception_if_config_is_not_provided()
     {
-        $this->expectException(\Rareloop\Lumberjack\Exceptions\PostTypeRegistrationException::class);
+        $this->expectException(PostTypeRegistrationException::class);
 
         UnregisterablePostTypeWithoutConfig::register();
     }
@@ -153,11 +155,11 @@ class PostTest extends TestCase
             ->times(3)
             ->andReturn([
                 'post' => Post::class,
-                'page' => \Rareloop\Lumberjack\Page::class,
+                'page' => Page::class,
             ]);
 
         $this->assertSame(Post::class, Post::postClass('post'));
-        $this->assertSame(\Rareloop\Lumberjack\Page::class, Post::postClass('page'));
+        $this->assertSame(Page::class, Post::postClass('page'));
         $this->assertNull(Post::postClass('missing'));
     }
 

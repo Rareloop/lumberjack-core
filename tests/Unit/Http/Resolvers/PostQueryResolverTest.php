@@ -12,7 +12,9 @@ use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Lumberjack\Test\Unit\Http\Resolvers\Stubs\PostQueryStub;
 use Rareloop\Router\Invoker;
 use Timber\PostQuery;
+use Timber\PostCollectionInterface;
 use WP_Query;
+use Rareloop\Lumberjack\Config;
 
 class PostQueryResolverTest extends TestCase
 {
@@ -27,7 +29,7 @@ class PostQueryResolverTest extends TestCase
 
         $this->app = new Application(__DIR__ . '/../../../../');
 
-        $config = Mockery::mock(\Rareloop\Lumberjack\Config::class);
+        $config = Mockery::mock(Config::class);
         $config->shouldReceive('get')->with('app.resolvers', [])->andReturn([]);
         $this->app->bind('config', $config);
 
@@ -44,7 +46,7 @@ class PostQueryResolverTest extends TestCase
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
-            public function handle(\Timber\PostQuery $query)
+            public function handle(PostQuery $query)
             {
                 return $query;
             }
@@ -52,7 +54,7 @@ class PostQueryResolverTest extends TestCase
 
         $result = $this->invoker->call([$controller, 'handle']);
 
-        $this->assertInstanceOf(\Timber\PostQuery::class, $result);
+        $this->assertInstanceOf(PostQuery::class, $result);
     }
 
     #[Test]
@@ -62,7 +64,7 @@ class PostQueryResolverTest extends TestCase
         $this->app->bind(WP_Query::class, $wpQuery);
 
         $controller = new class {
-            public function handle(\Timber\PostCollectionInterface $query)
+            public function handle(PostCollectionInterface $query)
             {
                 return $query;
             }
@@ -70,7 +72,7 @@ class PostQueryResolverTest extends TestCase
 
         $result = $this->invoker->call([$controller, 'handle']);
 
-        $this->assertInstanceOf(\Timber\PostCollectionInterface::class, $result);
+        $this->assertInstanceOf(PostCollectionInterface::class, $result);
     }
 
     #[Test]

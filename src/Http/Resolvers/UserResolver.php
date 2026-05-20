@@ -6,6 +6,7 @@ use Rareloop\Lumberjack\User;
 use Timber\User as TimberUser;
 use Timber\Timber;
 use Timber\CoreEntityInterface;
+use WP_User;
 
 class UserResolver extends AbstractContextResolver
 {
@@ -16,7 +17,7 @@ class UserResolver extends AbstractContextResolver
 
     protected function isValidContext(mixed $context, string $className): bool
     {
-        return is_a($context, 'WP_User') || is_a($context, CoreEntityInterface::class);
+        return is_a($context, WP_User::class) || is_a($context, CoreEntityInterface::class);
     }
 
     protected function resolveObject(string $className, mixed $context): mixed

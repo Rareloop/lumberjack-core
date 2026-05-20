@@ -9,7 +9,8 @@ use Rareloop\Lumberjack\Http\Resolvers\AbstractContextResolver;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\Invoker;
-use Rareloop\Lumberjack\Exceptions\MismatchedContextException;
+use WP_User;
+use WP_Term;
 
 class NullableMultiParameterTest extends TestCase
 {
@@ -22,11 +23,11 @@ class NullableMultiParameterTest extends TestCase
     {
         parent::setUp();
 
-        if (!class_exists('\WP_User')) {
+        if (!class_exists(WP_User::class)) {
             eval('class WP_User {}');
         }
 
-        if (!class_exists('\WP_Term')) {
+        if (!class_exists(WP_Term::class)) {
             eval('class WP_Term {}');
         }
 
@@ -38,17 +39,17 @@ class NullableMultiParameterTest extends TestCase
     public function it_resolves_multiple_nullable_parameters_correctly()
     {
         // Simulate being on an Author page (WP_User context)
-        Functions\expect('get_queried_object')->andReturn(new \WP_User());
+        Functions\expect('get_queried_object')->andReturn(new WP_User());
 
         // We'll use two real-world-like resolvers but as anonymous classes to keep it isolated
         $userResolver = new class extends AbstractContextResolver {
             protected function canResolveClass(string $className): bool
             {
-                return $className === \WP_User::class;
+                return $className === WP_User::class;
             }
             protected function isValidContext(mixed $context, string $className): bool
             {
-                return is_a($context, \WP_User::class);
+                return is_a($context, WP_User::class);
             }
             protected function resolveObject(string $className, mixed $context): mixed
             {
@@ -59,11 +60,11 @@ class NullableMultiParameterTest extends TestCase
             $termResolver = new class extends AbstractContextResolver {
                 protected function canResolveClass(string $className): bool
                 {
-                    return $className === \WP_Term::class;
+                    return $className === WP_Term::class;
                 }
                 protected function isValidContext(mixed $context, string $className): bool
                 {
-                    return is_a($context, \WP_Term::class);
+                    return is_a($context, WP_Term::class);
                 }
                 protected function resolveObject(string $className, mixed $context): mixed
                 {
@@ -76,7 +77,7 @@ class NullableMultiParameterTest extends TestCase
         $this->invoker->getParameterResolver()->prependResolver($termResolver);
 
         $controller = new class {
-            public function handle(?\WP_Term $term, ?\WP_User $user)
+            public function handle(?WP_Term $term, ?WP_User $user)
             {
                 return ['term' => $term, 'user' => $user];
             }
@@ -86,6 +87,6 @@ class NullableMultiParameterTest extends TestCase
         $result = $this->invoker->call([$controller, 'handle']);
 
         $this->assertNull($result['term']);
-        $this->assertInstanceOf(\WP_User::class, $result['user']);
+        $this->assertInstanceOf(WP_User::class, $result['user']);
     }
 }

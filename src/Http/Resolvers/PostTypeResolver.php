@@ -4,6 +4,8 @@ namespace Rareloop\Lumberjack\Http\Resolvers;
 
 use Rareloop\Lumberjack\PostType;
 use Timber\PostType as TimberPostType;
+use WP_Post;
+use WP_Post_Type;
 
 class PostTypeResolver extends AbstractContextResolver
 {
@@ -14,16 +16,16 @@ class PostTypeResolver extends AbstractContextResolver
 
     protected function isValidContext(mixed $context, string $className): bool
     {
-        return is_a($context, 'WP_Post_Type') || is_a($context, 'WP_Post');
+        return is_a($context, WP_Post_Type::class) || is_a($context, WP_Post::class);
     }
 
     protected function resolveObject(string $className, mixed $context): mixed
     {
-        if (is_a($context, 'WP_Post_Type')) {
+        if (is_a($context, WP_Post_Type::class)) {
             return new PostType($context->name);
         }
 
-        if (is_a($context, 'WP_Post') && function_exists('get_post_type_object')) {
+        if (is_a($context, WP_Post::class) && function_exists('get_post_type_object')) {
             $postTypeObject = get_post_type_object($context->post_type);
 
             if ($postTypeObject) {

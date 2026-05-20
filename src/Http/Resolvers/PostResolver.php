@@ -6,6 +6,7 @@ use Rareloop\Lumberjack\Post;
 use Timber\Post as TimberPost;
 use Timber\Timber;
 use Timber\CoreEntityInterface;
+use WP_Post;
 
 class PostResolver extends AbstractContextResolver
 {
@@ -17,7 +18,7 @@ class PostResolver extends AbstractContextResolver
 
     protected function isValidContext(mixed $context, string $className): bool
     {
-        return is_a($context, 'WP_Post') || is_a($context, CoreEntityInterface::class);
+        return is_a($context, WP_Post::class) || is_a($context, CoreEntityInterface::class);
     }
 
     protected function resolveObject(string $className, mixed $context): mixed

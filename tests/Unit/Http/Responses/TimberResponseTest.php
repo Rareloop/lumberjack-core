@@ -109,6 +109,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -135,6 +138,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -177,6 +183,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -203,6 +212,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -224,6 +236,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -249,6 +264,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 }
 

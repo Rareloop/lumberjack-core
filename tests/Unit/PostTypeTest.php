@@ -10,6 +10,8 @@ use Timber\PostType as TimberPostType;
 use Rareloop\Lumberjack\Test\TestCase;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Mockery;
+use WP_Post_Type;
+use stdClass;
 
 class PostTypeTest extends TestCase
 {
@@ -18,7 +20,7 @@ class PostTypeTest extends TestCase
     #[Test]
     public function it_extends_the_timber_post_type_class(): void
     {
-        Functions\expect('get_post_type_object')->andReturn(Mockery::mock('WP_Post_Type'));
+        Functions\expect('get_post_type_object')->andReturn(Mockery::mock(WP_Post_Type::class));
         $postType = new PostType('post');
 
         $this->assertInstanceOf(TimberPostType::class, $postType);
@@ -27,7 +29,7 @@ class PostTypeTest extends TestCase
     #[Test]
     public function can_get_post_class_associated_with_post_type(): void
     {
-        $wpPostType = new \stdClass();
+        $wpPostType = new stdClass();
         $wpPostType->name = 'book';
         Functions\expect('get_post_type_object')->andReturn($wpPostType);
 
@@ -43,7 +45,7 @@ class PostTypeTest extends TestCase
     #[Test]
     public function can_extend_post_type_with_macros(): void
     {
-        $wpPostType = new \stdClass();
+        $wpPostType = new stdClass();
         $wpPostType->name = 'post';
         Functions\expect('get_post_type_object')->andReturn($wpPostType);
 
