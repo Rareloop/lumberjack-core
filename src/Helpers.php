@@ -41,7 +41,12 @@ class Helpers
 
     public static function view($template, $context = [], $statusCode = 200, $headers = [])
     {
-        return new TimberResponse($template, $context, $statusCode, $headers);
+        return static::app()->make(TimberResponse::class, [
+            'twigTemplate' => $template,
+            'context' => $context,
+            'status' => $statusCode,
+            'headers' => $headers,
+        ]);
     }
 
     public static function route($name, $params = [])

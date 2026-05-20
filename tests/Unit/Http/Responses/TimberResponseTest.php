@@ -109,6 +109,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -135,6 +138,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -177,6 +183,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -203,6 +212,33 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
+    }
+
+    #[Test]
+    public function contexts_that_are_arrayable_objects_are_converted(): void
+    {
+        $context = collect([
+            'foo' => 'bar',
+        ]);
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('compile')
+            ->with('template.twig', Mockery::on(function ($passedContext) {
+                $this->assertIsArray($passedContext);
+                $this->assertSame('bar', $passedContext['foo']);
+
+                return true;
+            }))
+            ->once()
+            ->andReturn('testing123');
+
+        $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 
     #[Test]
@@ -228,6 +264,9 @@ class TimberResponseTest extends TestCase
             ->andReturn('testing123');
 
         $response = new TimberResponse('template.twig', $context, 123);
+
+        $this->assertSame(123, $response->getStatusCode());
+        $this->assertSame('testing123', $response->getBody()->__toString());
     }
 }
 

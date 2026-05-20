@@ -40,4 +40,20 @@ class RegisterRequestHandlerTest extends TestCase
         $bootstrapper = new RegisterRequestHandler();
         $bootstrapper->bootstrap($app);
     }
+
+    #[Test]
+    public function it_binds_wp_query_to_the_global_variable()
+    {
+        $app = new Application();
+        $config = new Config();
+        $app->bind('config', $config);
+
+        $query = new \stdClass();
+        $GLOBALS['wp_query'] = $query;
+
+        $bootstrapper = new RegisterRequestHandler();
+        $bootstrapper->bootstrap($app);
+
+        $this->assertSame($query, $app->get(\WP_Query::class));
+    }
 }

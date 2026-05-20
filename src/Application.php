@@ -162,7 +162,7 @@ class Application implements ContainerInterface
         }
 
         if (is_string($provider)) {
-            $provider = new $provider($this);
+            $provider = $this->make($provider);
         }
 
         if (method_exists($provider, 'register')) {
