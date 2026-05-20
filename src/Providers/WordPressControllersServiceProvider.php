@@ -41,17 +41,6 @@ class WordPressControllersServiceProvider extends ServiceProvider
         add_filter('template_include', [$this, 'handleTemplateInclude']);
     }
 
-    protected function getCoreResolvers(): array
-    {
-        return [
-            PostTypeResolver::class,
-            PostQueryResolver::class,
-            PostResolver::class,
-            TermResolver::class,
-            UserResolver::class,
-        ];
-    }
-
     public function handleTemplateInclude($template)
     {
         include $template;
@@ -143,5 +132,16 @@ class WordPressControllersServiceProvider extends ServiceProvider
         }
 
         return new Dispatcher($middlewares, $resolver);
+    }
+
+    private function getCoreResolvers(): array
+    {
+        return [
+            PostTypeResolver::class,
+            PostQueryResolver::class,
+            PostResolver::class,
+            TermResolver::class,
+            UserResolver::class,
+        ];
     }
 }
