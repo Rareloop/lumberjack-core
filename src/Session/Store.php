@@ -89,7 +89,7 @@ class Store
 
     public function has($key)
     {
-        return Arr::exists($this->attributes, $key);
+        return Arr::has($this->attributes, $key);
     }
 
     public function pull($key)
