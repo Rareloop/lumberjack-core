@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 use Rareloop\Lumberjack\Http\MiddlewareResolver;
@@ -66,6 +67,15 @@ class RouterServiceProvider extends ServiceProvider
     public function processRequest(RequestInterface $request)
     {
         $this->app->bind('request', $request);
+        $this->app->bind(RequestInterface::class, $request);
+
+        if ($request instanceof ServerRequestInterface) {
+            $this->app->bind(ServerRequestInterface::class, $request);
+        }
+
+        if ($request instanceof ServerRequest) {
+            $this->app->bind(ServerRequest::class, $request);
+        }
 
         $response = $this->app->get('router')->match($request);
 

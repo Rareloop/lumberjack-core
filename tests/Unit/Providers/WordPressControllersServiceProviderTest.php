@@ -19,6 +19,7 @@ use Rareloop\Lumberjack\Http\Controller;
 use Rareloop\Lumberjack\Http\Kernal;
 use Rareloop\Lumberjack\Http\MiddlewareAliasStore;
 use Rareloop\Lumberjack\Http\MiddlewareResolver;
+use Rareloop\Lumberjack\Http\ServerRequest as LumberjackServerRequest;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Providers\WordPressControllersServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
@@ -399,6 +400,48 @@ class WordPressControllersServiceProviderTest extends TestCase
 
         $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
     }
+
+    #[Test]
+    public function request_object_is_bound_into_container_when_handling_request(): void
+    {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
+        $app = new Application(__DIR__ . '/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot();
+
+        $request = new LumberjackServerRequest([], [], '/sub-path/test/123', 'GET');
+
+        $provider->handleRequest($request, TestController::class, 'handle');
+
+        $this->assertSame($request, $app->get('request'));
+        $this->assertSame($request, $app->get(RequestInterface::class));
+        $this->assertSame($request, $app->get(ServerRequestInterface::class));
+        $this->assertSame($request, $app->get(LumberjackServerRequest::class));
+    }
+
+    #[Test]
+    public function handle_request_resolves_server_request_interface_from_container_in_constructor(): void
+    {
+        Functions\expect('post_password_required')
+            ->once()
+            ->andReturn(false);
+
+        $app = new Application(__DIR__ . '/../');
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->boot();
+
+        $request = new LumberjackServerRequest([], [], '/sub-path/test/123', 'GET');
+
+        $provider->handleRequest($request, TestControllerWithServerRequestConstructorParams::class, 'handle');
+
+        $controller = $app->get(TestControllerWithServerRequestConstructorParams::class);
+        $this->assertSame($request, $controller->request);
+    }
 }
 
 class TestController
@@ -460,5 +503,19 @@ class AddHeaderMiddleware implements MiddlewareInterface
         $response = $handler->handle($request);
 
         return $response->withHeader($this->key, $this->value);
+    }
+}
+
+class TestControllerWithServerRequestConstructorParams
+{
+    public $request;
+
+    public function __construct(ServerRequestInterface $request)
+    {
+        $this->request = $request;
+    }
+
+    public function handle()
+    {
     }
 }

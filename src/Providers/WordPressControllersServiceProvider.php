@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 use mindplay\middleman\Dispatcher;
 use Rareloop\Router\ResponseFactory;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Rareloop\Lumberjack\Http\ServerRequest;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
 use Laminas\Diactoros\ServerRequestFactory;
 use Rareloop\Router\ProvidesControllerMiddleware;
@@ -89,6 +91,17 @@ class WordPressControllersServiceProvider extends ServiceProvider
         }
 
         $this->app->requestHasBeenHandled();
+
+        $this->app->bind('request', $request);
+        $this->app->bind(RequestInterface::class, $request);
+
+        if ($request instanceof ServerRequestInterface) {
+            $this->app->bind(ServerRequestInterface::class, $request);
+        }
+
+        if ($request instanceof ServerRequest) {
+            $this->app->bind(ServerRequest::class, $request);
+        }
 
         $controller = $this->app->get($controllerName);
         $middlewares = [];

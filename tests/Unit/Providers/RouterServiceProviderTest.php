@@ -9,6 +9,7 @@ use Mockery;
 use Rareloop\Lumberjack\Test\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -16,6 +17,7 @@ use Rareloop\Lumberjack\Application;
 use Rareloop\Lumberjack\Contracts\MiddlewareAliases;
 use Rareloop\Lumberjack\Http\Lumberjack;
 use Rareloop\Lumberjack\Http\Router;
+use Rareloop\Lumberjack\Http\ServerRequest as LumberjackServerRequest;
 use Rareloop\Lumberjack\Providers\RouterServiceProvider;
 use Rareloop\Lumberjack\Test\Unit\Concerns\BrainMonkeyPHPUnitIntegration;
 use Rareloop\Router\MiddlewareResolver;
@@ -136,7 +138,7 @@ class RouterServiceProviderTest extends TestCase
         Functions\expect('is_admin')->once()->andReturn(false);
 
         $this->setSiteUrl('http://example.com/sub-path/');
-        $request = new ServerRequest([], [], '/sub-path/test/123', 'GET');
+        $request = new LumberjackServerRequest([], [], '/sub-path/test/123', 'GET');
         $app = new Application(__DIR__ . '/../');
         $lumberjack = new Lumberjack($app);
         $provider = new RouterServiceProvider($app);
@@ -147,6 +149,9 @@ class RouterServiceProviderTest extends TestCase
         $provider->processRequest($request);
 
         $this->assertSame($request, $app->get('request'));
+        $this->assertSame($request, $app->get(RequestInterface::class));
+        $this->assertSame($request, $app->get(ServerRequestInterface::class));
+        $this->assertSame($request, $app->get(LumberjackServerRequest::class));
     }
 
     #[Test]
