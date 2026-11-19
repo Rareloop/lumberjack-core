@@ -219,6 +219,29 @@ class HelpersTest extends TestCase
     }
 
     #[Test]
+    public function can_report_a_throwable_that_is_not_an_exception()
+    {
+        $app = new Application();
+        $error = new \TypeError('Testing type error', 123);
+        $handler = \Mockery::mock(TestExceptionHandler::class . '[report]', [$app]);
+        $handler->shouldReceive('report')->with(\Mockery::on(function ($reported) use ($error) {
+            return $reported instanceof \ErrorException
+                && $reported->getMessage() === 'Testing type error'
+                && $reported->getCode() === 123
+                && $reported->getSeverity() === E_ERROR
+                && $reported->getFile() === $error->getFile()
+                && $reported->getLine() === $error->getLine()
+                && $reported->getPrevious() === $error;
+        }))->once();
+
+        $app->bind(HandlerInterface::class, function () use ($handler) {
+            return $handler;
+        });
+
+        Helpers::report($error);
+    }
+
+    #[Test]
     public function can_access_an_item_in_the_session_by_key()
     {
         $app = new Application();
