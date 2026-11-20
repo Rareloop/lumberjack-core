@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Bootstrappers;
 
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Helpers;
 
 class RegisterAliases
 {
@@ -11,7 +12,7 @@ class RegisterAliases
         $config = $app->get('config');
 
         foreach ($config->get('app.aliases', []) as $alias => $realClassname) {
-            class_alias($realClassname, $alias);
+            class_alias(Helpers::invoke($realClassname), $alias);
         }
     }
 }

@@ -75,4 +75,27 @@ class MenusServiceProviderTest extends TestCase
         $provider = new MenusServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function menus_defined_as_closures_should_be_resolved(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config();
+
+        $config->set('menus.menus', [
+            'header-menu' => fn() => 'Header Menu',
+            'footer-menu' => 'Footer Menu',
+        ]);
+
+        Functions\expect('add_theme_support')
+            ->once()
+            ->with('menus');
+
+        Functions\expect('register_nav_menus')
+            ->once()
+            ->with(['header-menu' => 'Header Menu', 'footer-menu' => 'Footer Menu']);
+
+        $provider = new MenusServiceProvider($app);
+        $provider->boot($config);
+    }
 }

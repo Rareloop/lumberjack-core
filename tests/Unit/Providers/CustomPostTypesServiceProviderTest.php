@@ -34,6 +34,52 @@ class CustomPostTypesServiceProviderTest extends TestCase
         $provider = new CustomPostTypesServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function should_call_register_post_type_for_closures_in_configured_post_types(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+
+        $config = new Config();
+
+        $config->set('posttypes.register', [
+            fn() => CustomPost1::class,
+            CustomPost2::class,
+        ]);
+
+        Functions\expect('register_post_type')
+            ->times(2);
+
+        $provider = new CustomPostTypesServiceProvider($app);
+        $provider->boot($config);
+    }
+
+    #[Test]
+    public function should_resolve_dependencies_in_closures_in_configured_post_types(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+        $app->bind(PostResolverHelper::class, new PostResolverHelper());
+
+        $config = new Config();
+
+        $config->set('posttypes.register', [
+            fn(PostResolverHelper $helper) => $helper->resolvePostClass(),
+        ]);
+
+        Functions\expect('register_post_type')
+            ->once();
+
+        $provider = new CustomPostTypesServiceProvider($app);
+        $provider->boot($config);
+    }
+}
+
+class PostResolverHelper
+{
+    public function resolvePostClass(): string
+    {
+        return CustomPost1::class;
+    }
 }
 
 class CustomPost1 extends Post

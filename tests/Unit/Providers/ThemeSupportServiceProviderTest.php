@@ -52,4 +52,28 @@ class ThemeSupportServiceProviderTest extends TestCase
         $provider = new ThemeSupportServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function should_call_add_theme_support_for_closures_in_config(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+
+        $config = new Config();
+
+        $config->set('app.themeSupport', [
+            fn() => 'post-thumbnail',
+            'post-formats' => fn() => ['aside', 'gallery'],
+        ]);
+
+        Functions\expect('add_theme_support')
+            ->with('post-thumbnail')
+            ->once();
+
+        Functions\expect('add_theme_support')
+            ->with('post-formats', ['aside', 'gallery'])
+            ->once();
+
+        $provider = new ThemeSupportServiceProvider($app);
+        $provider->boot($config);
+    }
 }

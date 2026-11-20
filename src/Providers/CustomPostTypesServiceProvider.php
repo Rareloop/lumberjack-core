@@ -3,15 +3,14 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Helpers;
 
 class CustomPostTypesServiceProvider extends ServiceProvider
 {
     public function boot(Config $config)
     {
-        $postTypesToRegister = $config->get('posttypes.register');
-
-        foreach ($postTypesToRegister as $postType) {
-            $postType::register();
+        foreach ($config->get('posttypes.register', []) as $postType) {
+            Helpers::invoke($postType)::register();
         }
     }
 }

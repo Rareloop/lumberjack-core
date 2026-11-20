@@ -71,3 +71,10 @@ if (!function_exists('logger')) {
         return call_user_func_array([Helpers::class, 'logger'], func_get_args());
     }
 }
+
+if (!function_exists('invoke')) {
+    function invoke()
+    {
+        return call_user_func_array([Helpers::class, 'invoke'], func_get_args());
+    }
+}

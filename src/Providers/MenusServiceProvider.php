@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Helpers;
 
 class MenusServiceProvider extends ServiceProvider
 {
@@ -10,7 +11,9 @@ class MenusServiceProvider extends ServiceProvider
     {
         add_theme_support('menus');
 
-        $menus = $config->get('menus.menus', []);
+        $menus = collect($config->get('menus.menus', []))
+            ->map(fn($menu) => Helpers::invoke($menu))
+            ->all();
 
         if (count($menus)) {
             register_nav_menus($menus);

@@ -102,4 +102,31 @@ class TimberServiceProviderTest extends TestCase
             'path/three',
         ], Timber::$dirname);
     }
+
+    #[Test]
+    public function dirname_variable_resolves_closures_from_config(): void
+    {
+        $app = new Application(__DIR__ . '/../');
+
+        $config = new Config();
+        $config->set('timber.paths', [
+            fn() => 'path/resolved',
+            'path/static',
+        ]);
+
+        $app->bind('config', $config);
+        $app->bind(Config::class, $config);
+
+        $app->bootstrapWith([
+            RegisterProviders::class,
+            BootProviders::class,
+        ]);
+
+        $app->register(new TimberServiceProvider($app));
+
+        $this->assertSame([
+            'path/resolved',
+            'path/static',
+        ], Timber::$dirname);
+    }
 }

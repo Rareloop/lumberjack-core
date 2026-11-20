@@ -27,6 +27,23 @@ class RegisterAliasesTest extends TestCase
         $this->assertTrue(class_exists('Foo'));
         $this->assertInstanceOf(TestClassToAlias::class, new \Foo());
     }
+
+    #[Test]
+    public function calls_class_alias_on_all_alias_mappings_with_closures()
+    {
+        $app = new Application();
+        $config = new Config();
+        $config->set('app.aliases', [
+            'Bar' => fn() => TestClassToAlias::class,
+        ]);
+        $app->bind('config', $config);
+
+        $bootstrapper = new RegisterAliases();
+        $bootstrapper->bootstrap($app);
+
+        $this->assertTrue(class_exists('Bar'));
+        $this->assertInstanceOf(TestClassToAlias::class, new \Bar());
+    }
 }
 
 class TestClassToAlias

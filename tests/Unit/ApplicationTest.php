@@ -569,6 +569,32 @@ class ApplicationTest extends TestCase
 
         $app->shutdown($response);
     }
+
+    #[Test]
+    public function can_call_closure_and_inject_dependencies(): void
+    {
+        $app = new Application();
+        $test = new TestInterfaceImplementation();
+        $app->bind(TestInterface::class, $test);
+
+        $result = $app->call(function (TestInterface $injected) {
+            return $injected;
+        });
+
+        $this->assertSame($test, $result);
+    }
+
+    #[Test]
+    public function can_call_closure_with_explicit_parameters(): void
+    {
+        $app = new Application();
+
+        $result = $app->call(function ($foo, $bar) {
+            return $foo . '-' . $bar;
+        }, ['foo' => 'hello', 'bar' => 'world']);
+
+        $this->assertSame('hello-world', $result);
+    }
 }
 
 class BootstrapperBootstrapTester
