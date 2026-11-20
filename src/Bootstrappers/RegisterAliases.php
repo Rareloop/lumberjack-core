@@ -11,8 +11,9 @@ class RegisterAliases
     {
         $config = $app->get('config');
 
-        foreach ($config->get('app.aliases', []) as $alias => $realClassname) {
-            class_alias(Helpers::invoke($realClassname), $alias);
-        }
+        collect($config->get('app.aliases', []))
+            ->map(fn($realClassname) => Helpers::invoke($realClassname))
+            ->filter()
+            ->each(fn($realClassname, $alias) => class_alias($realClassname, $alias));
     }
 }

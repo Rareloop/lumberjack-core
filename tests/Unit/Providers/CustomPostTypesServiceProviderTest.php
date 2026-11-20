@@ -72,6 +72,26 @@ class CustomPostTypesServiceProviderTest extends TestCase
         $provider = new CustomPostTypesServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function should_ignore_null_and_falsy_values_in_configured_post_types(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+
+        $config = new Config();
+
+        $config->set('posttypes.register', [
+            null,
+            fn() => null,
+            CustomPost1::class,
+        ]);
+
+        Functions\expect('register_post_type')
+            ->once();
+
+        $provider = new CustomPostTypesServiceProvider($app);
+        $provider->boot($config);
+    }
 }
 
 class PostResolverHelper

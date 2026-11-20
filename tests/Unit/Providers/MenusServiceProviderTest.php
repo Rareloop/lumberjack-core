@@ -98,4 +98,28 @@ class MenusServiceProviderTest extends TestCase
         $provider = new MenusServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function null_menus_and_closures_returning_null_should_be_filtered_out(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config();
+
+        $config->set('menus.menus', [
+            'header-menu' => 'Header Menu',
+            'null-menu' => null,
+            'closure-null-menu' => fn() => null,
+        ]);
+
+        Functions\expect('add_theme_support')
+            ->once()
+            ->with('menus');
+
+        Functions\expect('register_nav_menus')
+            ->once()
+            ->with(['header-menu' => 'Header Menu']);
+
+        $provider = new MenusServiceProvider($app);
+        $provider->boot($config);
+    }
 }

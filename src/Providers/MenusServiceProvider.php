@@ -13,6 +13,7 @@ class MenusServiceProvider extends ServiceProvider
 
         $menus = collect($config->get('menus.menus', []))
             ->map(fn($menu) => Helpers::invoke($menu))
+            ->filter()
             ->all();
 
         if (count($menus)) {

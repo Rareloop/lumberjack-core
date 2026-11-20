@@ -139,4 +139,29 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider = new ImageSizesServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function image_sizes_with_null_and_closures_returning_null_should_be_ignored(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config();
+
+        $config->set('images.sizes', [
+            null,
+            fn() => null,
+            [
+                'name' => 'thumbnail',
+                'width' => 100,
+                'height' => 200,
+                'crop' => true,
+            ],
+        ]);
+
+        Functions\expect('add_image_size')
+            ->once()
+            ->with('thumbnail', 100, 200, true);
+
+        $provider = new ImageSizesServiceProvider($app);
+        $provider->boot($config);
+    }
 }

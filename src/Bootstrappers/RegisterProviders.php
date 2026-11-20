@@ -15,9 +15,10 @@ class RegisterProviders
 
         $this->registerBaseProviders($app);
 
-        foreach ($config->get('app.providers', []) as $provider) {
-            $app->register(Helpers::invoke($provider));
-        }
+        collect($config->get('app.providers', []))
+            ->map(fn($provider) => Helpers::invoke($provider))
+            ->filter()
+            ->each(fn($provider) => $app->register($provider));
     }
 
     protected function registerBaseProviders(Application $app)

@@ -44,6 +44,27 @@ class RegisterAliasesTest extends TestCase
         $this->assertTrue(class_exists('Bar'));
         $this->assertInstanceOf(TestClassToAlias::class, new \Bar());
     }
+
+    #[Test]
+    public function ignores_null_aliases_and_closures_returning_null()
+    {
+        $app = new Application();
+        $config = new Config();
+        $config->set('app.aliases', [
+            'NullAlias' => null,
+            'NullClosureAlias' => fn() => null,
+            'Baz' => TestClassToAlias::class,
+        ]);
+        $app->bind('config', $config);
+
+        $bootstrapper = new RegisterAliases();
+        $bootstrapper->bootstrap($app);
+
+        $this->assertFalse(class_exists('NullAlias'));
+        $this->assertFalse(class_exists('NullClosureAlias'));
+        $this->assertTrue(class_exists('Baz'));
+        $this->assertInstanceOf(TestClassToAlias::class, new \Baz());
+    }
 }
 
 class TestClassToAlias
