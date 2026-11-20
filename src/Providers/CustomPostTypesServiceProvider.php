@@ -9,8 +9,9 @@ class CustomPostTypesServiceProvider extends ServiceProvider
 {
     public function boot(Config $config)
     {
-        foreach ($config->get('posttypes.register', []) as $postType) {
-            Helpers::invoke($postType)::register();
-        }
+        collect($config->get('posttypes.register', []))
+            ->map(fn($postType) => Helpers::invoke($postType))
+            ->filter()
+            ->each(fn($postType) => $postType::register());
     }
 }

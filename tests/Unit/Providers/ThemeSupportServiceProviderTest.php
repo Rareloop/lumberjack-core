@@ -76,4 +76,27 @@ class ThemeSupportServiceProviderTest extends TestCase
         $provider = new ThemeSupportServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function should_ignore_null_values_and_closures_returning_null_in_config(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+
+        $config = new Config();
+
+        $config->set('app.themeSupport', [
+            null,
+            fn() => null,
+            'ignored-feature' => null,
+            'ignored-closure-feature' => fn() => null,
+            'post-thumbnail',
+        ]);
+
+        Functions\expect('add_theme_support')
+            ->with('post-thumbnail')
+            ->once();
+
+        $provider = new ThemeSupportServiceProvider($app);
+        $provider->boot($config);
+    }
 }
