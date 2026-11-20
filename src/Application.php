@@ -110,6 +110,18 @@ class Application implements ContainerInterface
     }
 
     /**
+     * Call the given Closure / callable and inject its dependencies.
+     *
+     * @param  callable|string  $callable
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function call($callable, array $parameters = [])
+    {
+        return $this->container->call($callable, $parameters);
+    }
+
+    /**
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.

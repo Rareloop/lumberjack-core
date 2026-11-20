@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Http\Responses\RedirectResponse;
+use stdClass;
 
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
@@ -392,6 +393,29 @@ class HelpersTest extends TestCase
     public function dd_function_exists()
     {
         $this->assertTrue(function_exists('dd'));
+    }
+
+    #[Test]
+    public function invoke_returns_non_closure_value_as_is(): void
+    {
+        $this->assertSame('foobar', Helpers::invoke('foobar'));
+        $this->assertSame(123, Helpers::invoke(123));
+        $this->assertSame(['key' => 'val'], Helpers::invoke(['key' => 'val']));
+    }
+
+    #[Test]
+    public function invoke_executes_closure_and_injects_dependencies(): void
+    {
+        $app = new Application();
+        $dependency = new stdClass();
+        $dependency->name = 'injected';
+        $app->bind(stdClass::class, $dependency);
+
+        $result = Helpers::invoke(function (stdClass $my_dep) {
+            return $my_dep->name;
+        });
+
+        $this->assertSame('injected', $result);
     }
 }
 

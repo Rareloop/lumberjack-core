@@ -27,6 +27,10 @@ use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 use Mockery;
 use Rareloop\Lumberjack\Http\Middleware\PasswordProtected;
+use Rareloop\Lumberjack\Config;
+use Rareloop\Router\Invoker;
+use Invoker\ParameterResolver\ParameterResolver;
+use ReflectionFunctionAbstract;
 
 class WordPressControllersServiceProviderTest extends TestCase
 {
@@ -399,6 +403,23 @@ class WordPressControllersServiceProviderTest extends TestCase
 
         $provider->handleTemplateInclude(__DIR__ . '/includes/single.php');
     }
+
+    #[Test]
+    public function custom_resolvers_defined_as_closures_in_config_are_resolved(): void
+    {
+        $app = new Application(__DIR__ . '/../');
+        $config = new Config();
+        $config->set('app.resolvers', [
+            fn() => TestCustomResolver::class,
+        ]);
+        $app->bind('config', $config);
+
+        $provider = new WordPressControllersServiceProvider($app);
+        $provider->register();
+
+        $invoker = $app->get(Invoker::class);
+        $this->assertInstanceOf(Invoker::class, $invoker);
+    }
 }
 
 class TestController
@@ -460,5 +481,16 @@ class AddHeaderMiddleware implements MiddlewareInterface
         $response = $handler->handle($request);
 
         return $response->withHeader($this->key, $this->value);
+    }
+}
+
+class TestCustomResolver implements ParameterResolver
+{
+    public function getParameters(
+        ReflectionFunctionAbstract $reflection,
+        array $providedParameters,
+        array $resolvedParameters
+    ): array {
+        return $resolvedParameters;
     }
 }

@@ -116,4 +116,27 @@ class ImageSizesServiceProviderTest extends TestCase
         $provider = new ImageSizesServiceProvider($app);
         $provider->boot($config);
     }
+
+    #[Test]
+    public function image_size_defined_as_closure_should_be_resolved(): void
+    {
+        $app = new Application(__DIR__ . '/..');
+        $config = new Config();
+
+        $config->set('images.sizes', [
+            fn() => [
+                'name' => 'thumbnail',
+                'width' => 100,
+                'height' => 200,
+                'crop' => true,
+            ],
+        ]);
+
+        Functions\expect('add_image_size')
+            ->once()
+            ->with('thumbnail', 100, 200, true);
+
+        $provider = new ImageSizesServiceProvider($app);
+        $provider->boot($config);
+    }
 }

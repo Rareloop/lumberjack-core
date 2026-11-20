@@ -15,6 +15,7 @@ use Rareloop\Lumberjack\Http\Resolvers\PostQueryResolver;
 use Rareloop\Lumberjack\Http\Resolvers\UserResolver;
 use Rareloop\Lumberjack\Http\Resolvers\PostResolver;
 use Rareloop\Lumberjack\Http\Resolvers\TermResolver;
+use Rareloop\Lumberjack\Helpers;
 
 class WordPressControllersServiceProvider extends ServiceProvider
 {
@@ -28,7 +29,7 @@ class WordPressControllersServiceProvider extends ServiceProvider
             // of the resolver chain (highest priority).
             collect($this->getCoreResolvers())
                 ->merge($app->get('config')->get('app.resolvers', []))
-                ->each(fn($resolver) => $resolverChain->prependResolver($app->make($resolver)));
+                ->each(fn($resolver) => $resolverChain->prependResolver($app->make(Helpers::invoke($resolver))));
 
             return $invoker;
         });

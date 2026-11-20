@@ -12,6 +12,7 @@ use Rareloop\Lumberjack\Http\Responses\TimberResponse;
 use Rareloop\Lumberjack\Facades\Session;
 use Rareloop\Lumberjack\Facades\Log;
 use Throwable;
+use Closure;
 
 class Helpers
 {
@@ -109,5 +110,14 @@ class Helpers
         }
 
         return Log::debug($message, $context);
+    }
+
+    public static function invoke($value, array $parameters = [])
+    {
+        if ($value instanceof Closure) {
+            return static::app()->call($value, $parameters);
+        }
+
+        return $value;
     }
 }

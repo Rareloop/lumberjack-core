@@ -37,6 +37,24 @@ class RegisterProvidersTest extends TestCase
     }
 
     #[Test]
+    public function registers_providers_defined_as_closures_in_config()
+    {
+        $app = new Application();
+
+        $provider1 = Mockery::mock(RPTestServiceProvider1::class, [$app]);
+        $provider1->shouldReceive('register')->once();
+
+        $config = new Config();
+        $config->set('app.providers', [
+            fn() => $provider1,
+        ]);
+        $app->bind('config', $config);
+
+        $registerProvidersBootstrapper = new RegisterProviders();
+        $registerProvidersBootstrapper->bootstrap($app);
+    }
+
+    #[Test]
     public function should_not_fall_over_on_empty_config_data()
     {
         $app = new Application();

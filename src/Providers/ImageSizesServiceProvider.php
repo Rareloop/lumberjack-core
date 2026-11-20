@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Providers;
 
 use Rareloop\Lumberjack\Config;
+use Rareloop\Lumberjack\Helpers;
 
 class ImageSizesServiceProvider extends ServiceProvider
 {
@@ -12,6 +13,8 @@ class ImageSizesServiceProvider extends ServiceProvider
 
         if (is_array($imageSizes)) {
             foreach ($imageSizes as $imageSize) {
+                $imageSize = Helpers::invoke($imageSize);
+
                 add_image_size(
                     $imageSize['name'],
                     $imageSize['width'],

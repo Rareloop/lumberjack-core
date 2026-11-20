@@ -3,6 +3,7 @@
 namespace Rareloop\Lumberjack\Bootstrappers;
 
 use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\Helpers;
 use Rareloop\Lumberjack\Providers\LogServiceProvider;
 use Rareloop\Lumberjack\Providers\IgnitionServiceProvider;
 
@@ -14,10 +15,8 @@ class RegisterProviders
 
         $this->registerBaseProviders($app);
 
-        $providers = $config->get('app.providers', []);
-
-        foreach ($providers as $provider) {
-            $app->register($provider);
+        foreach ($config->get('app.providers', []) as $provider) {
+            $app->register(Helpers::invoke($provider));
         }
     }
 
